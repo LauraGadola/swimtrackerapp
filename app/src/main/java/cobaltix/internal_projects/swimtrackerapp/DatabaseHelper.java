@@ -18,6 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
     {
         db.execSQL(DatabaseContract.Events.CREATE_TABLE_EVENTS);
+        db.execSQL(DatabaseContract.WeeklyGoals.CREATE_TABLE_WEEKLY_GOALS);
     }
 
     @Override
@@ -25,6 +26,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         //discard the data and start over
         db.execSQL(DatabaseContract.Events.DELETE_TABLE_EVENTS);
+        db.execSQL(DatabaseContract.WeeklyGoals.DELETE_TABLE_WEEKLY_EVENTS);
+
         onCreate(db);
     }
 

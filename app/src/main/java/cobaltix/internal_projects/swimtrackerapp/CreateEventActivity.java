@@ -2,6 +2,7 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +22,7 @@ public class CreateEventActivity extends AppCompatActivity
     EditText eventTitle;
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
-    String dateSelected;
+    String dateSelected; //TO ELIMINATE??
 
 
     private DatabaseHelper dbHelper;
@@ -47,9 +48,7 @@ public class CreateEventActivity extends AppCompatActivity
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                myCalendar.set(year, monthOfYear, dayOfMonth);
                 updateLabel();
             }
 
@@ -87,22 +86,26 @@ public class CreateEventActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_done)
         {
             //Save new event & get to weekly goals page
-            String event = eventTitle.getText().toString();
+            String title = eventTitle.getText().toString();
             db = dbHelper.getWritableDatabase();
 
             // Create a new map of values, where column names are the keys
             ContentValues values = new ContentValues();
-            values.put(DatabaseContract.Events.COLUMN_NAME_TITLE, event);
-            values.put(DatabaseContract.Events.COLUMN_NAME_SUBTITLE, dateSelected);
+            values.put(DatabaseContract.Events.COLUMN_NAME_TITLE, title);
+            values.put(DatabaseContract.Events.COLUMN_NAME_DATE, dateSelected);
 
             // Insert the new row, returning the primary key value of the new row
             long newRowId = db.insert(DatabaseContract.Events.TABLE_NAME, null, values);
+            System.out.println("----------- id: "+newRowId);
+            Event event = new Event(newRowId, title, dateSelected);
+            MainActivity.updateListView(event);
 
-            new MainActivity().updateListView(event);
+            Intent i = new Intent(getApplicationContext(), WeeklyGoalsActivity.class);
+            i.putExtra("event", event);
+            startActivity(i);
             finish();
 
         }

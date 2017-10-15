@@ -1,32 +1,32 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
-import android.content.ContentValues;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
 {
     //Visual objects in the layout file
     private ListView lv;
     private FloatingActionButton fab;
-
-    private ArrayList<String> listItems = new ArrayList<String>();
-
     //HANDLE THE DATA OF THE LISTVIEW
-    private ArrayAdapter<String> adapter;
+    ArrayList<Event> eventList;
+    private static CustomList adapter;
 
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
@@ -51,21 +51,36 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_2,
-                listItems);
-        lv = (ListView)findViewById(R.id.eventList);
+        eventList = new ArrayList<>();
+        adapter = new CustomList(this, eventList);
+        lv = (ListView) findViewById(R.id.eventList);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+
+                //TODO get to daily goals until all entries for the week are entered
+                Event e = (Event) lv.getItemAtPosition(position);
+                Intent i = new Intent(getApplicationContext(), WeeklyGoalsActivity.class);
+                i.putExtra("event", e);
+                startActivity(i);
+            }
+        });
 
         dbHelper = new DatabaseHelper(this);
         retrieveDatabase();
 
     }
 
-    public void updateListView(String item) {
-        listItems.add(item);
-        //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
-        adapter.notifyDataSetChanged();
+    public static void updateListView(Event event) {
+        if(event != null)
+        {
+            adapter.add(event);
+            //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -98,7 +113,7 @@ public class MainActivity extends AppCompatActivity
         String[] projection = {
                 DatabaseContract.Events._ID,
                 DatabaseContract.Events.COLUMN_NAME_TITLE,
-                DatabaseContract.Events.COLUMN_NAME_SUBTITLE
+                DatabaseContract.Events.COLUMN_NAME_DATE
         };
 
         // Filter results WHERE "title" = 'My Title'
@@ -106,8 +121,9 @@ public class MainActivity extends AppCompatActivity
 //        String[] selectionArgs = { "Hello" };
 
         // How you want the results sorted in the resulting Cursor
+        //TODO: IT'S ORDERING BASED ON THE DAY OF THE WEEK
         String sortOrder =
-                DatabaseContract.Events.COLUMN_NAME_SUBTITLE + " DESC";
+                DatabaseContract.Events.COLUMN_NAME_DATE + " DESC";
 
         Cursor cursor = db.query(
                 DatabaseContract.Events.TABLE_NAME,       // The table to query
@@ -120,11 +136,13 @@ public class MainActivity extends AppCompatActivity
         );
 
         while(cursor.moveToNext()) {
-            String item = cursor.getString(1);
-            listItems.add(item);
+            long id = cursor.getInt(0);
+            String title = cursor.getString(1);
+            String date = cursor.getString(2);
+            Event event = new Event(id, title, date);
+            adapter.add(event);
         }
         cursor.close();
-
     }
 
 }

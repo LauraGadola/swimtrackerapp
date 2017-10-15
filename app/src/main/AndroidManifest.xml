@@ -27,6 +27,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cobaltix.internal_projects.swimtrackerapp.MainActivity"/>
         </activity>
+        <activity
+            android:name=".DailyGoalsActivity"
+            android:label="@string/title_activity_daily_goals"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cobaltix.internal_projects.swimtrackerapp.MainActivity"/>
+        </activity>
+        <activity
+            android:name=".WeeklyGoalsActivity"
+            android:label="@string/title_activity_weekly_goals"
+            android:parentActivityName=".DailyGoalsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity"/>
+        </activity>
     </application>
 
 </manifest>
