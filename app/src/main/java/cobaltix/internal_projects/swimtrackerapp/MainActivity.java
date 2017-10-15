@@ -62,9 +62,9 @@ public class MainActivity extends AppCompatActivity
             {
 
                 //TODO get to daily goals until all entries for the week are entered
-                Event e = (Event) lv.getItemAtPosition(position);
-                Intent i = new Intent(getApplicationContext(), WeeklyGoalsActivity.class);
-                i.putExtra("event", e);
+                //Event e = (Event) lv.getItemAtPosition(position);
+                Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
+                //i.putExtra("event", e);
                 startActivity(i);
             }
         });

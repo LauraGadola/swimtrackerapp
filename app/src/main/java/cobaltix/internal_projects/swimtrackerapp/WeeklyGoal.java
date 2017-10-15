@@ -4,13 +4,13 @@ public class WeeklyGoal
 {
     private long id;
     private String week;
-    private double miles;
-    private double longest;
-    private double weight;
+    private float miles;
+    private float longest;
+    private float weight;
     private String description;
     private long event_id;
 
-    public WeeklyGoal(long id, String week, double miles, double longest, double weight, String description, long event_id)
+    public WeeklyGoal(long id, String week, float miles, float longest, float weight, String description, long event_id)
     {
         this.id = id;
         this.week = week;
@@ -31,32 +31,32 @@ public class WeeklyGoal
         this.week = week;
     }
 
-    public double getMiles()
+    public float getMiles()
     {
         return miles;
     }
 
-    public void setMiles(double miles)
+    public void setMiles(float miles)
     {
         this.miles = miles;
     }
 
-    public double getLongest()
+    public float getLongest()
     {
         return longest;
     }
 
-    public void setLongest(double longest)
+    public void setLongest(float longest)
     {
         this.longest = longest;
     }
 
-    public double getWeight()
+    public float getWeight()
     {
         return weight;
     }
 
-    public void setWeight(double weight)
+    public void setWeight(float weight)
     {
         this.weight = weight;
     }

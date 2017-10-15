@@ -14,4 +14,15 @@
     tools:context="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity"
     tools:showIn="@layout/activity_daily_goals">
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:ems="10"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/etDate"
+        android:inputType="text"
+        android:clickable="false"
+        android:editable="false"/>
 </RelativeLayout>
