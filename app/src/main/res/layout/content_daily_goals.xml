@@ -1,28 +1,433 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_daily_goals"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity"
-    tools:showIn="@layout/activity_daily_goals">
+    android:paddingRight="20dp"
+    android:paddingLeft="20dp"
+    android:paddingBottom="20dp">
+    <HorizontalScrollView
+        android:layout_width="wrap_content" android:layout_height="fill_parent">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        android:ems="10"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/etDate"
-        android:inputType="text"
-        android:clickable="false"
-        android:editable="false"/>
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="50dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/content_daily_goals"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:context="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity"
+            tools:showIn="@layout/activity_daily_goals">
+
+            <TextView
+                android:text="°F"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtDegreeF"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etTempF"
+                android:layout_toEndOf="@+id/etTempF"/>
+
+            <TextView
+                android:text="Goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelGoal"
+                android:layout_alignBaseline="@+id/etWeight"
+                android:layout_alignBottom="@+id/etWeight"
+                android:layout_toEndOf="@+id/txtPounds"
+                android:textSize="18sp"
+                android:layout_marginLeft="20dp"/>
+
+            <TextView
+                android:text="Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelDate"
+                android:layout_alignBaseline="@+id/etDate"
+                android:layout_alignBottom="@+id/etDate"
+                android:layout_alignParentStart="true"
+                android:textSize="18sp"
+                android:layout_marginLeft="25dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="2"
+                android:id="@+id/etTempF"
+                android:inputType="numberDecimal"
+                android:layout_below="@+id/etLocation"
+                android:layout_toEndOf="@+id/labelTemp"
+                android:layout_marginTop="25dp"
+                android:textAlignment="textEnd"/>
+
+            <TextView
+                android:text="Weeks left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelWeeksLeft"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etWeeksLeft"
+                android:layout_alignBottom="@+id/etWeeksLeft"
+                android:layout_alignStart="@+id/labelDayOfWeek"/>
+
+            <TextView
+                android:text="Temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelTemp"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etTempF"
+                android:layout_alignBottom="@+id/etTempF"
+                android:layout_alignStart="@+id/labelDate"/>
+
+            <TextView
+                android:text="Week day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelDayOfWeek"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etDatOfWeek"
+                android:layout_alignBottom="@+id/etDatOfWeek"
+                android:layout_alignStart="@+id/labelDate"/>
+
+            <TextView
+                android:text="Location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelLocation"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etLocation"
+                android:layout_alignBottom="@+id/etLocation"
+                android:layout_alignStart="@+id/labelWeeksLeft"/>
+
+            <TextView
+                android:text="Time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelTime"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etTime"
+                android:layout_alignBottom="@+id/etTime"
+                android:layout_alignStart="@+id/labelTemp"/>
+
+            <TextView
+                android:text="Weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelWeight"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etWeight"
+                android:layout_alignBottom="@+id/etWeight"
+                android:layout_alignStart="@+id/labelTime"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="3"
+                android:id="@+id/etGoal"
+                android:textSize="18sp"
+                android:enabled="false"
+                android:layout_alignBaseline="@+id/labelGoal"
+                android:layout_alignBottom="@+id/labelGoal"
+                android:layout_toEndOf="@+id/labelGoal"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/etDate"
+                android:enabled="false"
+                android:textStyle="normal|bold"
+                android:textSize="18sp"
+                android:layout_marginTop="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignEnd="@+id/etLocation"
+                android:layout_alignStart="@+id/etTime"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/etDatOfWeek"
+                android:textSize="18sp"
+                android:enabled="false"
+                android:layout_marginTop="25dp"
+                android:layout_below="@+id/etDate"
+                android:layout_alignEnd="@+id/etDate"
+                android:layout_toEndOf="@+id/labelDayOfWeek"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:id="@+id/etWeeksLeft"
+                android:textSize="18sp"
+                android:enabled="false"
+                android:inputType="number"
+                android:layout_marginTop="25dp"
+                android:layout_below="@+id/etDatOfWeek"
+                android:layout_toEndOf="@+id/labelWeeksLeft"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:ems="8"
+                android:id="@+id/etLocation"
+                android:layout_marginTop="25dp"
+                android:layout_below="@+id/etWeeksLeft"
+                android:layout_toEndOf="@+id/labelLocation"/>
+
+            <TextView
+                android:text="°C"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtDegreeC"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etTempC"
+                android:layout_toEndOf="@+id/etTempC"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="3"
+                android:id="@+id/etWeight"
+                android:layout_below="@+id/etTime"
+                android:layout_toEndOf="@+id/labelWeight"
+                android:layout_marginTop="25dp"
+                android:textAlignment="textEnd"
+                />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:ems="4"
+                android:id="@+id/etTime"
+                android:layout_marginTop="25dp"
+                android:layout_below="@+id/etTempF"
+                android:layout_toEndOf="@+id/labelTime"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="2"
+                android:id="@+id/etTempC"
+                android:inputType="numberDecimal"
+                android:layout_alignBaseline="@+id/txtDegreeF"
+                android:layout_alignBottom="@+id/txtDegreeF"
+                android:layout_toEndOf="@+id/txtDegreeF"
+                android:layout_marginLeft="10dp"
+                android:textAlignment="textEnd"/>
+
+            <TextView
+                android:text="lbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/labelGoal"
+                android:layout_toEndOf="@+id/etWeight"
+                android:id="@+id/txtPounds"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:text="Distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelDistance"
+                android:layout_alignBaseline="@+id/etDistance"
+                android:layout_alignBottom="@+id/etDistance"
+                android:layout_alignStart="@+id/labelWeight"
+                android:textSize="18sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:id="@+id/etDistance"
+                android:inputType="numberDecimal"
+                android:layout_below="@+id/etWeight"
+                android:layout_toEndOf="@+id/labelDistance"
+                android:layout_marginTop="25dp"/>
+
+            <TextView
+                android:text="Longest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelLongest"
+                android:layout_alignBaseline="@+id/etLongest"
+                android:layout_alignBottom="@+id/etLongest"
+                android:layout_alignStart="@+id/labelDistance"
+                android:textSize="18sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:id="@+id/etLongest"
+                android:inputType="numberDecimal"
+                android:layout_below="@+id/etDistance"
+                android:layout_toEndOf="@+id/labelLongest"
+                android:layout_marginTop="25dp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:id="@+id/atHonest"
+                android:inputType="numberDecimal"
+                android:layout_below="@+id/etLongest"
+                android:layout_toEndOf="@+id/labelHonest"
+                android:layout_marginTop="25dp"/>
+
+            <TextView
+                android:text="Honest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelHonest"
+                android:layout_alignBaseline="@+id/atHonest"
+                android:layout_alignBottom="@+id/atHonest"
+                android:layout_alignStart="@+id/labelLongest"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelDescription"
+                android:layout_marginTop="35dp"
+                android:layout_below="@+id/atHonest"
+                android:layout_alignStart="@+id/labelHonest"
+                android:textSize="18sp"
+                android:text="How'd it feel? Swam with? Conditions? Felt Good?"
+                android:layout_alignEnd="@+id/etGoal"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/labelDescription"
+                android:layout_alignStart="@+id/labelDescription"
+                android:id="@+id/atDescription"
+                android:layout_alignEnd="@+id/labelDescription"
+                android:lines="10"
+                android:minLines="5"
+                android:gravity="top|left"
+                android:maxLines="15"
+                android:background="@drawable/text_input_border"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutMiles"
+                android:layout_below="@+id/atDescription"
+                android:layout_alignStart="@+id/atDescription">
+
+                <TextView
+                    android:text="25%"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtMilesPercent"
+                    android:textStyle="normal|bold"
+                    android:textSize="20sp"
+                    android:layout_centerInParent="true"/>
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:id="@+id/progressBarMiles"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/circular_progress_bar"
+                    android:rotation="150"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"/>
+                <TextView
+                    android:text="Miles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/labelMilesPercent"
+                    android:textSize="18sp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutWeight"
+                android:layout_below="@+id/atDescription"
+                android:layout_toEndOf="@+id/etDistance">
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/progressBarWeight"
+                    android:progressDrawable="@drawable/circular_progress_bar"
+                    android:rotation="150"/>
+                <TextView
+                    android:text="75%"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtWeightPercent"
+                    android:textStyle="normal|bold"
+                    android:textSize="20sp"
+                    android:layout_centerInParent="true"/>
+
+                <TextView
+                    android:text="Weight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/labelWeightPercent"
+                    android:textSize="18sp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutLongest"
+                android:layout_below="@+id/atDescription"
+                android:layout_toEndOf="@+id/atDescription">
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/progressBarLongest"
+                    android:progressDrawable="@drawable/circular_progress_bar"
+                    android:rotation="150"/>
+                <TextView
+                    android:text="40%"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtLongestPercent"
+                    android:textStyle="normal|bold"
+                    android:textSize="20sp"
+                    android:layout_centerInParent="true"/>
+
+                <TextView
+                    android:text="Longest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/labelLongestPercent"
+                    android:textSize="18sp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+    </HorizontalScrollView>
+</ScrollView>

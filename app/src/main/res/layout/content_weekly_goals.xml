@@ -47,7 +47,7 @@
         android:layout_marginTop="25dp"
         android:layout_marginLeft="25dp"
         android:layout_alignParentStart="true"
-        android:id="@+id/etLongest"
+        android:id="@+id/etDistance"
         android:hint="Longest"
         android:inputType="numberDecimal"/>
 
@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:layout_below="@+id/etLongest"
+        android:layout_below="@+id/etDistance"
         android:layout_marginTop="25dp"
         android:layout_marginLeft="25dp"
         android:layout_alignParentStart="true"

@@ -5,19 +5,20 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+
 
 public class WeeklyGoalsActivity extends AppCompatActivity
 {
@@ -54,7 +55,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
         etWeek = (EditText) findViewById(R.id.etWeek);
         etWeeklyMiles = (EditText) findViewById(R.id.etWeekMiles);
-        etLongest = (EditText) findViewById(R.id.etLongest);
+        etLongest = (EditText) findViewById(R.id.etDistance);
         etWeight = (EditText) findViewById(R.id.etWeight);
         etDescription = (EditText) findViewById(R.id.etDescription);
 
