@@ -23,6 +23,9 @@ public class DailyGoalsActivity extends AppCompatActivity
     private EditText etTempC;
     private EditText etTempF;
 
+    private EditText etYards;
+    private EditText etMiles;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -47,6 +50,12 @@ public class DailyGoalsActivity extends AppCompatActivity
         etTempF = (EditText) findViewById(R.id.etTempF);
         etTempF.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
 
+        etYards = (EditText) findViewById(R.id.etYards);
+        etYards.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
+
+        etMiles = (EditText) findViewById(R.id.etMiles);
+        etMiles.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
+
     }
 
     public void covertFtoC(float tempF)
@@ -61,7 +70,17 @@ public class DailyGoalsActivity extends AppCompatActivity
         etTempF.setText(String.valueOf(tempF));
     }
 
+    public void convertYtoM(float yards)
+    {
+        float miles = yards / 1760;
+        etMiles.setText(String.valueOf(miles));
+    }
 
+    public void covertMtoY(float miles)
+    {
+        float yards = miles * 1760;
+        etYards.setText(String.valueOf(yards));
+    }
 
     //TODO improve
     public void clearF()
@@ -72,6 +91,16 @@ public class DailyGoalsActivity extends AppCompatActivity
     public void clearC()
     {
         etTempC.setText("");
+    }
+
+    public void clearY()
+    {
+        etYards.setText("");
+    }
+
+    public void clearM()
+    {
+        etMiles.setText("");
     }
 
 }

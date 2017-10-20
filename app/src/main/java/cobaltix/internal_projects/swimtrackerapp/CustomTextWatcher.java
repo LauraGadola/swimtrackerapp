@@ -28,31 +28,48 @@ public class CustomTextWatcher implements TextWatcher
     @Override
     public void afterTextChanged(Editable s)
     {
+        String str = s.toString();
+        float f;
         switch (et.getId())
         {
             case R.id.etTempF:
-                if(!s.toString().matches(""))
+                if(!str.matches(""))
                 {
-                    float tempF = Float.parseFloat(s.toString());
-                    activity.covertFtoC(tempF);
-
+                    f = Float.parseFloat(str);
+                    activity.covertFtoC(f);
                 }
-                else {
+                else
                     activity.clearC();
-                }
                 break;
 
             case R.id.etTempC:
-                if(!s.toString().matches(""))
+                if(!str.matches(""))
                 {
-                    float tempC = Float.parseFloat(s.toString());
-                    activity.covertCtoF(tempC);
-
+                    f = Float.parseFloat(str);
+                    activity.covertCtoF(f);
                 }
                 else
-                {
                     activity.clearF();
+                break;
+
+            case R.id.etYards:
+                if(!str.matches(""))
+                {
+                    f = Float.parseFloat(str);
+                    activity.convertYtoM(f);
                 }
+                else
+                    activity.clearM();
+                break;
+
+            case R.id.etMiles:
+                if(!str.matches(""))
+                {
+                    f = Float.parseFloat(str);
+                    activity.covertMtoY(f);
+                }
+                else
+                    activity.clearY();
                 break;
         }
     }

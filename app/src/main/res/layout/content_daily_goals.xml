@@ -245,20 +245,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/labelDistance"
-                android:layout_alignBaseline="@+id/etDistance"
-                android:layout_alignBottom="@+id/etDistance"
+                android:layout_alignBaseline="@+id/etYards"
+                android:layout_alignBottom="@+id/etYards"
                 android:layout_alignStart="@+id/labelWeight"
                 android:textSize="18sp"/>
 
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="3"
-                android:id="@+id/etDistance"
-                android:inputType="numberDecimal"
+                android:ems="4"
+                android:id="@+id/etYards"
+                android:inputType="number"
                 android:layout_below="@+id/etWeight"
                 android:layout_toEndOf="@+id/labelDistance"
-                android:layout_marginTop="25dp"/>
+                android:layout_marginTop="25dp"
+                android:text="174,240"
+                android:textAlignment="textEnd"/>
 
             <TextView
                 android:text="Longest"
@@ -276,7 +278,7 @@
                 android:ems="3"
                 android:id="@+id/etLongest"
                 android:inputType="numberDecimal"
-                android:layout_below="@+id/etDistance"
+                android:layout_below="@+id/etYards"
                 android:layout_toEndOf="@+id/labelLongest"
                 android:layout_marginTop="25dp"/>
 
@@ -322,7 +324,8 @@
                 android:minLines="5"
                 android:gravity="top|left"
                 android:maxLines="15"
-                android:background="@drawable/text_input_border"/>
+                android:background="@drawable/text_input_border"
+                android:inputType="textMultiLine"/>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -366,7 +369,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutWeight"
                 android:layout_below="@+id/atDescription"
-                android:layout_toEndOf="@+id/etDistance">
+                android:layout_toEndOf="@+id/etYards">
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="150dp"
@@ -426,6 +429,37 @@
                     android:layout_centerHorizontal="true"/>
 
             </RelativeLayout>
+
+            <TextView
+                android:text="yards"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtYards"
+                android:layout_alignBottom="@+id/labelDistance"
+                android:layout_toEndOf="@+id/etYards"
+                android:textSize="18sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="4"
+                android:id="@+id/etMiles"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/txtYards"
+                android:layout_alignBottom="@+id/txtYards"
+                android:layout_toEndOf="@+id/txtYards"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:text="miles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtMiles"
+                android:layout_alignBaseline="@+id/etMiles"
+                android:layout_alignBottom="@+id/etMiles"
+                android:layout_toEndOf="@+id/etMiles"
+                android:textSize="18sp"/>
 
         </RelativeLayout>
     </LinearLayout>
