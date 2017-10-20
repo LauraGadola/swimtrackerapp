@@ -61,7 +61,7 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="2"
+                android:ems="3"
                 android:id="@+id/etTempF"
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/etLocation"
@@ -222,7 +222,7 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="2"
+                android:ems="3"
                 android:id="@+id/etTempC"
                 android:inputType="numberDecimal"
                 android:layout_alignBaseline="@+id/txtDegreeF"
