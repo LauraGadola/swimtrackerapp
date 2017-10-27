@@ -1,21 +1,17 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,10 +22,9 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     //HANDLE THE DATA OF THE LISTVIEW
     ArrayList<Event> eventList;
-    private static CustomList adapter;
+    private static CustomListAdapter adapter;
 
     private DatabaseHelper dbHelper;
-    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,8 +46,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        eventList = new ArrayList<>();
-        adapter = new CustomList(this, eventList);
+        dbHelper = new DatabaseHelper(this);
+        eventList = dbHelper.getEventList();
+        adapter = new CustomListAdapter(this, eventList);
         lv = (ListView) findViewById(R.id.eventList);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -68,9 +64,6 @@ public class MainActivity extends AppCompatActivity
                 startActivity(i);
             }
         });
-
-        dbHelper = new DatabaseHelper(this);
-        retrieveDatabase();
 
     }
 
@@ -104,45 +97,5 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void retrieveDatabase()
-    {
-        db = dbHelper.getReadableDatabase();
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                DatabaseContract.Events._ID,
-                DatabaseContract.Events.COLUMN_NAME_TITLE,
-                DatabaseContract.Events.COLUMN_NAME_DATE
-        };
-
-        // Filter results WHERE "title" = 'My Title'
-//        String selection = DatabaseContract.Events.COLUMN_NAME_TITLE + " = ?";
-//        String[] selectionArgs = { "Hello" };
-
-        // How you want the results sorted in the resulting Cursor
-        //TODO: IT'S ORDERING BASED ON THE DAY OF THE WEEK
-        String sortOrder =
-                DatabaseContract.Events.COLUMN_NAME_DATE + " DESC";
-
-        Cursor cursor = db.query(
-                DatabaseContract.Events.TABLE_NAME,       // The table to query
-                projection,                               // The columns to return
-                null,                                     // The columns for the WHERE clause
-                null,                                     // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                sortOrder                                 // The sort order
-        );
-
-        while(cursor.moveToNext()) {
-            long id = cursor.getInt(0);
-            String title = cursor.getString(1);
-            String date = cursor.getString(2);
-            Event event = new Event(id, title, date);
-            adapter.add(event);
-        }
-        cursor.close();
-    }
 
 }

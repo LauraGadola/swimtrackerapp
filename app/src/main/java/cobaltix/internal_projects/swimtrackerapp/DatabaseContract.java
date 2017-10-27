@@ -5,8 +5,7 @@ import android.provider.BaseColumns;
 public final class DatabaseContract
 {
 
-    // To prevent someone from accidentally instantiating the contract class,
-    // make the constructor private.
+    // private constructor to prevent someone from accidentally instantiating the contract class
     private DatabaseContract() {}
 
     /* Inner class that defines the table contents */
@@ -56,6 +55,33 @@ public final class DatabaseContract
                 "DROP TABLE IF EXIST " + WeeklyGoals.TABLE_NAME;
     }
 
+    //DAILY GOALS TABLE
+    public static class DailyGoals implements BaseColumns
+    {
+        public static final String TABLE_NAME = "daily_goals";
+        public static final String COLUMN_NAME_DATE = "date";
+        public static final String COLUMN_NAME_LOCATION = "location";
+        public static final String COLUMN_NAME_TEMP = "temperature";
+        public static final String COLUMN_NAME_TIME = "time";
+        public static final String COLUMN_NAME_MILES = "miles";
+        public static final String COLUMN_NAME_HONEST = "honest";
+        public static final String COLUMN_NAME_NOTES = "notes";
+
+        public static final String CREATE_TABLE_DAILY_GOALS =
+                "CREATE TABLE " + DailyGoals.TABLE_NAME + " ("
+                        + DailyGoals._ID + " INTEGER PRIMARY KEY,"
+                        + DailyGoals.COLUMN_NAME_DATE + " TEXT,"
+                        + DailyGoals.COLUMN_NAME_LOCATION + " TEXT,"
+                        + DailyGoals.COLUMN_NAME_TEMP + " FLOAT,"
+                        + DailyGoals.COLUMN_NAME_TIME + " TEXT,"
+                        + DailyGoals.COLUMN_NAME_MILES + " FLOAT,"
+                        + DailyGoals.COLUMN_NAME_HONEST + " FLOAT,"
+                        + DailyGoals.COLUMN_NAME_NOTES + " TEXT);";
+
+        public static final String DELETE_TABLE_DAILY_GOALS =
+                "DROP TABLE IF EXISTS " + DailyGoals.TABLE_NAME;
+
+    }
 }
 
 

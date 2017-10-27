@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CustomList extends ArrayAdapter<Event>
+public class CustomListAdapter extends ArrayAdapter<Event>
 {
     Activity context;
     Event event;
 
 
-    public CustomList(Activity context, ArrayList<Event> events) {
+    public CustomListAdapter(Activity context, ArrayList<Event> events) {
         super(context, 0, events);
         this.context = context;
     }
@@ -29,7 +29,6 @@ public class CustomList extends ArrayAdapter<Event>
         {
             LayoutInflater inflater = context.getLayoutInflater();
             convertView = inflater.inflate(R.layout.list_single, parent, false);
-
         }
 
         TextView tvTitle = (TextView) convertView.findViewById(R.id.title);

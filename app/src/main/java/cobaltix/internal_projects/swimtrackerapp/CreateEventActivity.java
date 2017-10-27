@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -24,9 +25,7 @@ public class CreateEventActivity extends AppCompatActivity
     DatePickerDialog.OnDateSetListener date;
     String dateSelected; //TO ELIMINATE??
 
-
     private DatabaseHelper dbHelper;
-    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -90,24 +89,13 @@ public class CreateEventActivity extends AppCompatActivity
         {
             //Save new event & get to weekly goals page
             String title = eventTitle.getText().toString();
-            db = dbHelper.getWritableDatabase();
-
-            // Create a new map of values, where column names are the keys
-            ContentValues values = new ContentValues();
-            values.put(DatabaseContract.Events.COLUMN_NAME_TITLE, title);
-            values.put(DatabaseContract.Events.COLUMN_NAME_DATE, dateSelected);
-
-            // Insert the new row, returning the primary key value of the new row
-            long newRowId = db.insert(DatabaseContract.Events.TABLE_NAME, null, values);
-            System.out.println("----------- id: "+newRowId);
-            Event event = new Event(newRowId, title, dateSelected);
+            Event event = dbHelper.addEvent(title, dateSelected);
             MainActivity.updateListView(event);
 
             Intent i = new Intent(getApplicationContext(), WeeklyGoalsActivity.class);
             i.putExtra("event", event);
             startActivity(i);
             finish();
-
         }
 
         return super.onOptionsItemSelected(item);

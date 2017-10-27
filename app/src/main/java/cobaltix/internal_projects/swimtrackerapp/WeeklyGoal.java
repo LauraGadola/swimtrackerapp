@@ -1,6 +1,8 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
-public class WeeklyGoal
+import java.io.Serializable;
+
+public class WeeklyGoal implements Serializable
 {
     private long id;
     private String week;

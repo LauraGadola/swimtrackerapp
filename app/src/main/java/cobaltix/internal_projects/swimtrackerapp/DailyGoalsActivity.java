@@ -1,5 +1,6 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -26,6 +29,11 @@ public class DailyGoalsActivity extends AppCompatActivity
     private EditText etYards;
     private EditText etMiles;
 
+    private DatabaseHelper dbHelper;
+    private SQLiteDatabase db;
+
+    private WeeklyGoal wg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -35,6 +43,15 @@ public class DailyGoalsActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        dbHelper = new DatabaseHelper(this);
+
+        // Retrieve WeeklyGoal obj sent from Create Event Activity
+        wg = (WeeklyGoal) getIntent().getSerializableExtra("weekly_goal");
+        if(wg != null)
+            System.out.println("------------- " + wg.getWeek());
+        else
+            System.out.println("wg does not exist");
 
         pbMiles = (ProgressBar) findViewById(R.id.progressBarMiles);
         pbWeight = (ProgressBar) findViewById(R.id.progressBarWeight);
@@ -56,6 +73,29 @@ public class DailyGoalsActivity extends AppCompatActivity
         etMiles = (EditText) findViewById(R.id.etMiles);
         etMiles.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
 
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_save, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        if (id == R.id.action_done)
+        {
+            //TODO save daily goals
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void covertFtoC(float tempF)

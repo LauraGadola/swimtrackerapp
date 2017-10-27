@@ -259,7 +259,6 @@
                 android:layout_below="@+id/etWeight"
                 android:layout_toEndOf="@+id/labelDistance"
                 android:layout_marginTop="25dp"
-                android:text="174,240"
                 android:textAlignment="textEnd"/>
 
             <TextView

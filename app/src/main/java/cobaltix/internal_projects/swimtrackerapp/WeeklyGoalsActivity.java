@@ -2,6 +2,7 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -33,7 +34,6 @@ public class WeeklyGoalsActivity extends AppCompatActivity
     private DatePickerDialog.OnDateSetListener date;
 
     private DatabaseHelper dbHelper;
-    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -106,45 +106,6 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         etWeek.setText(sunday+" - "+sat);
     }
 
-    private boolean WeekGoalExist() {
-
-        db = dbHelper.getReadableDatabase();
-        boolean b = (db == null);
-        System.out.println(b);
-
-        String[] projection = {
-                DatabaseContract.WeeklyGoals._ID,
-                DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK,
-                DatabaseContract.WeeklyGoals.COLUMN_NAME_MILES,
-                DatabaseContract.WeeklyGoals.COLUMN_NAME_LONGEST,
-                DatabaseContract.WeeklyGoals.COLUMN_NAME_WEIGHT,
-                DatabaseContract.WeeklyGoals.COLUMN_NAME_DESCRIPTION
-        };
-        String selection = DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK + " = ?";
-        String[] selectionArgs = { sunday };
-
-        Cursor cursor = db.query(
-                DatabaseContract.WeeklyGoals.TABLE_NAME,    // The table to query
-                projection,                                 // The columns to return
-                selection,                                  // The columns for the WHERE clause
-                selectionArgs,                              // The values for the WHERE clause
-                null,                                       // don't group the rows
-                null,                                       // don't filter by row groups
-                null                                        // The sort order
-        );
-
-        while(cursor.moveToNext()) {
-            long id = cursor.getInt(0);
-            float miles = cursor.getFloat(2);
-            float longest = cursor.getFloat(3);
-            float weight = cursor.getFloat(4);
-            String description = cursor.getString(5);
-            weeklyGoal = new WeeklyGoal(id, sunday, miles, longest, weight, description, event.getId());
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -152,15 +113,13 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        //TODO in case the goal existed update the entry in the database. DON'T create a new one
+        //TODO update() to be tested
 
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_done)
         {
             float miles = Float.parseFloat(etWeeklyMiles.getText().toString());
@@ -168,28 +127,13 @@ public class WeeklyGoalsActivity extends AppCompatActivity
             float weight = Float.parseFloat(etWeight.getText().toString());
             String description = etDescription.getText().toString();
 
-            db = dbHelper.getWritableDatabase();
-
-            ContentValues values = new ContentValues();
-            values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK, sunday);
-            values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_MILES, miles);
-            values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_LONGEST, longest);
-            values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_WEIGHT, weight);
-            values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_DESCRIPTION, description);
-            values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID, event.getId());
-
-            if(!WeekGoalExist())
-            {
-                long newRowId = db.insert(DatabaseContract.WeeklyGoals.TABLE_NAME, null, values);
-
-                //TODO Do I need it - should I have a list?
-                WeeklyGoal wg = new WeeklyGoal(newRowId, sunday, miles, longest, weight, description, event.getId());
-            }
-            else {
-                db.update(DatabaseContract.WeeklyGoals.TABLE_NAME, values, "_id=" + weeklyGoal.getId(), null);
-            }
+            weeklyGoal = dbHelper.addWeeklyGoal(sunday, miles, longest, weight, description, event.getId());
         }
 
+        Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
+        i.putExtra("weekly_goal", weeklyGoal);
+        startActivity(i);
+        finish();
         return super.onOptionsItemSelected(item);
     }
 
@@ -203,7 +147,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
     private void fillFields()
     {
-        if(WeekGoalExist())
+        if(weeklyGoal != null)
         {
             etWeeklyMiles.setText(String.valueOf(weeklyGoal.getMiles()));
             etLongest.setText(String.valueOf(weeklyGoal.getLongest()));
