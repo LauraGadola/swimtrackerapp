@@ -16,23 +16,7 @@ public class HelperClass
     private HelperClass(){}
 
     public static void writeToSD() throws IOException {
-        File sd = Environment.getExternalStorageDirectory();
 
-
-        if (sd.canWrite()) {
-            String currentDBPath = "Events.db";
-            String backupDBPath = "backupname.db";
-            File currentDB = new File(DB_PATH, currentDBPath);
-            File backupDB = new File(sd, backupDBPath);
-
-            if (currentDB.exists()) {
-                FileChannel src = new FileInputStream(currentDB).getChannel();
-                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                src.close();
-                dst.close();
-            }
-        }
     }
 
 }

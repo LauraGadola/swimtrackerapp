@@ -1,10 +1,7 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.DatePickerDialog;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -65,8 +63,11 @@ public class WeeklyGoalsActivity extends AppCompatActivity
                 myCalendar.set(year,monthOfYear,dayOfMonth);
                 int dayOfWeek = myCalendar.get(Calendar.DAY_OF_WEEK);
                 updateLabel(dayOfWeek);
-                clearFields();
-                fillFields();
+                if(wgExists())
+                {
+//                    clearFields();
+                    fillFields();
+                }
             }
 
         };
@@ -80,9 +81,19 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         });
 
         updateLabel(myCalendar.get(Calendar.DAY_OF_WEEK));
-        clearFields();
-        fillFields();
+        if(wgExists())
+        {
+//      clearFields();
+            fillFields();
+        }
+    }
 
+    private boolean wgExists()
+    {
+        weeklyGoal = dbHelper.weekGoalExist(sunday, event.getId());
+        if(weeklyGoal != null)
+            return true;
+        return false;
     }
 
     private void updateLabel(int dayOfWeek) {
@@ -116,8 +127,6 @@ public class WeeklyGoalsActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        //TODO update() to be tested
-
         int id = item.getItemId();
 
         if (id == R.id.action_done)
@@ -127,7 +136,18 @@ public class WeeklyGoalsActivity extends AppCompatActivity
             float weight = Float.parseFloat(etWeight.getText().toString());
             String description = etDescription.getText().toString();
 
-            weeklyGoal = dbHelper.addWeeklyGoal(sunday, miles, longest, weight, description, event.getId());
+            if(!wgExists())
+            {
+                weeklyGoal = dbHelper.addWeeklyGoal(sunday, miles, longest, weight, description, event.getId());
+                Toast.makeText(this, "Your weekly goal was saved", Toast.LENGTH_SHORT).show();
+            }
+
+            //TODO Do I need to get the wg back?
+            else
+            {
+                dbHelper.updateWeeklyGoal(weeklyGoal, miles, longest, weight, description);
+                Toast.makeText(this, "You have updated this weekly goal", Toast.LENGTH_SHORT).show();
+            }
         }
 
         Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
@@ -137,6 +157,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    //TODO Needed?
     private void clearFields()
     {
         etWeeklyMiles.setText("");
@@ -154,8 +175,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
             etWeight.setText(String.valueOf(weeklyGoal.getWeight()));
             etDescription.setText(weeklyGoal.getDescription());
         }
-        else {
+        else
             return;
-        }
     }
 }

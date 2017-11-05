@@ -105,33 +105,44 @@ public class DatabaseHelper extends SQLiteOpenHelper
         values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_DESCRIPTION, description);
         values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID, event_id);
 
-        WeeklyGoal wg = weekGoalExist(week, event_id);
-        if(wg == null)
-        {
             //TODO delete
             System.out.println("-------- Creating new wg");
             long newRowId = db.insert(DatabaseContract.WeeklyGoals.TABLE_NAME, null, values);
-            wg = new WeeklyGoal(newRowId, week, miles, longest, weight, description, event_id);
+            WeeklyGoal wg = new WeeklyGoal(newRowId, week, miles, longest, weight, description, event_id);
 
-        }
-        else {
-            //TODO delete
-            System.out.println("--------- Updating existing wg");
-            db.update(DatabaseContract.WeeklyGoals.TABLE_NAME, values, "_id=" + wg.getId(), null);
-        }
+        db.close();
+        exportDatabase();
+
         return wg;
     }
 
-    private WeeklyGoal weekGoalExist(String week, long event_id)
+    public void updateWeeklyGoal(WeeklyGoal wg, float miles, float longest, float weight, String description)
     {
+        db = getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_MILES, miles);
+        values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_LONGEST, longest);
+        values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_WEIGHT, weight);
+        values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_DESCRIPTION, description);
+
+        //TODO delete
+        System.out.println("--------- Updating existing wg");
+        db.update(DatabaseContract.WeeklyGoals.TABLE_NAME, values, "_id=" + wg.getId(), null);
+
+        db.close();
+        exportDatabase();
+    }
+
+
+    public WeeklyGoal weekGoalExist(String week, long event_id)
+    {
         db = getReadableDatabase();
 
+        //TODO Needed to check both week and event_id?
         String selectQuery = "SELECT * FROM " + DatabaseContract.WeeklyGoals.TABLE_NAME
-                + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK + " = " + week
+                + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK + " = '" + week + "'"
                 + " AND " + DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID + " = " + event_id;
-        //TODO delete
-        System.out.println(selectQuery);
 
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -185,4 +196,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         cursor.close();
         return events;
     }
+
+
 }

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -91,6 +92,7 @@ public class CreateEventActivity extends AppCompatActivity
             String title = eventTitle.getText().toString();
             Event event = dbHelper.addEvent(title, dateSelected);
             MainActivity.updateListView(event);
+            Toast.makeText(this, "A new event was created", Toast.LENGTH_SHORT).show();
 
             Intent i = new Intent(getApplicationContext(), WeeklyGoalsActivity.class);
             i.putExtra("event", event);

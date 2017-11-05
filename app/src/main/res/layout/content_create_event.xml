@@ -37,7 +37,6 @@
         android:layout_marginTop="25dp"
         android:id="@+id/eventDate"
         android:hint="Date"
-        android:focusable="false"
         android:focusableInTouchMode="false"/>
 
 </RelativeLayout>

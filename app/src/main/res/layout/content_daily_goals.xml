@@ -217,7 +217,8 @@
                 android:id="@+id/etTime"
                 android:layout_marginTop="25dp"
                 android:layout_below="@+id/etTempF"
-                android:layout_toEndOf="@+id/labelTime"/>
+                android:layout_toEndOf="@+id/labelTime"
+                android:focusableInTouchMode="false"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -459,6 +460,20 @@
                 android:layout_alignBottom="@+id/etMiles"
                 android:layout_toEndOf="@+id/etMiles"
                 android:textSize="18sp"/>
+
+            <!--<NumberPicker-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/minutesPicker"-->
+                <!--android:layout_alignBottom="@+id/etWeight"-->
+                <!--android:layout_toEndOf="@+id/etTime"/>-->
+
+            <!--<NumberPicker-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/hoursPicker"-->
+                <!--android:layout_alignBottom="@+id/etWeight"-->
+                <!--android:layout_toEndOf="@+id/minutesPicker"/>-->
 
         </RelativeLayout>
     </LinearLayout>
