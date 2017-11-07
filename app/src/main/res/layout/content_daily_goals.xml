@@ -286,7 +286,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="3"
-                android:id="@+id/atHonest"
+                android:id="@+id/etHonest"
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/etLongest"
                 android:layout_toEndOf="@+id/labelHonest"
@@ -297,17 +297,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/labelHonest"
-                android:layout_alignBaseline="@+id/atHonest"
-                android:layout_alignBottom="@+id/atHonest"
+                android:layout_alignBaseline="@+id/etHonest"
+                android:layout_alignBottom="@+id/etHonest"
                 android:layout_alignStart="@+id/labelLongest"
                 android:textSize="18sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/labelDescription"
+                android:id="@+id/labelNotes"
                 android:layout_marginTop="35dp"
-                android:layout_below="@+id/atHonest"
+                android:layout_below="@+id/etHonest"
                 android:layout_alignStart="@+id/labelHonest"
                 android:textSize="18sp"
                 android:text="How'd it feel? Swam with? Conditions? Felt Good?"
@@ -316,10 +316,10 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/labelDescription"
-                android:layout_alignStart="@+id/labelDescription"
-                android:id="@+id/atDescription"
-                android:layout_alignEnd="@+id/labelDescription"
+                android:layout_below="@+id/labelNotes"
+                android:layout_alignStart="@+id/labelNotes"
+                android:id="@+id/etNotes"
+                android:layout_alignEnd="@+id/labelNotes"
                 android:lines="10"
                 android:minLines="5"
                 android:gravity="top|left"
@@ -331,8 +331,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutMiles"
-                android:layout_below="@+id/atDescription"
-                android:layout_alignStart="@+id/atDescription">
+                android:layout_below="@+id/etNotes"
+                android:layout_alignStart="@+id/etNotes">
 
                 <TextView
                     android:text="25%"
@@ -368,7 +368,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutWeight"
-                android:layout_below="@+id/atDescription"
+                android:layout_below="@+id/etNotes"
                 android:layout_toEndOf="@+id/etYards">
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -401,8 +401,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutLongest"
-                android:layout_below="@+id/atDescription"
-                android:layout_toEndOf="@+id/atDescription">
+                android:layout_below="@+id/etNotes"
+                android:layout_toEndOf="@+id/etNotes">
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="150dp"

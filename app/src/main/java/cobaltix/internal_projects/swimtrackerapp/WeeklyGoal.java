@@ -4,18 +4,17 @@ import java.io.Serializable;
 
 public class WeeklyGoal implements Serializable
 {
-    private long id;
-    private String week;
+    private int id;
+    private String weekStart;
     private float miles;
     private float longest;
     private float weight;
     private String description;
-    private long event_id;
+    private int event_id;
 
-    public WeeklyGoal(long id, String week, float miles, float longest, float weight, String description, long event_id)
+    public WeeklyGoal(String weekStart, float miles, float longest, float weight, String description, int event_id)
     {
-        this.id = id;
-        this.week = week;
+        this.weekStart = weekStart;
         this.miles = miles;
         this.longest = longest;
         this.weight = weight;
@@ -23,14 +22,21 @@ public class WeeklyGoal implements Serializable
         this.event_id = event_id;
     }
 
-    public String getWeek()
+    //TODO needed or can I just set the id?
+    public WeeklyGoal(int id, String weekStart, float miles, float longest, float weight, String description, int event_id)
     {
-        return week;
+        this(weekStart, miles, longest, weight, description, event_id);
+        this.id = id;
     }
 
-    public void setWeek(String week)
+    public String getWeekStart()
     {
-        this.week = week;
+        return weekStart;
+    }
+
+    public void setWeekStart(String weekStart)
+    {
+        this.weekStart = weekStart;
     }
 
     public float getMiles()
@@ -73,22 +79,22 @@ public class WeeklyGoal implements Serializable
         this.description = description;
     }
 
-    public long getId()
+    public int getId()
     {
         return id;
     }
 
-    public void setId(long id)
+    public void setId(int id)
     {
         this.id = id;
     }
 
-    public long getEvent_id()
+    public int getEvent_id()
     {
         return event_id;
     }
 
-    public void setEvent_id(long event_id)
+    public void setEvent_id(int event_id)
     {
         this.event_id = event_id;
     }
@@ -98,5 +104,19 @@ public class WeeklyGoal implements Serializable
         if (this == null)
             return false;
         return true;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "WeeklyGoal{" +
+                "id=" + id +
+                ", weekStart='" + weekStart + '\'' +
+                ", miles=" + miles +
+                ", longest=" + longest +
+                ", weight=" + weight +
+                ", description='" + description + '\'' +
+                ", event_id=" + event_id +
+                '}';
     }
 }

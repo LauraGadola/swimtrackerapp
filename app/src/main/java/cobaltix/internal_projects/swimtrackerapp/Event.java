@@ -5,18 +5,18 @@ import java.io.Serializable;
 
 public class Event implements Serializable
 {
-    private long id;
+    private int id;
     private String title;
     private String date;
 
-    public Event (long id, String t, String d)
+    public Event (int id, String t, String d)
     {
         this.id = id;
         this.title = t;
         this.date = d;
     }
 
-    public long getId()
+    public int getId()
     {
         return id;
     }

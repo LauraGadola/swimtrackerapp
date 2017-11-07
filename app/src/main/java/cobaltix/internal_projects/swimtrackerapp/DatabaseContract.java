@@ -31,7 +31,7 @@ public final class DatabaseContract
     public static class WeeklyGoals implements BaseColumns
     {
         public static final String TABLE_NAME = "weekly_goals";
-        public static final String COLUMN_NAME_WEEK = "week";
+        public static final String COLUMN_NAME_WEEK_START = "week_start";
         public static final String COLUMN_NAME_MILES = "miles";
         public static final String COLUMN_NAME_LONGEST = "longest";
         public static final String COLUMN_NAME_WEIGHT = "weight";
@@ -41,12 +41,12 @@ public final class DatabaseContract
         public static final String CREATE_TABLE_WEEKLY_GOALS =
                 "CREATE TABLE " + WeeklyGoals.TABLE_NAME + " ("
                         + WeeklyGoals._ID + " INTEGER PRIMARY KEY,"
-                        + WeeklyGoals.COLUMN_NAME_WEEK + " TEXT,"
+                        + WeeklyGoals.COLUMN_NAME_WEEK_START + " TEXT,"
                         + WeeklyGoals.COLUMN_NAME_MILES + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_LONGEST + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_WEIGHT + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_DESCRIPTION + " TEXT,"
-                        + WeeklyGoals.COLUMN_NAME_EVENT_ID + " INT,"
+                        + WeeklyGoals.COLUMN_NAME_EVENT_ID + " INTEGER,"
 
                         //TODO CHECK IF WORKS
                         + "FOREIGN KEY(" + COLUMN_NAME_EVENT_ID + ") REFERENCES " + Events.TABLE_NAME + "(" + Events._ID + "));";
@@ -62,10 +62,15 @@ public final class DatabaseContract
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_LOCATION = "location";
         public static final String COLUMN_NAME_TEMP = "temperature";
-        public static final String COLUMN_NAME_TIME = "time";
+        public static final String COLUMN_NAME_HRS = "hours";
+        public static final String COLUMN_NAME_MIN = "minutes";
+        public static final String COLUMN_NAME_WEIGHT = "weight";
         public static final String COLUMN_NAME_MILES = "miles";
+        public static final String COLUMN_NAME_LONGEST = "longest";
         public static final String COLUMN_NAME_HONEST = "honest";
         public static final String COLUMN_NAME_NOTES = "notes";
+        public static final String COLUMN_NAME_WEEKLY_ID = "weekly_id";
+        public static final String COLUMN_NAME_EVENT_ID = "event_id";
 
         public static final String CREATE_TABLE_DAILY_GOALS =
                 "CREATE TABLE " + DailyGoals.TABLE_NAME + " ("
@@ -73,10 +78,15 @@ public final class DatabaseContract
                         + DailyGoals.COLUMN_NAME_DATE + " TEXT,"
                         + DailyGoals.COLUMN_NAME_LOCATION + " TEXT,"
                         + DailyGoals.COLUMN_NAME_TEMP + " FLOAT,"
-                        + DailyGoals.COLUMN_NAME_TIME + " TEXT,"
+                        + DailyGoals.COLUMN_NAME_HRS + " INTEGER,"
+                        + DailyGoals.COLUMN_NAME_MIN + " INTEGER,"
+                        + DailyGoals.COLUMN_NAME_WEIGHT + " FLOAT,"
                         + DailyGoals.COLUMN_NAME_MILES + " FLOAT,"
+                        + DailyGoals.COLUMN_NAME_LONGEST + " FLOAT,"
                         + DailyGoals.COLUMN_NAME_HONEST + " FLOAT,"
-                        + DailyGoals.COLUMN_NAME_NOTES + " TEXT);";
+                        + DailyGoals.COLUMN_NAME_NOTES + " TEXT,"
+                        + DailyGoals.COLUMN_NAME_WEEKLY_ID + " INTEGER,"
+                        + DailyGoals.COLUMN_NAME_EVENT_ID + " INTEGER);";
 
         public static final String DELETE_TABLE_DAILY_GOALS =
                 "DROP TABLE IF EXISTS " + DailyGoals.TABLE_NAME;

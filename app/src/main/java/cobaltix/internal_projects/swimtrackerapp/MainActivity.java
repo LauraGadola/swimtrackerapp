@@ -1,8 +1,6 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -58,9 +56,9 @@ public class MainActivity extends AppCompatActivity
             {
 
                 //TODO get to daily goals until all entries for the week are entered
-                //Event e = (Event) lv.getItemAtPosition(position);
+                Event e = (Event) lv.getItemAtPosition(position);
                 Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
-                //i.putExtra("event", e);
+                i.putExtra("event", e);
                 startActivity(i);
             }
         });

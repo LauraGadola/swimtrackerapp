@@ -111,7 +111,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         sunday = sdfSun.format(myCalendar.getTime());
 
         //Move the calendar to the last day of the week (Sat)
-        myCalendar.add(myCalendar.DATE,6);
+        myCalendar.add(myCalendar.DATE, 6);
         String sat = sdfSat.format(myCalendar.getTime());
 
         etWeek.setText(sunday+" - "+sat);
@@ -150,6 +150,8 @@ public class WeeklyGoalsActivity extends AppCompatActivity
             }
         }
 
+
+        //TODO go to main page? or as long as there's a day to fill in prompt the daily page?
         Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
         i.putExtra("weekly_goal", weeklyGoal);
         startActivity(i);

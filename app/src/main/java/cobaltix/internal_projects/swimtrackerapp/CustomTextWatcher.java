@@ -1,6 +1,5 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
-import android.app.Activity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -36,7 +35,7 @@ public class CustomTextWatcher implements TextWatcher
                 if(!str.matches(""))
                 {
                     f = Float.parseFloat(str);
-                    activity.covertFtoC(f);
+                    activity.convertFtoC(f);
                 }
                 else
                     activity.clearC();
@@ -46,7 +45,7 @@ public class CustomTextWatcher implements TextWatcher
                 if(!str.matches(""))
                 {
                     f = Float.parseFloat(str);
-                    activity.covertCtoF(f);
+                    activity.convertCtoF(f);
                 }
                 else
                     activity.clearF();
@@ -66,7 +65,7 @@ public class CustomTextWatcher implements TextWatcher
                 if(!str.matches(""))
                 {
                     f = Float.parseFloat(str);
-                    activity.covertMtoY(f);
+                    activity.convertMtoY(f);
                 }
                 else
                     activity.clearY();
