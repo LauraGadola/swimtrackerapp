@@ -48,6 +48,9 @@ public class DailyGoalsActivity extends AppCompatActivity
     private Event event;
     private Calendar myCal;
 
+    String myFormat = "EEE, MM/dd/yy";
+    SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -62,9 +65,6 @@ public class DailyGoalsActivity extends AppCompatActivity
 
         // Retrieve DailyGoal obj sent from main Activity
         event = (Event) getIntent().getSerializableExtra("event");
-
-        String myFormat = "EEE, MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 
         pbMiles = (ProgressBar) findViewById(R.id.progressBarMiles);
         pbWeight = (ProgressBar) findViewById(R.id.progressBarWeight);
@@ -159,9 +159,9 @@ public class DailyGoalsActivity extends AppCompatActivity
             {
                 String date = dg.getDate();
                 Date d = sdf.parse(dg.getDate());
-                //if it's an old entry or we already entered today's date - no more entries allowed
+                //if we reach today or the the day prior to the event- no more entries allowed
                 //TODO test the before statement
-                if(d.before(Calendar.getInstance().getTime()) || date.equals(sdf.format(myCal.getTime())))
+                if( date.equals(sdf.format(myCal.getTime())) || date.equals(getEndDate()) )
                 {
                     fillFields(dg);
                     //TODO hide 'next' button if date == date before the swim?
@@ -178,8 +178,6 @@ public class DailyGoalsActivity extends AppCompatActivity
         else //today is the first entry for this event
             etDate.setText(sdf.format(myCal.getTime()));
 
-
-        //TODO to test
         etWeeksLeft = (EditText) findViewById(R.id.etWeeksLeft);
         Date eventDate = null;
         try
@@ -190,10 +188,6 @@ public class DailyGoalsActivity extends AppCompatActivity
         {
             e.printStackTrace();
         }
-
-        //TODO delete
-        System.out.print("/dga/--------------Goal date: ");
-        System.out.println(myCal.getTime().toString());
 
         int currentWeek = myCal.get(Calendar.WEEK_OF_YEAR);
         myCal.setTime(eventDate);
@@ -207,6 +201,26 @@ public class DailyGoalsActivity extends AppCompatActivity
             weeks = eventWeek - currentWeek;
 
         etWeeksLeft.setText(String.valueOf(weeks));
+    }
+
+    public String getEndDate()
+    {
+        String eventDate = event.getDate();
+        try
+        {
+            Date d = sdf.parse(eventDate);
+            myCal.setTime(d);
+            myCal.add(Calendar.DATE, -1);   //Day prior to the event
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        String endDate = sdf.format(myCal.getTime());
+
+        //TODO delete
+        System.out.println("/Dga/--------- end date: "+endDate);
+
+        return endDate;
     }
 
     private void fillFields(DailyGoal dg)

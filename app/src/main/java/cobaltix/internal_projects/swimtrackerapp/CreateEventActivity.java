@@ -21,7 +21,7 @@ public class CreateEventActivity extends AppCompatActivity
     EditText eventTitle;
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
-    String dateSelected; //TO ELIMINATE??
+    String dateSelected;
 
     private DatabaseHelper dbHelper;
 
@@ -33,8 +33,9 @@ public class CreateEventActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        dbHelper = new DatabaseHelper(this);
 
         eventTitle = (EditText) findViewById(R.id.eventTitle);
 
@@ -52,16 +53,15 @@ public class CreateEventActivity extends AppCompatActivity
         };
 
         eventDate.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(v.getContext(), date, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
             }
         });
-
-        dbHelper = new DatabaseHelper(this);
     }
 
     private void updateLabel() {
