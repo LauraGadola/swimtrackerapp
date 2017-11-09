@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="cobaltix.internal_projects.swimtrackerapp">
 
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -47,6 +46,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity"/>
+        </activity>
+        <activity
+            android:name=".OverviewActivity"
+            android:label="@string/title_activity_overview"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

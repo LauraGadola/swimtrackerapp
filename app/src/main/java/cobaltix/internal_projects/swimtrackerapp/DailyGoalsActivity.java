@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
@@ -44,6 +45,9 @@ public class DailyGoalsActivity extends AppCompatActivity
     private EditText etYards;
     private EditText etMiles;
 
+    private Button btnPrevious;
+    private Button btnNext;
+
     private DatabaseHelper dbHelper;
     private Event event;
     private Calendar myCal;
@@ -66,20 +70,23 @@ public class DailyGoalsActivity extends AppCompatActivity
         // Retrieve DailyGoal obj sent from main Activity
         event = (Event) getIntent().getSerializableExtra("event");
 
-        pbMiles = (ProgressBar) findViewById(R.id.progressBarMiles);
-        pbWeight = (ProgressBar) findViewById(R.id.progressBarWeight);
-        pbLongest = (ProgressBar) findViewById(R.id.progressBarLongest);
+//        pbMiles = (ProgressBar) findViewById(R.id.progressBarMiles);
+//        pbWeight = (ProgressBar) findViewById(R.id.progressBarWeight);
+//        pbLongest = (ProgressBar) findViewById(R.id.progressBarLongest);
 
         //TODO below are default to test it
-        pbMiles.setProgress(25);
-        pbWeight.setProgress(75);
-        pbLongest.setProgress(40);
+//        pbMiles.setProgress(25);
+//        pbWeight.setProgress(75);
+//        pbLongest.setProgress(40);
 
         etLocation = (EditText) findViewById(R.id.etLocation);
         etLongest = (EditText) findViewById(R.id.etLongest);
         etHonest = (EditText) findViewById(R.id.etHonest);
         etNotes = (EditText) findViewById(R.id.etNotes);
         etWeight = (EditText) findViewById(R.id.etWeight);
+
+        btnPrevious = (Button) findViewById(R.id.btnPrevious);
+        btnNext = (Button) findViewById(R.id.btnNext);
 
         etTempC = (EditText) findViewById(R.id.etTempC);
         etTempC.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
@@ -164,6 +171,7 @@ public class DailyGoalsActivity extends AppCompatActivity
                 if( date.equals(sdf.format(myCal.getTime())) || date.equals(getEndDate()) )
                 {
                     fillFields(dg);
+                    btnNext.setText("Exit");
                     //TODO hide 'next' button if date == date before the swim?
                 }
                 else //move to next day
@@ -176,7 +184,11 @@ public class DailyGoalsActivity extends AppCompatActivity
             catch (ParseException e) {e.printStackTrace();}
         }
         else //today is the first entry for this event
+        {
+            System.out.println("/dga/--------- Today is the first entry for this event");
             etDate.setText(sdf.format(myCal.getTime()));
+            btnNext.setText("Exit");
+        }
 
         etWeeksLeft = (EditText) findViewById(R.id.etWeeksLeft);
         Date eventDate = null;

@@ -8,4 +8,6 @@
     <string name="title_activity_create_event">CreateEventActivity</string>
     <string name="title_activity_daily_goals">Daily Goals</string>
     <string name="title_activity_weekly_goals">Weekly Goals</string>
+    <string name="title_activity_overview">OverviewActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
