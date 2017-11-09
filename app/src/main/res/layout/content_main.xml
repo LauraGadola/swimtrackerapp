@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Events"
         android:textSize="30sp"
+        android:textColor="@color/colorPrimary"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/title"/>

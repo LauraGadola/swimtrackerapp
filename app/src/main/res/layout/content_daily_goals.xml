@@ -30,31 +30,13 @@
             android:layout_weight="0.79">
 
             <TextView
-                android:text="Date:"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/labelDate"
-                android:layout_alignBaseline="@+id/etDate"
-                android:layout_alignBottom="@+id/etDate"
-                android:layout_alignParentStart="true"
-                android:textSize="18sp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:layout_below="@+id/etTempF"
-                android:id="@+id/view2"/>
-
-            <TextView
                 android:text="Weeks left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/labelWeeksLeft"
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etWeeksLeft"
-                android:layout_alignBottom="@+id/etWeeksLeft"
-                android:layout_alignStart="@+id/labelDate"/>
+                android:layout_alignBottom="@+id/etWeeksLeft"/>
 
             <TextView
                 android:text="Temperature"
@@ -63,8 +45,14 @@
                 android:id="@+id/labelTemp"
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etTempF"
-                android:layout_alignBottom="@+id/etTempF"
-                android:layout_alignStart="@+id/labelDate"/>
+                android:layout_alignBottom="@+id/etTempF"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorLine"
+                android:layout_below="@+id/etTempF"
+                android:id="@+id/separator3"/>
 
 
             <TextView
@@ -74,8 +62,7 @@
                 android:id="@+id/labelLocation"
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etLocation"
-                android:layout_alignBottom="@+id/etLocation"
-                android:layout_alignStart="@+id/labelWeeksLeft"/>
+                android:layout_alignBottom="@+id/etLocation"/>
 
             <TextView
                 android:text="Time"
@@ -84,8 +71,7 @@
                 android:id="@+id/labelTime"
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etTime"
-                android:layout_alignBottom="@+id/etTime"
-                android:layout_alignStart="@+id/labelTemp"/>
+                android:layout_alignBottom="@+id/etTime"/>
 
             <TextView
                 android:text="Weight"
@@ -94,16 +80,7 @@
                 android:id="@+id/labelWeight"
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etWeight"
-                android:layout_alignBottom="@+id/etWeight"
-                android:layout_alignStart="@+id/labelTime"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:layout_below="@+id/etDate"
-                android:id="@+id/view"/>
-
+                android:layout_alignBottom="@+id/etWeight"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -115,15 +92,16 @@
                 android:inputType="number"
                 android:layout_marginTop="25dp"
                 android:layout_below="@+id/etDate"
-                android:layout_alignEnd="@+id/view"
+                android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:layout_below="@+id/etWeeksLeft"/>
+                android:background="@color/colorLine"
+                android:layout_below="@+id/etWeeksLeft"
+                android:id="@+id/separator1"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -133,23 +111,23 @@
                 android:id="@+id/etLocation"
                 android:layout_marginTop="25dp"
                 android:layout_below="@+id/etWeeksLeft"
-                android:layout_alignEnd="@+id/view"
+                android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/colorLine"
                 android:layout_below="@+id/etLocation"
-                android:id="@+id/view3"/>
+                android:id="@+id/separator2"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/colorLine"
                 android:layout_below="@+id/etWeight"
-                android:id="@+id/view4"/>
+                android:id="@+id/separator5"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -160,16 +138,16 @@
                 android:layout_marginTop="25dp"
                 android:layout_below="@+id/etTempF"
                 android:focusableInTouchMode="false"
-                android:layout_alignEnd="@+id/view"
+                android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
+                android:background="@color/colorLine"
                 android:layout_below="@+id/etTime"
-                android:id="@+id/view5"/>
+                android:id="@+id/separator4"/>
 
             <TextView
                 android:text="Distance"
@@ -178,7 +156,6 @@
                 android:id="@+id/labelDistance"
                 android:layout_alignBaseline="@+id/etYards"
                 android:layout_alignBottom="@+id/etYards"
-                android:layout_alignStart="@+id/labelWeight"
                 android:textSize="18sp"/>
 
             <TextView
@@ -188,7 +165,6 @@
                 android:id="@+id/labelLongest"
                 android:layout_alignBaseline="@+id/etLongest"
                 android:layout_alignBottom="@+id/etLongest"
-                android:layout_alignStart="@+id/labelDistance"
                 android:textSize="18sp"/>
 
             <EditText
@@ -199,15 +175,16 @@
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/etYards"
                 android:layout_marginTop="25dp"
-                android:layout_alignEnd="@+id/view"
+                android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:layout_below="@+id/etLongest"/>
+                android:background="@color/colorLine"
+                android:layout_below="@+id/etLongest"
+                android:id="@+id/separator7"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -217,15 +194,16 @@
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/etLongest"
                 android:layout_marginTop="25dp"
-                android:layout_alignEnd="@+id/view"
+                android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:layout_below="@+id/etHonest"/>
+                android:background="@color/colorLine"
+                android:layout_below="@+id/etHonest"
+                android:id="@+id/separator8"/>
 
             <TextView
                 android:text="Honest"
@@ -234,7 +212,6 @@
                 android:id="@+id/labelHonest"
                 android:layout_alignBaseline="@+id/etHonest"
                 android:layout_alignBottom="@+id/etHonest"
-                android:layout_alignStart="@+id/labelLongest"
                 android:textSize="18sp"/>
 
             <TextView
@@ -243,7 +220,6 @@
                 android:id="@+id/labelNotes"
                 android:layout_marginTop="35dp"
                 android:layout_below="@+id/etHonest"
-                android:layout_alignStart="@+id/labelHonest"
                 android:textSize="18sp"
                 android:text="How'd it feel? Swam with? Conditions? Felt Good?"/>
 
@@ -251,7 +227,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/labelNotes"
-                android:layout_alignStart="@+id/labelNotes"
                 android:id="@+id/etNotes"
                 android:layout_alignEnd="@+id/labelNotes"
                 android:lines="10"
@@ -265,8 +240,9 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:layout_below="@+id/etMiles"/>
+                android:background="@color/colorLine"
+                android:layout_below="@+id/etMiles"
+                android:id="@+id/separator6"/>
 
             <TextView
                 android:text="miles"
@@ -276,7 +252,7 @@
                 android:layout_alignBaseline="@+id/etMiles"
                 android:layout_alignBottom="@+id/etMiles"
                 android:textSize="18sp"
-                android:layout_alignEnd="@+id/view"/>
+                android:layout_alignEnd="@+id/separator1"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -290,7 +266,23 @@
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"
                 android:layout_alignParentTop="true"
-                android:layout_alignEnd="@+id/view"/>
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/colorAccent"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_navigate_before_black_24px"
+                android:backgroundTint="@android:color/transparent"
+                android:id="@+id/btnPrevious"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_navigate_next_black_24px"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/btnNext"/>
 
             <TextView
                 android:text="°C"
@@ -300,7 +292,7 @@
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etTempC"
                 android:layout_alignBottom="@+id/etTempC"
-                android:layout_alignEnd="@+id/view"/>
+                android:layout_alignEnd="@+id/separator1"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -310,7 +302,7 @@
                 android:inputType="numberDecimal"
                 android:layout_marginLeft="10dp"
                 android:textAlignment="textEnd"
-                android:layout_alignBottom="@+id/view2"
+                android:layout_alignBottom="@+id/separator3"
                 android:background="@android:color/transparent"
                 android:layout_toStartOf="@+id/txtDegreeC"/>
 
@@ -322,7 +314,7 @@
                 android:inputType="numberDecimal"
                 android:layout_marginTop="25dp"
                 android:textAlignment="textEnd"
-                android:layout_below="@+id/view3"
+                android:layout_below="@+id/separator2"
                 android:layout_toStartOf="@+id/txtDegreeF"
                 android:background="@android:color/transparent"/>
 
@@ -357,7 +349,7 @@
                 android:inputType="number"
                 android:layout_marginTop="24dp"
                 android:textAlignment="textEnd"
-                android:layout_below="@+id/view4"
+                android:layout_below="@+id/separator5"
                 android:layout_toStartOf="@+id/txtYards"
                 android:background="@android:color/transparent"/>
 
@@ -367,7 +359,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtDegreeF"
                 android:textSize="18sp"
-                android:layout_alignBottom="@+id/view2"
+                android:layout_alignBottom="@+id/separator3"
                 android:layout_toStartOf="@+id/etTime"/>
 
             <EditText
@@ -378,7 +370,7 @@
                 android:id="@+id/etGoal"
                 android:textSize="18sp"
                 android:enabled="false"
-                android:layout_above="@+id/view4"
+                android:layout_above="@+id/separator5"
                 android:layout_alignParentEnd="true"
                 android:background="@android:color/transparent"/>
 
@@ -411,41 +403,28 @@
                 android:id="@+id/etWeight"
                 android:layout_marginTop="25dp"
                 android:textAlignment="textEnd"
-                android:layout_below="@+id/view5"
+                android:layout_below="@+id/separator4"
                 android:layout_toStartOf="@+id/txtPounds"
                 android:background="@android:color/transparent"/>
 
-            <Button
-                android:text="Next >"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnNext"
-                android:layout_below="@+id/etNotes"
-                android:layout_marginTop="40dp"
-                android:layout_alignParentEnd="true"/>
-
-            <Button
-                android:text="Previous"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnPrevious"
-                android:layout_below="@+id/etNotes"
-                android:layout_marginTop="40dp"
-                android:layout_alignParentStart="true"/>
-
-            <!--<NumberPicker-->
+            <!--<Button-->
+                <!--android:text="Next >"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/minutesPicker"-->
-                <!--android:layout_alignBottom="@+id/etWeight"-->
-                <!--android:layout_toEndOf="@+id/etTime"/>-->
+                <!--android:id="@+id/btnNext"-->
+                <!--android:layout_below="@+id/etNotes"-->
+                <!--android:layout_marginTop="40dp"-->
+                <!--android:layout_alignParentEnd="true"/>-->
 
-            <!--<NumberPicker-->
+            <!--<Button-->
+                <!--android:text="Previous"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/hoursPicker"-->
-                <!--android:layout_alignBottom="@+id/etWeight"-->
-                <!--android:layout_toEndOf="@+id/minutesPicker"/>-->
+                <!--android:id="@+id/btnPrevious"-->
+                <!--android:layout_below="@+id/etNotes"-->
+                <!--android:layout_marginTop="40dp"-->
+                <!--android:layout_alignParentStart="true"/>-->
+
 
         </RelativeLayout>
     </LinearLayout>

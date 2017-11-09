@@ -30,8 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:backgroundTint="@android:color/white"
+        app:srcCompat="@drawable/ic_add_white_24px"
+        app:backgroundTint="@color/colorAccent"
         android:onClick="addItems"/>
 
 </android.support.design.widget.CoordinatorLayout>
