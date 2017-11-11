@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
@@ -128,7 +129,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         //TODO delete
         System.out.println("--------- Updating existing wg");
         db.update(DatabaseContract.WeeklyGoals.TABLE_NAME, values, "_id=" + wg.getId(), null);
-
         db.close();
         exportDatabase();
     }
@@ -152,12 +152,41 @@ public class DatabaseHelper extends SQLiteOpenHelper
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID, dg.getEvent_id());
 
         int newRowId = (int) db.insert(DatabaseContract.DailyGoals.TABLE_NAME, null, values);
-
         db.close();
         exportDatabase();
 
     }
 
+    public void updateDailyGoal(DailyGoal oldDG, DailyGoal newDG)
+    {
+        db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LOCATION, newDG.getLocation());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_TEMP, newDG.getTemp());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HRS, newDG.getHrs());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MIN, newDG.getMin());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEIGHT, newDG.getWeight());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MILES, newDG.getMiles());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LONGEST, newDG.getLongest());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HONEST, newDG.getHonest());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_NOTES, newDG.getNotes());
+
+        db.update(DatabaseContract.DailyGoals.TABLE_NAME, values, "_id=" + oldDG.getId(), null);
+        db.close();
+        exportDatabase();
+    }
+
+    public void removeDailyGoal(DailyGoal currentDG)
+    {
+        db = getWritableDatabase();
+        String query = "DELETE FROM "+ DatabaseContract.DailyGoals.TABLE_NAME +" WHERE _id = "+currentDG.getId();
+        db.execSQL(query);
+        db.close();
+        exportDatabase();
+    }
+
+    //TODO delete
     public DailyGoal getLastDailyGoal(int event_id)
     {
         db = getReadableDatabase();
@@ -181,7 +210,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             String notes = cursor.getString(10);
             int weekly_id = cursor.getInt(11);
 
-            DailyGoal dg = new DailyGoal(date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event_id);
+            DailyGoal dg = new DailyGoal(id, date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event_id);
             return dg;
         }
         return null;
@@ -248,4 +277,31 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return events;
     }
 
+    public List<DailyGoal> getDailyGoalList(int event_id)
+    {
+        db = getReadableDatabase();
+        String query = "SELECT * FROM "+ DatabaseContract.DailyGoals.TABLE_NAME
+                +" WHERE "+ DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID +" = "+ event_id;
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<DailyGoal> dailyGoalList = new ArrayList<>();
+        while (cursor.moveToNext())
+        {
+            int id = cursor.getInt(0);
+            String date = cursor.getString(1);
+            String location = cursor.getString(2);
+            float temp = cursor.getFloat(3);
+            int hrs = cursor.getInt(4);
+            int min = cursor.getInt(5);
+            float weight = cursor.getFloat(6);
+            float miles = cursor.getFloat(7);
+            float longest = cursor.getFloat(8);
+            float honest = cursor.getFloat(9);
+            String notes = cursor.getString(10);
+            int weekly_id = cursor.getInt(11);
+
+            DailyGoal dg = new DailyGoal(id, date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event_id);
+            dailyGoalList.add(dg);
+        }
+        return dailyGoalList;
+    }
 }

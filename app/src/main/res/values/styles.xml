@@ -13,8 +13,27 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DefaultNumberPickerTheme" parent="AppTheme">
+        <item name="colorControlNormal">@color/colorAccent</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <!--<style name="myCoolDialog" parent="android:Theme.DeviceDefault.Light.Dialog.Alert">-->
+        <!--<item name="android:windowTitleStyle">@style/DialogWindowTitle.AppTheme</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+    <!--</style>-->
+
+    <!--<style name="DialogWindowTitle.AppTheme" parent="@style/Base.DialogWindowTitle.AppCompat">-->
+        <!--<item name="android:textAppearance">@style/TextAppearance.AppTheme.DialogWindowTitle</item>-->
+
+    <!--</style>-->
+
+    <!--<style name="TextAppearance.AppTheme.DialogWindowTitle" parent="android:TextAppearance.DeviceDefault.DialogWindowTitle">-->
+        <!--<item name="android:textColor">@color/colorAccent</item>-->
+        <!--<item name="android:fontFamily">sans-serif-condensed</item>-->
+        <!--<item name="android:textStyle">bold</item>-->
+    <!--</style>-->
 </resources>

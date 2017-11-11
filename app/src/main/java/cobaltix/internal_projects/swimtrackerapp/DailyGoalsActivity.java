@@ -1,5 +1,6 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,18 +12,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class DailyGoalsActivity extends AppCompatActivity
 {
+    private ScrollView scrollView;
+
     private ProgressBar pbMiles;
     private ProgressBar pbWeight;
     private ProgressBar pbLongest;
@@ -35,25 +42,31 @@ public class DailyGoalsActivity extends AppCompatActivity
     private EditText etHonest;
     private EditText etNotes;
     private EditText etWeight;
+    private EditText etTempC;
+    private EditText etTempF;
+    private EditText etYards;
+    private EditText etMiles;
 
     private NumberPicker minPicker;
     private NumberPicker hrsPicker;
 
-    private EditText etTempC;
-    private EditText etTempF;
-
-    private EditText etYards;
-    private EditText etMiles;
-
-    private Button btnPrevious;
-    private Button btnNext;
+    private ImageButton btnPrevious;
+    private ImageButton btnNext;
+    private Button btnDelete;
 
     private DatabaseHelper dbHelper;
     private Event event;
-    private Calendar myCal;
 
-    String myFormat = "EEE, MM/dd/yy";
-    SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+    private List<DailyGoal> dglist;
+    private DailyGoal currentDG;
+    private DailyGoal lastSavedDG;
+
+    private String myFormat = "EEE, MM/dd/yy";
+    private SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+    private Calendar myCal = Calendar.getInstance();
+    private String today = sdf.format(myCal.getTime());
+    private boolean currentGoalExists = false;                                          //TODO delete
+//    private DatePickerDialog.OnDateSetListener onDateSetListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -65,10 +78,13 @@ public class DailyGoalsActivity extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        dbHelper = new DatabaseHelper(this);
-
         // Retrieve DailyGoal obj sent from main Activity
         event = (Event) getIntent().getSerializableExtra("event");
+
+        dbHelper = new DatabaseHelper(this);
+
+        dglist = dbHelper.getDailyGoalList(event.getId());
+        System.out.println(dglist);                                                     //TODO delete
 
 //        pbMiles = (ProgressBar) findViewById(R.id.progressBarMiles);
 //        pbWeight = (ProgressBar) findViewById(R.id.progressBarWeight);
@@ -79,28 +95,50 @@ public class DailyGoalsActivity extends AppCompatActivity
 //        pbWeight.setProgress(75);
 //        pbLongest.setProgress(40);
 
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
         etLocation = (EditText) findViewById(R.id.etLocation);
         etLongest = (EditText) findViewById(R.id.etLongest);
         etHonest = (EditText) findViewById(R.id.etHonest);
         etNotes = (EditText) findViewById(R.id.etNotes);
         etWeight = (EditText) findViewById(R.id.etWeight);
-
-        btnPrevious = (Button) findViewById(R.id.btnPrevious);
-        btnNext = (Button) findViewById(R.id.btnNext);
-
         etTempC = (EditText) findViewById(R.id.etTempC);
-        etTempC.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
-
         etTempF = (EditText) findViewById(R.id.etTempF);
-        etTempF.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
-
         etYards = (EditText) findViewById(R.id.etYards);
-        etYards.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
-
         etMiles = (EditText) findViewById(R.id.etMiles);
+        etTime = (EditText) findViewById(R.id.etTime);
+        etDate = (EditText) findViewById(R.id.etDate);
+        etWeeksLeft = (EditText) findViewById(R.id.etWeeksLeft);
+        btnPrevious = (ImageButton) findViewById(R.id.btnPrevious);
+        btnNext = (ImageButton) findViewById(R.id.btnNext);
+        btnDelete = (Button) findViewById(R.id.btnDelete);
+
+        etTempC.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
+        etTempF.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
+        etYards.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
         etMiles.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
 
-        etTime = (EditText) findViewById(R.id.etTime);
+//        onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+//
+//            @Override
+//            public void onDateSet(DatePicker view, int year, int monthOfYear,
+//                                  int dayOfMonth) {
+//                myCal.set(year, monthOfYear, dayOfMonth);
+//                etDate.setText(sdf.format(myCal.getTime()));
+//                fillFields();
+//            }
+//
+//        };
+//        etDate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), onDateSetListener, myCal
+//                        .get(Calendar.YEAR), myCal.get(Calendar.MONTH),
+//                        myCal.get(Calendar.DAY_OF_MONTH));
+//                System.out.println(myCal.getTime().toString());                       //TODO delete
+//                datePickerDialog.show();
+//            }
+//        });
+
         etTime.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -108,10 +146,31 @@ public class DailyGoalsActivity extends AppCompatActivity
             {
                 LayoutInflater inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.custom_number_picker, null);
-                AlertDialog d = new AlertDialog.Builder(v.getContext()).create();
-
+                AlertDialog.Builder d = new AlertDialog.Builder(v.getContext());
                 d.setTitle("Select time");
                 d.setView(v);
+                d.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        //Clearing focus enables keyboard use
+                        hrsPicker.clearFocus();
+                        minPicker.clearFocus();
+
+                        etTime.setText(String.format("%02d:%02d", hrsPicker.getValue(), minPicker.getValue()));
+                        dialog.dismiss();
+                    }
+                });
+
+                d.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
 
                 hrsPicker = (NumberPicker) v.findViewById(R.id.hrsPicker);
                 hrsPicker.setMaxValue(99);
@@ -131,66 +190,40 @@ public class DailyGoalsActivity extends AppCompatActivity
                     hrsPicker.setValue(hrs);
                     minPicker.setValue(min);
                 }
-                d.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Clearing focus enables keyboard use
-                                hrsPicker.clearFocus();
-                                minPicker.clearFocus();
-
-                                etTime.setText(String.format("%02d:%02d", hrsPicker.getValue(), minPicker.getValue()));
-                                dialog.dismiss();
-                            }
-                        });
-                d.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                dialog.dismiss();
-                            }
-                        });
                 d.show();
             }
         });
 
-        DailyGoal dg = dbHelper.getLastDailyGoal(event.getId());
+        lastSavedDG = dbHelper.getLastDailyGoal(event.getId());
+        System.out.println("/db: "+lastSavedDG);                                        //TODO delete
+        if(!dglist.isEmpty())
+            lastSavedDG = dglist.get(dglist.size()-1);
+        System.out.println("/Arraylist: "+lastSavedDG);
 
-        etDate = (EditText) findViewById(R.id.etDate);
-        myCal = Calendar.getInstance();
-
-        if(dg != null)
+        if(lastSavedDG != null)
         {
-            try
+            String date = lastSavedDG.getDate();
+            //if we reach today or the the day prior to the event- no more entries allowed
+            if(isUpToDate(date))
             {
-                String date = dg.getDate();
-                Date d = sdf.parse(dg.getDate());
-                //if we reach today or the the day prior to the event- no more entries allowed
-                //TODO test the before statement
-                if( date.equals(sdf.format(myCal.getTime())) || date.equals(getEndDate()) )
-                {
-                    fillFields(dg);
-                    btnNext.setText("Exit");
-                    //TODO hide 'next' button if date == date before the swim?
-                }
-                else //move to next day
-                {
-                    myCal.setTime(d);
-                    myCal.add(myCal.DATE, 1);
-                    etDate.setText(sdf.format(myCal.getTime()));
-                }
+                fillFields(lastSavedDG);
+//                    btnNext.setText("Exit");
             }
-            catch (ParseException e) {e.printStackTrace();}
+            else //move to next day
+            {
+                etDate.setText(dayAfter(date));
+                currentDG = null;
+            }
         }
         else //today is the first entry for this event
         {
             System.out.println("/dga/--------- Today is the first entry for this event");
-            etDate.setText(sdf.format(myCal.getTime()));
-            btnNext.setText("Exit");
+            etDate.setText(today);
+            btnNext.setVisibility(View.INVISIBLE);
+            btnPrevious.setVisibility(View.INVISIBLE);
+//            btnNext.setText("Exit");
         }
 
-        etWeeksLeft = (EditText) findViewById(R.id.etWeeksLeft);
         Date eventDate = null;
         try
         {
@@ -201,6 +234,7 @@ public class DailyGoalsActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+        System.out.println(myCal.getTime().toString());                                 //TODO delete
         int currentWeek = myCal.get(Calendar.WEEK_OF_YEAR);
         myCal.setTime(eventDate);
         int eventWeek = myCal.get(Calendar.WEEK_OF_YEAR);
@@ -213,6 +247,121 @@ public class DailyGoalsActivity extends AppCompatActivity
             weeks = eventWeek - currentWeek;
 
         etWeeksLeft.setText(String.valueOf(weeks));
+
+        btnPrevious.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                DailyGoal previousDG = getPreviousTo(currentDG);
+                fillFields(previousDG);
+                btnNext.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btnNext.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                DailyGoal nextDG = getNextTO(currentDG);
+                if(nextDG == null)
+                {
+                    etDate.setText(dayAfter(lastSavedDG.getDate()));
+                    clearAll();
+                    currentDG = null;
+                }
+                else
+                {
+                    fillFields(nextDG);
+                }
+                btnPrevious.setVisibility(View.VISIBLE);
+
+            }
+        });
+        btnNext.setVisibility(View.INVISIBLE);
+
+        btnDelete.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                dbHelper.removeDailyGoal(currentDG);
+                dglist.remove(currentDG);
+                Toast.makeText(DailyGoalsActivity.this, "Daily goal has been deleted", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnDelete.setVisibility(View.INVISIBLE);    //Show only if you have something
+    }
+
+    public boolean isUpToDate(String date)
+    {
+        return(date.equals(today) || date.equals(getEndDate()));
+    }
+
+    public DailyGoal getPreviousTo(DailyGoal dg)
+    {
+        DailyGoal previousDG;
+
+        if(dg != null)
+        {
+            int i = dglist.indexOf(dg);
+            i--;
+            previousDG = dglist.get(i);
+            if (i == 0)      //we will get the last element
+            {
+                btnPrevious.setVisibility(View.INVISIBLE);
+            }
+        }
+        else    //Current is not in the list, the previous goal will be the last one saved
+        {
+            previousDG = dglist.get(dglist.size()-1);
+        }
+        return previousDG;
+    }
+
+    private DailyGoal getNextTO(DailyGoal dg)
+    {
+        System.out.println(dg);      //TODO delete
+        System.out.println(dglist);
+        int i = dglist.indexOf(dg);
+        DailyGoal nextDG;
+        System.out.println(i);
+
+        if(lastSavedDG.equals(getEndDate()))
+        {
+            if(dglist.get(i+1).equals(lastSavedDG))
+            {
+                btnNext.setVisibility(View.INVISIBLE);
+            }
+        }
+        else
+        {
+            if (dglist.get(i).equals(lastSavedDG))
+            {
+                btnNext.setVisibility(View.INVISIBLE);
+                return null;
+            }
+        }
+        i++;
+        nextDG = dglist.get(i);
+        return nextDG;
+    }
+
+    public String dayAfter(String date)
+    {
+        try
+        {
+            Date d = sdf.parse(date);
+            myCal.setTime(d);
+            myCal.add(myCal.DATE, 1);
+            return sdf.format(myCal.getTime());
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        return "NO DATE";
     }
 
     public String getEndDate()
@@ -237,6 +386,10 @@ public class DailyGoalsActivity extends AppCompatActivity
 
     private void fillFields(DailyGoal dg)
     {
+        currentGoalExists = true;
+        currentDG = dg;
+        btnDelete.setVisibility(View.VISIBLE);
+
         etDate.setText(dg.getDate());
         //calculate weeks left
         etLocation.setText(dg.getLocation());
@@ -271,36 +424,72 @@ public class DailyGoalsActivity extends AppCompatActivity
 
         if (id == R.id.action_done)
         {
-            //TODO
-            if(true) //create new entry
-            {
-                String date = etDate.getText().toString();
-                String location = etLocation.getText().toString();
-                float temp = Float.parseFloat(etTempF.getText().toString());
-                int hrs = hrsPicker.getValue();
-                int min = minPicker.getValue();
-                float weight = Float.parseFloat(etWeight.getText().toString());
-                float miles = Float.parseFloat(etMiles.getText().toString());
-                float longest = Float.parseFloat(etLongest.getText().toString());
-                float honest = Float.parseFloat(etHonest.getText().toString());
-                String notes = etNotes.getText().toString();
+            String date = String.valueOf(etDate.getText());                             //TODO TO TEST if it equals to today
+            String location = etLocation.getText().toString();
+            float temp = Float.parseFloat(etTempF.getText().toString());
 
-                //TODO the last weekly goal should be the only one in place?
-                WeeklyGoal wg = dbHelper.getLastWeeklyGoal(event.getId());
-                int weekly_id = wg.getId();
-                DailyGoal dg = new DailyGoal(date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event.getId());
-                dbHelper.addDailyGoal(dg);
-                Toast.makeText(this, "Daily goal was saved", Toast.LENGTH_SHORT).show();
+
+            String time = String.valueOf(etTime.getText());
+            int hrs = Integer.parseInt(time.substring(0, time.indexOf(":")));
+            int min = Integer.parseInt(time.substring(time.indexOf(":")+1, time.length()));
+
+            float weight = Float.parseFloat(etWeight.getText().toString());
+            float miles = Float.parseFloat(etMiles.getText().toString());
+            float longest = Float.parseFloat(etLongest.getText().toString());
+            float honest = Float.parseFloat(etHonest.getText().toString());
+            String notes = etNotes.getText().toString();
+
+            WeeklyGoal wg = dbHelper.getLastWeeklyGoal(event.getId());
+            int weekly_id = wg.getId();
+
+            DailyGoal newDG = new DailyGoal(currentDG.getId(), date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event.getId());
+
+            if(currentDG != null) //update
+            {
+                int i = dglist.indexOf(currentDG);
+                dglist.set(i, newDG);
+                dbHelper.updateDailyGoal(currentDG, newDG);
+                Toast.makeText(this, "Daily goal has been updated", Toast.LENGTH_SHORT).show();
+
             }
-            else  //update
+            else //create new entry
             {
+                                            //TODO the last weekly goal should be the only one in place?
 
+                dbHelper.addDailyGoal(newDG);
+                dglist.add(newDG);
+                Toast.makeText(this, "Daily goal was saved", Toast.LENGTH_SHORT).show();
+
+                //If you entered today or last day prior to event go back to main page
+                if(isUpToDate(date))
+                {
+                    Toast.makeText(this, "Your log is up-to-date!", Toast.LENGTH_SHORT).show();
+                    this.finish();                                             //TODO return to main page
+                }
+                else //go to next
+                {
+                    etDate.setText(dayAfter(date));
+                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    clearAll();
+                }
             }
         }
 
         return super.onOptionsItemSelected(item);
+    }
 
-        //TODO return to main page
+    private void clearAll()
+    {
+        etLocation.setText("");
+        clearF();
+        clearC();
+        etTime.setText("");
+        etWeight.setText("");
+        clearM();
+        clearY();
+        etLongest.setText("");
+        etHonest.setText("");
+        etNotes.setText("");
     }
 
     public void convertFtoC(float tempF)
@@ -334,6 +523,7 @@ public class DailyGoalsActivity extends AppCompatActivity
         float result = round / 10;
         return result;
     }
+
 
     //TODO improve below
     public void clearF()

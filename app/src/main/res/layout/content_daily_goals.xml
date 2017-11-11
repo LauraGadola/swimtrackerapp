@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+<ScrollView
+    android:id="@+id/scrollView"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:paddingRight="20dp"
@@ -20,8 +25,43 @@
         android:layout_marginRight="20dp"
         android:weightSum="1">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <ImageButton
+                android:id="@+id/btnPrevious"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_navigate_before_black_24px"
+                android:backgroundTint="@color/colorBackground"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/etDate"
+                android:textStyle="normal|bold"
+                android:textSize="20sp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:layout_gravity="center"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_navigate_next_black_24px"
+                android:backgroundTint="@color/colorBackground"
+                android:id="@+id/btnNext"
+                android:layout_gravity="left"/>
+        </LinearLayout>
+
         <RelativeLayout
-            android:id="@+id/content_daily_goals"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -54,7 +94,6 @@
                 android:layout_below="@+id/etTempF"
                 android:id="@+id/separator3"/>
 
-
             <TextView
                 android:text="Location"
                 android:layout_width="wrap_content"
@@ -85,16 +124,18 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="3"
                 android:id="@+id/etWeeksLeft"
                 android:textSize="18sp"
                 android:enabled="false"
                 android:inputType="number"
                 android:layout_marginTop="25dp"
-                android:layout_below="@+id/etDate"
                 android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
-                android:textAlignment="textEnd"/>
+                android:textAlignment="textEnd"
+                android:layout_toEndOf="@+id/labelWeeksLeft"
+                android:layout_marginLeft="5dp"
+                android:textStyle="normal|bold"
+                android:textColor="#606060"/>
 
             <View
                 android:layout_width="match_parent"
@@ -107,13 +148,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:ems="8"
                 android:id="@+id/etLocation"
                 android:layout_marginTop="25dp"
                 android:layout_below="@+id/etWeeksLeft"
                 android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
-                android:textAlignment="textEnd"/>
+                android:textAlignment="textEnd"
+                android:hint="Enter Location"
+                android:layout_toEndOf="@+id/labelLocation"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/colorAccent"/>
 
             <View
                 android:layout_width="match_parent"
@@ -128,19 +172,6 @@
                 android:background="@color/colorLine"
                 android:layout_below="@+id/etWeight"
                 android:id="@+id/separator5"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:ems="4"
-                android:id="@+id/etTime"
-                android:layout_marginTop="25dp"
-                android:layout_below="@+id/etTempF"
-                android:focusableInTouchMode="false"
-                android:layout_alignEnd="@+id/separator1"
-                android:background="@android:color/transparent"
-                android:textAlignment="textEnd"/>
 
             <View
                 android:layout_width="match_parent"
@@ -170,14 +201,17 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="3"
                 android:id="@+id/etLongest"
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/etYards"
                 android:layout_marginTop="25dp"
                 android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
-                android:textAlignment="textEnd"/>
+                android:layout_toEndOf="@id/labelLongest"
+                android:layout_marginLeft="5dp"
+                android:textAlignment="textEnd"
+                android:hint="0.0"
+                android:textColor="@color/colorAccent"/>
 
             <View
                 android:layout_width="match_parent"
@@ -189,14 +223,17 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="3"
                 android:id="@+id/etHonest"
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/etLongest"
                 android:layout_marginTop="25dp"
                 android:layout_alignEnd="@+id/separator1"
+                android:layout_toEndOf="@+id/labelHonest"
+                android:layout_marginLeft="5dp"
                 android:background="@android:color/transparent"
-                android:textAlignment="textEnd"/>
+                android:textAlignment="textEnd"
+                android:hint="0.0"
+                android:textColor="@color/colorAccent"/>
 
             <View
                 android:layout_width="match_parent"
@@ -235,7 +272,10 @@
                 android:maxLines="15"
                 android:background="@drawable/text_input_border"
                 android:inputType="textMultiLine"
-                />
+                android:hint="Type your notes here..."
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textColor="@color/colorAccent"/>
 
             <View
                 android:layout_width="match_parent"
@@ -257,32 +297,35 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:id="@+id/etDate"
-                android:enabled="false"
-                android:textStyle="normal|bold"
-                android:textSize="20sp"
-                android:layout_marginTop="25dp"
+                android:inputType="numberDecimal"
+                android:id="@+id/etMiles"
+                android:textSize="18sp"
+                android:layout_marginLeft="5dp"
+                android:layout_alignBaseline="@+id/txtYards"
+                android:layout_alignBottom="@+id/txtYards"
+                android:layout_toStartOf="@+id/txtMiles"
+                android:layout_toEndOf="@+id/txtYards"
                 android:background="@android:color/transparent"
+                android:hint="0.0"
                 android:textAlignment="textEnd"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
+                android:paddingRight="5dp"
                 android:textColor="@color/colorAccent"/>
 
-            <ImageButton
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_navigate_before_black_24px"
-                android:backgroundTint="@android:color/transparent"
-                android:id="@+id/btnPrevious"/>
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_navigate_next_black_24px"
-                android:backgroundTint="@android:color/transparent"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/btnNext"/>
+                android:id="@+id/etYards"
+                android:inputType="number"
+                android:layout_marginTop="24dp"
+                android:layout_below="@+id/separator5"
+                android:background="@android:color/transparent"
+                android:layout_toStartOf="@+id/txtYards"
+                android:layout_toEndOf="@+id/labelDistance"
+                android:hint="0.0"
+                android:textAlignment="textEnd"
+                android:paddingRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/colorAccent"/>
 
             <TextView
                 android:text="°C"
@@ -297,39 +340,104 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="3"
-                android:id="@+id/etTempC"
                 android:inputType="numberDecimal"
-                android:layout_marginLeft="10dp"
-                android:textAlignment="textEnd"
-                android:layout_alignBottom="@+id/separator3"
+                android:id="@+id/etGoalWeight"
+                android:textSize="18sp"
+                android:enabled="false"
+                android:layout_above="@+id/separator5"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/labelGoal"
+                android:layout_marginLeft="5dp"
                 android:background="@android:color/transparent"
-                android:layout_toStartOf="@+id/txtDegreeC"/>
+                android:textColor="@color/colorAccent"/>
+
+            <TextView
+                android:text="Goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/labelGoal"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etGoalWeight"
+                android:layout_alignBottom="@+id/etGoalWeight"
+                android:layout_toEndOf="@+id/txtPounds"/>
 
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="3"
+                android:inputType="numberDecimal"
+                android:id="@+id/etWeight"
+                android:layout_marginTop="25dp"
+                android:layout_marginLeft="5dp"
+                android:textAlignment="textEnd"
+                android:layout_below="@+id/separator4"
+                android:layout_toStartOf="@+id/txtPounds"
+                android:layout_toEndOf="@+id/labelWeight"
+                android:background="@android:color/transparent"
+                android:hint="0.0"
+                android:paddingRight="5dp"
+                android:textColor="@color/colorAccent"/>
+
+            <TextView
+                android:text="lbs  |  "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtPounds"
+                android:textSize="18sp"
+                android:layout_above="@+id/separator5"
+                android:layout_toStartOf="@+id/txtDegreeF"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/etTime"
+                android:layout_marginTop="23dp"
+                android:focusableInTouchMode="false"
+                android:background="@android:color/transparent"
+                android:textAlignment="textEnd"
+                android:layout_below="@+id/separator3"
+                android:layout_alignParentEnd="true"
+                android:hint="Select Time"
+                android:textColor="@color/colorAccent"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/etTempF"
                 android:inputType="numberDecimal"
                 android:layout_marginTop="25dp"
                 android:textAlignment="textEnd"
+                android:background="@android:color/transparent"
+                android:hint="0.0"
                 android:layout_below="@+id/separator2"
+                android:layout_toEndOf="@+id/labelTemp"
+                android:layout_marginLeft="5dp"
                 android:layout_toStartOf="@+id/txtDegreeF"
-                android:background="@android:color/transparent"/>
+                android:textColor="@color/colorAccent"/>
+
+            <TextView
+                android:text="°F"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtDegreeF"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etTempF"
+                android:layout_alignBottom="@+id/etTempF"
+                android:layout_toStartOf="@+id/etTime"/>
 
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/etTempC"
                 android:inputType="numberDecimal"
-                android:ems="4"
-                android:id="@+id/etMiles"
-                android:textSize="18sp"
-                android:layout_marginLeft="10dp"
-                android:layout_alignBaseline="@+id/txtYards"
-                android:layout_alignBottom="@+id/txtYards"
-                android:layout_toStartOf="@+id/txtMiles"
-                android:background="@android:color/transparent"/>
+                android:textAlignment="textEnd"
+                android:background="@android:color/transparent"
+                android:hint="0.0"
+                android:layout_above="@+id/separator3"
+                android:layout_toEndOf="@+id/txtDegreeF"
+                android:layout_marginLeft="5dp"
+                android:layout_toStartOf="@+id/txtDegreeC"
+                android:textColor="@color/colorAccent"/>
 
             <TextView
                 android:text="yards"
@@ -339,73 +447,8 @@
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etYards"
                 android:layout_alignBottom="@+id/etYards"
-                android:layout_alignStart="@+id/etLocation"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="4"
-                android:id="@+id/etYards"
-                android:inputType="number"
-                android:layout_marginTop="24dp"
-                android:textAlignment="textEnd"
-                android:layout_below="@+id/separator5"
-                android:layout_toStartOf="@+id/txtYards"
-                android:background="@android:color/transparent"/>
-
-            <TextView
-                android:text="°F"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtDegreeF"
-                android:textSize="18sp"
-                android:layout_alignBottom="@+id/separator3"
-                android:layout_toStartOf="@+id/etTime"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:ems="3"
-                android:id="@+id/etGoal"
-                android:textSize="18sp"
-                android:enabled="false"
-                android:layout_above="@+id/separator5"
-                android:layout_alignParentEnd="true"
-                android:background="@android:color/transparent"/>
-
-            <TextView
-                android:text="Goal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/labelGoal"
-                android:textSize="18sp"
-                android:layout_marginLeft="20dp"
-                android:layout_alignBaseline="@+id/etGoal"
-                android:layout_alignBottom="@+id/etGoal"
-                android:layout_toStartOf="@+id/etGoal"/>
-
-            <TextView
-                android:text="lbs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtPounds"
-                android:textSize="18sp"
-                android:layout_alignBaseline="@+id/labelGoal"
-                android:layout_alignBottom="@+id/labelGoal"
                 android:layout_toStartOf="@+id/labelGoal"/>
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:ems="3"
-                android:id="@+id/etWeight"
-                android:layout_marginTop="25dp"
-                android:textAlignment="textEnd"
-                android:layout_below="@+id/separator4"
-                android:layout_toStartOf="@+id/txtPounds"
-                android:background="@android:color/transparent"/>
 
             <!--<Button-->
                 <!--android:text="Next >"-->
@@ -425,8 +468,18 @@
                 <!--android:layout_marginTop="40dp"-->
                 <!--android:layout_alignParentStart="true"/>-->
 
+            <Button
+                android:id="@+id/btnDelete"
+                android:backgroundTint="@color/colorAccent"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etNotes"
+                android:layout_alignParentEnd="true"
+                android:text="Delete"/>
 
         </RelativeLayout>
     </LinearLayout>
     <!--</HorizontalScrollView>-->
 </ScrollView>
+</RelativeLayout>

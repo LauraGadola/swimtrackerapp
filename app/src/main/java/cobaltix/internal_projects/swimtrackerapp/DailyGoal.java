@@ -40,6 +40,13 @@ public class DailyGoal implements Serializable
         this.event_id = event_id;
     }
 
+    public DailyGoal(int id, String date, String location, float temp, int hrs, int min, float weight,
+                     float miles, float longest, float honest, String notes, int weekly_id, int event_id)
+    {
+        this(date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event_id);
+        this.id = id;
+    }
+
     public String getDate()
     {
         return date;
@@ -184,7 +191,8 @@ public class DailyGoal implements Serializable
     public String toString()
     {
         return "DailyGoal{" +
-                "date='" + date + '\'' +
+                "id='" + id + '\''+
+                ",date='" + date + '\'' +
                 ", weeksLeft=" + weeksLeft +
                 ", location='" + location + '\'' +
                 ", temp=" + temp +
