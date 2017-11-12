@@ -128,12 +128,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         //TODO delete
         System.out.println("--------- Updating existing wg");
-        db.update(DatabaseContract.WeeklyGoals.TABLE_NAME, values, "_id=" + wg.getId(), null);
+        db.update(DatabaseContract.WeeklyGoals.TABLE_NAME, values, DatabaseContract.WeeklyGoals._ID +"=" + wg.getId(), null);
         db.close();
         exportDatabase();
     }
 
-    public void addDailyGoal(DailyGoal dg)
+    public int addDailyGoal(DailyGoal dg)
     {
         db = getWritableDatabase();
 
@@ -154,7 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         int newRowId = (int) db.insert(DatabaseContract.DailyGoals.TABLE_NAME, null, values);
         db.close();
         exportDatabase();
-
+        return newRowId;
     }
 
     public void updateDailyGoal(DailyGoal oldDG, DailyGoal newDG)
@@ -172,7 +172,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HONEST, newDG.getHonest());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_NOTES, newDG.getNotes());
 
-        db.update(DatabaseContract.DailyGoals.TABLE_NAME, values, "_id=" + oldDG.getId(), null);
+        db.update(DatabaseContract.DailyGoals.TABLE_NAME, values, DatabaseContract.DailyGoals._ID +"=" + oldDG.getId(), null);
         db.close();
         exportDatabase();
     }
@@ -180,7 +180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void removeDailyGoal(DailyGoal currentDG)
     {
         db = getWritableDatabase();
-        String query = "DELETE FROM "+ DatabaseContract.DailyGoals.TABLE_NAME +" WHERE _id = "+currentDG.getId();
+        String query = "DELETE FROM "+ DatabaseContract.DailyGoals.TABLE_NAME +" WHERE "+ DatabaseContract.DailyGoals._ID +" = "+ currentDG.getId();
         db.execSQL(query);
         db.close();
         exportDatabase();

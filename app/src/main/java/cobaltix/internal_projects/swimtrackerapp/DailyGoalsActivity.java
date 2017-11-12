@@ -109,8 +109,11 @@ public class DailyGoalsActivity extends AppCompatActivity
         etDate = (EditText) findViewById(R.id.etDate);
         etWeeksLeft = (EditText) findViewById(R.id.etWeeksLeft);
         btnPrevious = (ImageButton) findViewById(R.id.btnPrevious);
+        btnPrevious.setVisibility(View.INVISIBLE);
         btnNext = (ImageButton) findViewById(R.id.btnNext);
+        btnNext.setVisibility(View.INVISIBLE);
         btnDelete = (Button) findViewById(R.id.btnDelete);
+        btnDelete.setVisibility(View.INVISIBLE);
 
         etTempC.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
         etTempF.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
@@ -124,7 +127,7 @@ public class DailyGoalsActivity extends AppCompatActivity
 //                                  int dayOfMonth) {
 //                myCal.set(year, monthOfYear, dayOfMonth);
 //                etDate.setText(sdf.format(myCal.getTime()));
-//                fillFields();
+////                fillFields();
 //            }
 //
 //        };
@@ -207,20 +210,23 @@ public class DailyGoalsActivity extends AppCompatActivity
             if(isUpToDate(date))
             {
                 fillFields(lastSavedDG);
+                if(dglist.size() > 1)
+                {
+                    Toast.makeText(this, "old event", Toast.LENGTH_SHORT).show();
+                    btnPrevious.setVisibility(View.VISIBLE);
+                }
 //                    btnNext.setText("Exit");
             }
             else //move to next day
             {
                 etDate.setText(dayAfter(date));
-                currentDG = null;
+                btnPrevious.setVisibility(View.VISIBLE);
             }
         }
         else //today is the first entry for this event
         {
             System.out.println("/dga/--------- Today is the first entry for this event");
             etDate.setText(today);
-            btnNext.setVisibility(View.INVISIBLE);
-            btnPrevious.setVisibility(View.INVISIBLE);
 //            btnNext.setText("Exit");
         }
 
@@ -268,8 +274,6 @@ public class DailyGoalsActivity extends AppCompatActivity
                 if(nextDG == null)
                 {
                     etDate.setText(dayAfter(lastSavedDG.getDate()));
-                    clearAll();
-                    currentDG = null;
                 }
                 else
                 {
@@ -279,7 +283,6 @@ public class DailyGoalsActivity extends AppCompatActivity
 
             }
         });
-        btnNext.setVisibility(View.INVISIBLE);
 
         btnDelete.setOnClickListener(new View.OnClickListener()
         {
@@ -291,7 +294,6 @@ public class DailyGoalsActivity extends AppCompatActivity
                 Toast.makeText(DailyGoalsActivity.this, "Daily goal has been deleted", Toast.LENGTH_SHORT).show();
             }
         });
-        btnDelete.setVisibility(View.INVISIBLE);    //Show only if you have something
     }
 
     public boolean isUpToDate(String date)
@@ -301,21 +303,28 @@ public class DailyGoalsActivity extends AppCompatActivity
 
     public DailyGoal getPreviousTo(DailyGoal dg)
     {
+        btnPrevious.setVisibility(View.INVISIBLE);
         DailyGoal previousDG;
+        System.out.println(dg);
 
         if(dg != null)
         {
             int i = dglist.indexOf(dg);
+            System.out.println(i);
             i--;
             previousDG = dglist.get(i);
-            if (i == 0)      //we will get the last element
+            if (i != 0)      //we will get the last element
             {
-                btnPrevious.setVisibility(View.INVISIBLE);
+                btnPrevious.setVisibility(View.VISIBLE);
             }
         }
         else    //Current is not in the list, the previous goal will be the last one saved
         {
             previousDG = dglist.get(dglist.size()-1);
+            if(dglist.size() > 1)
+            {
+                btnPrevious.setVisibility(View.VISIBLE);
+            }
         }
         return previousDG;
     }
@@ -350,6 +359,9 @@ public class DailyGoalsActivity extends AppCompatActivity
 
     public String dayAfter(String date)
     {
+        currentDG = null;
+        clearAll();
+
         try
         {
             Date d = sdf.parse(date);
@@ -442,10 +454,9 @@ public class DailyGoalsActivity extends AppCompatActivity
             WeeklyGoal wg = dbHelper.getLastWeeklyGoal(event.getId());
             int weekly_id = wg.getId();
 
-            DailyGoal newDG = new DailyGoal(currentDG.getId(), date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event.getId());
-
             if(currentDG != null) //update
             {
+                DailyGoal newDG = new DailyGoal(currentDG.getId(), date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event.getId());
                 int i = dglist.indexOf(currentDG);
                 dglist.set(i, newDG);
                 dbHelper.updateDailyGoal(currentDG, newDG);
@@ -454,9 +465,10 @@ public class DailyGoalsActivity extends AppCompatActivity
             }
             else //create new entry
             {
-                                            //TODO the last weekly goal should be the only one in place?
-
-                dbHelper.addDailyGoal(newDG);
+                //TODO the last weekly goal should be the only one in place?
+                DailyGoal newDG = new DailyGoal(date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event.getId());
+                int newRowId = dbHelper.addDailyGoal(newDG);
+                newDG.setId(newRowId);
                 dglist.add(newDG);
                 Toast.makeText(this, "Daily goal was saved", Toast.LENGTH_SHORT).show();
 
@@ -470,7 +482,6 @@ public class DailyGoalsActivity extends AppCompatActivity
                 {
                     etDate.setText(dayAfter(date));
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
-                    clearAll();
                 }
             }
         }
