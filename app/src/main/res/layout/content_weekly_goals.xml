@@ -47,7 +47,7 @@
         android:layout_marginTop="25dp"
         android:layout_marginLeft="25dp"
         android:layout_alignParentStart="true"
-        android:id="@+id/etYards"
+        android:id="@+id/etMiles"
         android:hint="Longest"
         android:inputType="numberDecimal"/>
 
@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:layout_below="@+id/etYards"
+        android:layout_below="@+id/etMiles"
         android:layout_marginTop="25dp"
         android:layout_marginLeft="25dp"
         android:layout_alignParentStart="true"

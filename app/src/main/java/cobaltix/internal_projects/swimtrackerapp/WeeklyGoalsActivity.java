@@ -50,7 +50,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
         etWeek = (EditText) findViewById(R.id.etWeek);
         etWeeklyMiles = (EditText) findViewById(R.id.etWeekMiles);
-        etLongest = (EditText) findViewById(R.id.etYards);
+        etLongest = (EditText) findViewById(R.id.etMiles);
         etWeight = (EditText) findViewById(R.id.etWeight);
         etDescription = (EditText) findViewById(R.id.etDescription);
 

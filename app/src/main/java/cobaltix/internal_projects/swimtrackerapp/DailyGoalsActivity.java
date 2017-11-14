@@ -1,6 +1,5 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
@@ -65,7 +63,6 @@ public class DailyGoalsActivity extends AppCompatActivity
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
     private Calendar myCal = Calendar.getInstance();
     private String today = sdf.format(myCal.getTime());
-    private boolean currentGoalExists = false;                                          //TODO delete
 //    private DatePickerDialog.OnDateSetListener onDateSetListener;
 
     @Override
@@ -398,12 +395,10 @@ public class DailyGoalsActivity extends AppCompatActivity
 
     private void fillFields(DailyGoal dg)
     {
-        currentGoalExists = true;
         currentDG = dg;
         btnDelete.setVisibility(View.VISIBLE);
 
         etDate.setText(dg.getDate());
-        //calculate weeks left
         etLocation.setText(dg.getLocation());
 
         float tempF = dg.getTemp();

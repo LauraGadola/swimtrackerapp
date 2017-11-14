@@ -154,7 +154,7 @@
                 android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"
-                android:hint="Enter Location"
+                android:hint="Select"
                 android:layout_toEndOf="@+id/labelLocation"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/colorAccent"/>
@@ -185,8 +185,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/labelDistance"
-                android:layout_alignBaseline="@+id/etYards"
-                android:layout_alignBottom="@+id/etYards"
+                android:layout_alignBaseline="@+id/etMiles"
+                android:layout_alignBottom="@+id/etMiles"
                 android:textSize="18sp"/>
 
             <TextView
@@ -203,14 +203,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/etLongest"
                 android:inputType="numberDecimal"
-                android:layout_below="@+id/etYards"
+                android:layout_below="@+id/etMiles"
                 android:layout_marginTop="25dp"
                 android:layout_alignEnd="@+id/separator1"
                 android:background="@android:color/transparent"
                 android:layout_toEndOf="@id/labelLongest"
                 android:layout_marginLeft="5dp"
                 android:textAlignment="textEnd"
-                android:hint="0.0"
+                android:hint="Select"
                 android:textColor="@color/colorAccent"/>
 
             <View
@@ -232,7 +232,7 @@
                 android:layout_marginLeft="5dp"
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"
-                android:hint="0.0"
+                android:hint="Select"
                 android:textColor="@color/colorAccent"/>
 
             <View
@@ -258,7 +258,7 @@
                 android:layout_marginTop="35dp"
                 android:layout_below="@+id/etHonest"
                 android:textSize="18sp"
-                android:text="How'd it feel? Swam with? Conditions? Felt Good?"/>
+                android:text="Notes"/>
 
             <EditText
                 android:layout_width="match_parent"
@@ -272,7 +272,7 @@
                 android:maxLines="15"
                 android:background="@drawable/text_input_border"
                 android:inputType="textMultiLine"
-                android:hint="Type your notes here..."
+                android:hint="How'd it feel? Swam with? Conditions? Felt Good?"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:textColor="@color/colorAccent"/>
@@ -281,16 +281,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/colorLine"
-                android:layout_below="@+id/etMiles"
+                android:layout_below="@+id/etYards"
                 android:id="@+id/separator6"/>
 
             <TextView
-                android:text="miles"
+                android:text="yards"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtMiles"
-                android:layout_alignBaseline="@+id/etMiles"
-                android:layout_alignBottom="@+id/etMiles"
+                android:layout_alignBaseline="@+id/etYards"
+                android:layout_alignBottom="@+id/etYards"
                 android:textSize="18sp"
                 android:layout_alignEnd="@+id/separator1"/>
 
@@ -298,7 +298,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:id="@+id/etMiles"
+                android:id="@+id/etYards"
                 android:textSize="18sp"
                 android:layout_marginLeft="5dp"
                 android:layout_alignBaseline="@+id/txtYards"
@@ -314,7 +314,7 @@
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/etYards"
+                android:id="@+id/etMiles"
                 android:inputType="number"
                 android:layout_marginTop="24dp"
                 android:layout_below="@+id/separator5"
@@ -349,17 +349,18 @@
                 android:layout_toEndOf="@+id/labelGoal"
                 android:layout_marginLeft="5dp"
                 android:background="@android:color/transparent"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorAccent"
+                android:layout_alignEnd="@+id/separator1"/>
 
             <TextView
-                android:text="Goal"
+                android:text="    |    Goal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/labelGoal"
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etGoalWeight"
-                android:layout_alignBottom="@+id/etGoalWeight"
-                android:layout_toEndOf="@+id/txtPounds"/>
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="40dp"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -378,13 +379,13 @@
                 android:textColor="@color/colorAccent"/>
 
             <TextView
-                android:text="lbs  |  "
+                android:text="lbs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtPounds"
                 android:textSize="18sp"
                 android:layout_above="@+id/separator5"
-                android:layout_toStartOf="@+id/txtDegreeF"/>
+                android:layout_toStartOf="@id/labelGoal"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -397,7 +398,7 @@
                 android:textAlignment="textEnd"
                 android:layout_below="@+id/separator3"
                 android:layout_alignParentEnd="true"
-                android:hint="Select Time"
+                android:hint="Select"
                 android:textColor="@color/colorAccent"/>
 
             <EditText
@@ -423,7 +424,7 @@
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etTempF"
                 android:layout_alignBottom="@+id/etTempF"
-                android:layout_toStartOf="@+id/etTime"/>
+                android:layout_alignEnd="@id/txtPounds"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -434,20 +435,9 @@
                 android:background="@android:color/transparent"
                 android:hint="0.0"
                 android:layout_above="@+id/separator3"
-                android:layout_toEndOf="@+id/txtDegreeF"
-                android:layout_marginLeft="5dp"
-                android:layout_toStartOf="@+id/txtDegreeC"
-                android:textColor="@color/colorAccent"/>
-
-            <TextView
-                android:text="yards"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtYards"
-                android:textSize="18sp"
-                android:layout_alignBaseline="@+id/etYards"
-                android:layout_alignBottom="@+id/etYards"
-                android:layout_toStartOf="@+id/labelGoal"/>
+                android:textColor="@color/colorAccent"
+                android:layout_toStartOf="@id/txtDegreeC"
+                android:layout_toEndOf="@id/txtDegreeF"/>
 
 
             <!--<Button-->
@@ -477,6 +467,16 @@
                 android:layout_below="@+id/etNotes"
                 android:layout_alignParentEnd="true"
                 android:text="Delete"/>
+
+            <TextView
+                android:text="miles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtYards"
+                android:textSize="18sp"
+                android:layout_alignBaseline="@+id/etMiles"
+                android:layout_alignBottom="@+id/etMiles"
+                android:layout_toStartOf="@+id/labelGoal"/>
 
         </RelativeLayout>
     </LinearLayout>

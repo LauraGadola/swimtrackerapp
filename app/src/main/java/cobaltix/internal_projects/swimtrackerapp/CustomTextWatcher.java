@@ -51,21 +51,21 @@ public class CustomTextWatcher implements TextWatcher
                     activity.clearF();
                 break;
 
-            case R.id.etYards:
-                if(!str.matches(""))
-                {
-                    f = Float.parseFloat(str);
-                    activity.convertYtoM(f);
-                }
-                else
-                    activity.clearM();
-                break;
-
             case R.id.etMiles:
                 if(!str.matches(""))
                 {
                     f = Float.parseFloat(str);
                     activity.convertMtoY(f);
+                }
+                else
+                    activity.clearM();
+                break;
+
+            case R.id.etYards:
+                if(!str.matches(""))
+                {
+                    f = Float.parseFloat(str);
+                    activity.convertYtoM(f);
                 }
                 else
                     activity.clearY();
