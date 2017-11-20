@@ -58,7 +58,7 @@ public class CustomTextWatcher implements TextWatcher
                     activity.convertMtoY(f);
                 }
                 else
-                    activity.clearM();
+                    activity.clearY();
                 break;
 
             case R.id.etYards:
@@ -68,7 +68,7 @@ public class CustomTextWatcher implements TextWatcher
                     activity.convertYtoM(f);
                 }
                 else
-                    activity.clearY();
+                    activity.clearM();
                 break;
         }
     }

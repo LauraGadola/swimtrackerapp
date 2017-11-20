@@ -12,11 +12,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
+    SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+    SimpleDateFormat sdfDB = new SimpleDateFormat("yyyy/MM/dd");
+
+
     public static final String DATABASE_NAME = "Events.db";
     public static SQLiteDatabase db;
 
@@ -79,7 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.Events.COLUMN_NAME_TITLE, title);
-        values.put(DatabaseContract.Events.COLUMN_NAME_DATE, date);
+        values.put(DatabaseContract.Events.COLUMN_NAME_DATE, formatToDB(date));
 
         // Insert the new row, returning the primary key value of the new row
         int newRowId = (int) db.insert(DatabaseContract.Events.TABLE_NAME, null, values);
@@ -138,7 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_DATE, dg.getDate());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_DATE, formatToDB(dg.getDate()));
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LOCATION, dg.getLocation());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_TEMP, dg.getTemp());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HRS, dg.getHrs());
@@ -155,6 +161,34 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
         exportDatabase();
         return newRowId;
+    }
+
+    private String formatToDB(String date)
+    {
+        Date d = null;
+        try
+        {
+            d = sdf.parse(date);
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        String dateDB = sdfDB.format(d);
+        return dateDB;
+    }
+
+    private String formatFromDB(String date)
+    {
+        Date d = null;
+        try
+        {
+            d = sdfDB.parse(date);
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        String newDate = sdf.format(d);
+        return newDate;
     }
 
     public void updateDailyGoal(DailyGoal oldDG, DailyGoal newDG)
@@ -184,36 +218,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(query);
         db.close();
         exportDatabase();
-    }
-
-    //TODO delete
-    public DailyGoal getLastDailyGoal(int event_id)
-    {
-        db = getReadableDatabase();
-        String query = "SELECT * FROM "+ DatabaseContract.DailyGoals.TABLE_NAME
-                + " WHERE " + DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID + " = " + event_id
-                + " ORDER BY "+ DatabaseContract.DailyGoals._ID +" DESC LIMIT 1";
-
-        Cursor cursor = db.rawQuery(query, null);
-        while(cursor.moveToNext())
-        {
-            int id = cursor.getInt(0);
-            String date = cursor.getString(1);
-            String location = cursor.getString(2);
-            float temp = cursor.getInt(3);
-            int hrs = cursor.getInt(4);
-            int min = cursor.getInt(5);
-            float weight = cursor.getInt(6);
-            float miles = cursor.getInt(7);
-            float longest = cursor.getInt(8);
-            float honest = cursor.getInt(9);
-            String notes = cursor.getString(10);
-            int weekly_id = cursor.getInt(11);
-
-            DailyGoal dg = new DailyGoal(id, date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event_id);
-            return dg;
-        }
-        return null;
     }
 
     public WeeklyGoal getLastWeeklyGoal(int event_id)
@@ -263,13 +267,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public ArrayList<Event> getEventList()
     {
         db = getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + DatabaseContract.Events.TABLE_NAME + " ORDER BY " + DatabaseContract.Events._ID + " DESC";
+        String selectQuery = "SELECT * FROM " + DatabaseContract.Events.TABLE_NAME
+                + " ORDER BY " + DatabaseContract.Events.COLUMN_NAME_DATE + " DESC";
         Cursor cursor = db.rawQuery(selectQuery, null);
         ArrayList<Event> events = new ArrayList<>();
         while(cursor.moveToNext()) {
             int id = cursor.getInt(0);
             String title = cursor.getString(1);
-            String date = cursor.getString(2);
+            String date = formatFromDB(cursor.getString(2));
             Event event = new Event(id, title, date);
             events.add(event);
         }
@@ -277,17 +282,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return events;
     }
 
-    public List<DailyGoal> getDailyGoalList(int event_id)
+    public ArrayList<DailyGoal> getDailyGoalList(int event_id)
     {
         db = getReadableDatabase();
         String query = "SELECT * FROM "+ DatabaseContract.DailyGoals.TABLE_NAME
-                +" WHERE "+ DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID +" = "+ event_id;
+                +" WHERE "+ DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID +" = "+ event_id
+                +" ORDER BY "+DatabaseContract.DailyGoals.COLUMN_NAME_DATE;
         Cursor cursor = db.rawQuery(query, null);
         ArrayList<DailyGoal> dailyGoalList = new ArrayList<>();
         while (cursor.moveToNext())
         {
             int id = cursor.getInt(0);
-            String date = cursor.getString(1);
+            String date = formatFromDB(cursor.getString(1));
             String location = cursor.getString(2);
             float temp = cursor.getFloat(3);
             int hrs = cursor.getInt(4);

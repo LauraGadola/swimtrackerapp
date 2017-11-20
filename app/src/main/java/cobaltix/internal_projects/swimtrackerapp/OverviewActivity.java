@@ -1,5 +1,6 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
+import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -10,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.support.design.widget.TabLayout;
-import android.widget.TableLayout;
 
 public class OverviewActivity extends AppCompatActivity
 {
@@ -40,13 +40,15 @@ public class OverviewActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+        tabLayout.addTab(tabLayout.newTab().setText("Overview"));
+        tabLayout.addTab(tabLayout.newTab().setText("Stats"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        Event event = (Event) getIntent().getSerializableExtra("event");
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), event);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);

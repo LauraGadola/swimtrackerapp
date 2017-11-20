@@ -2,6 +2,10 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Event implements Serializable
 {
@@ -14,6 +18,23 @@ public class Event implements Serializable
         this.id = id;
         this.title = t;
         this.date = d;
+    }
+
+    public String getEndDate()
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+        Calendar myCal = Calendar.getInstance();
+        try
+        {
+            Date d = sdf.parse(date);
+            myCal.setTime(d);
+            myCal.add(Calendar.DATE, -1);   //Day prior to the event
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        String endDate = sdf.format(myCal.getTime());
+        return endDate;
     }
 
     public int getId()

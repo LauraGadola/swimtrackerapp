@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".OverviewActivity"
+            android:name=".MainActivity"
             android:label="Events"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -47,11 +47,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity"/>
         </activity>
-        <!--<activity-->
-            <!--android:name=".OverviewActivity"-->
-            <!--android:label="@string/title_activity_overview"-->
-            <!--android:theme="@style/AppTheme.NoActionBar">-->
-        <!--</activity>-->
+        <activity
+            android:name=".OverviewActivity"
+            android:label="@string/title_activity_overview"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

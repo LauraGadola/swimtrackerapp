@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity
 
         dbHelper = new DatabaseHelper(this);
         eventList = dbHelper.getEventList();
+        markDoneEvents(eventList);
         adapter = new CustomListAdapter(this, eventList);
         lv = (ListView) findViewById(R.id.eventList);
         lv.setAdapter(adapter);
@@ -62,6 +64,24 @@ public class MainActivity extends AppCompatActivity
                 startActivity(i);
             }
         });
+
+    }
+
+    private void markDoneEvents(ArrayList<Event> eventList)
+    {
+
+        for(Event e : eventList)
+        {
+            ArrayList<DailyGoal> dgList = dbHelper.getDailyGoalList(e.getId());
+            if(!dgList.isEmpty())
+            {
+                DailyGoal dgLast = dgList.get(dgList.size() - 1);
+                if (dgLast.getDate().equals(e.getEndDate()))
+                {
+                    e.setTitle(e.getTitle() + " (Done)");
+                }
+            }
+        }
 
     }
 

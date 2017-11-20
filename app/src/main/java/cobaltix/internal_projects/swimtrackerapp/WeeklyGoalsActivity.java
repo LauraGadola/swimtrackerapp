@@ -153,6 +153,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
         //TODO go to main page? or as long as there's a day to fill in prompt the daily page?
         Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
+        i.putExtra("event", event);
         i.putExtra("weekly_goal", weeklyGoal);
         startActivity(i);
         finish();

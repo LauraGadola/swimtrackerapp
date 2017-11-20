@@ -191,8 +191,8 @@ public class DailyGoal implements Serializable
     public String toString()
     {
         return "DailyGoal{" +
-                "id='" + id + '\''+
-                ",date='" + date + '\'' +
+                "id=" + id +
+                ", date='" + date + '\'' +
                 ", weeksLeft=" + weeksLeft +
                 ", location='" + location + '\'' +
                 ", temp=" + temp +
@@ -203,6 +203,24 @@ public class DailyGoal implements Serializable
                 ", longest=" + longest +
                 ", honest=" + honest +
                 ", notes='" + notes + '\'' +
+                ", weekly_id=" + weekly_id +
+                ", event_id=" + event_id +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+            return false;
+
+        DailyGoal otherDG = (DailyGoal) obj;
+
+        if (otherDG.id != this.id)
+        {
+            System.out.println("id false");
+            return false;
+        }
+        return true;
     }
 }

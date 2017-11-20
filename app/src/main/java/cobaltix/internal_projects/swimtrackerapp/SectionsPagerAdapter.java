@@ -1,5 +1,6 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,23 +12,29 @@ import android.support.v4.app.FragmentPagerAdapter;
 public class SectionsPagerAdapter extends FragmentPagerAdapter
 {
     int numOfTabs;
+    Event event;
 
-    public SectionsPagerAdapter(FragmentManager fm, int numOfTabs)
+    public SectionsPagerAdapter(FragmentManager fm, int numOfTabs, Event e)
     {
         super(fm);
         this.numOfTabs = numOfTabs;
+        this.event = e;
     }
 
     @Override
     public Fragment getItem(int position)
     {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Event", event);
         switch (position)
         {
             case 0:
-                TabFragment1 tab1 = new TabFragment1();
+                MyFragment tab1 = new TabFragment1();
+                tab1.setArguments(bundle);
                 return tab1;
             case 1:
-                TabFragment2 tab2 = new TabFragment2();
+                MyFragment tab2 = new TabFragment2();
+                tab2.setArguments(bundle);
                 return tab2;
             default:
                 return null;
