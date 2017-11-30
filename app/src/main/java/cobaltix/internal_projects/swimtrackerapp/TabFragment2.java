@@ -28,7 +28,7 @@ public class TabFragment2 extends MyFragment
     private Event event;
     private DatabaseHelper dbHelper;
     private List<DailyGoal> dgList;
-    private String myFormat = "EEE, MM/dd/yy";
+    private String myFormat = "EEEE, MMM dd, yyyy";
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 
     private GraphView graph;
@@ -42,7 +42,7 @@ public class TabFragment2 extends MyFragment
     private DataPoint[] longestList;
     private DataPoint[] weightList;
 
-    @Override
+    /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
@@ -59,7 +59,7 @@ public class TabFragment2 extends MyFragment
 
         dgList = dbHelper.getDailyGoalList(event.getId());
         milesList = new DataPoint[dgList.size()];
-        longestList = new DataPoint[dgList.size()];
+//        longestList = new DataPoint[dgList.size()];
         weightList = new DataPoint[dgList.size()];
         int i = 0;
         for(DailyGoal dg : dgList)
@@ -76,8 +76,9 @@ public class TabFragment2 extends MyFragment
             DataPoint milesDP = new DataPoint(date, dg.getMiles());
             milesList[i] = milesDP;
 
-            DataPoint longestDP = new DataPoint(date, dg.getLongest());
-            longestList[i] = longestDP;
+            //TODO calculate longest
+//            DataPoint longestDP = new DataPoint(date, dg.getLongest());
+//            longestList[i] = longestDP;
 
             DataPoint weightDP = new DataPoint(date, dg.getWeight());
             weightList[i] = weightDP;
@@ -191,5 +192,5 @@ public class TabFragment2 extends MyFragment
             btnFocus.setTextColor(getContext().getColor(R.color.colorAccent));
             btnFocus = b;
         }
-    }
+    }*/
 }

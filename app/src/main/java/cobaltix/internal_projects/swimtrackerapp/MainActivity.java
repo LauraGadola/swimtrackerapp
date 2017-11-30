@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     //HANDLE THE DATA OF THE LISTVIEW
     ArrayList<Event> eventList;
-    private static CustomListAdapter adapter;
+    private static EventListAdapter adapter;
 
     private DatabaseHelper dbHelper;
 
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity
         dbHelper = new DatabaseHelper(this);
         eventList = dbHelper.getEventList();
         markDoneEvents(eventList);
-        adapter = new CustomListAdapter(this, eventList);
+        adapter = new EventListAdapter(this, eventList);
         lv = (ListView) findViewById(R.id.eventList);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -56,10 +55,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-
                 //TODO get to daily goals until all entries for the week are entered
                 Event e = (Event) lv.getItemAtPosition(position);
-                Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
+                Intent i = new Intent(getApplicationContext(), OverviewActivity.class);
                 i.putExtra("event", e);
                 startActivity(i);
             }

@@ -1,7 +1,6 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CustomListAdapter extends ArrayAdapter<Event>
+public class EventListAdapter extends ArrayAdapter<Event>
 {
-    Activity context;
-    Event event;
+    private Activity context;
+    private Event event;
 
 
-    public CustomListAdapter(Activity context, ArrayList<Event> events) {
+    public EventListAdapter(Activity context, ArrayList<Event> events) {
         super(context, 0, events);
         this.context = context;
     }
@@ -28,7 +27,7 @@ public class CustomListAdapter extends ArrayAdapter<Event>
         if(convertView == null)
         {
             LayoutInflater inflater = context.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.list_single, parent, false);
+            convertView = inflater.inflate(R.layout.event_list_single, parent, false);
         }
 
         TextView tvTitle = (TextView) convertView.findViewById(R.id.title);

@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:textColor="#040404"
             android:typeface="sans"
-            android:textSize="15dip"
+            android:textSize="18dip"
             android:textStyle="bold"/>
 
         <!-- Event Date -->
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:textColor="#343434"
-            android:textSize="10dip"
+            android:textSize="12dip"
             android:layout_marginTop="1dip"/>
 
 </RelativeLayout>

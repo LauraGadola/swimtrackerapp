@@ -9,14 +9,12 @@ public class DailyGoal implements Serializable
 {
     private int id;
     private String date;
-    private int weeksLeft;
     private String location;
     private float temp;
     private int hrs;
     private int min;
     private float weight;
     private float miles;
-    private float longest;
     private float honest;
     private String notes;
     private int weekly_id;
@@ -24,7 +22,7 @@ public class DailyGoal implements Serializable
 
     //TODO Do I need to save weeks left?
     public DailyGoal(String date, String location, float temp, int hrs, int min, float weight,
-                     float miles, float longest, float honest, String notes, int weekly_id, int event_id)
+                     float miles, float honest, String notes, int weekly_id, int event_id)
     {
         this.date = date;
         this.location = location;
@@ -33,7 +31,6 @@ public class DailyGoal implements Serializable
         this.min = min;
         this.weight = weight;
         this.miles = miles;
-        this.longest = longest;
         this.honest = honest;
         this.notes = notes;
         this.weekly_id = weekly_id;
@@ -41,9 +38,9 @@ public class DailyGoal implements Serializable
     }
 
     public DailyGoal(int id, String date, String location, float temp, int hrs, int min, float weight,
-                     float miles, float longest, float honest, String notes, int weekly_id, int event_id)
+                     float miles, float honest, String notes, int weekly_id, int event_id)
     {
-        this(date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event_id);
+        this(date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event_id);
         this.id = id;
     }
 
@@ -55,16 +52,6 @@ public class DailyGoal implements Serializable
     public void setDate(String date)
     {
         this.date = date;
-    }
-
-    public int getWeeksLeft()
-    {
-        return weeksLeft;
-    }
-
-    public void setWeeksLeft(int weeksLeft)
-    {
-        this.weeksLeft = weeksLeft;
     }
 
     public String getLocation()
@@ -127,16 +114,6 @@ public class DailyGoal implements Serializable
         this.miles = miles;
     }
 
-    public float getLongest()
-    {
-        return longest;
-    }
-
-    public void setLongest(float longest)
-    {
-        this.longest = longest;
-    }
-
     public float getHonest()
     {
         return honest;
@@ -193,14 +170,12 @@ public class DailyGoal implements Serializable
         return "DailyGoal{" +
                 "id=" + id +
                 ", date='" + date + '\'' +
-                ", weeksLeft=" + weeksLeft +
                 ", location='" + location + '\'' +
                 ", temp=" + temp +
                 ", hrs=" + hrs +
                 ", min=" + min +
                 ", weight=" + weight +
                 ", miles=" + miles +
-                ", longest=" + longest +
                 ", honest=" + honest +
                 ", notes='" + notes + '\'' +
                 ", weekly_id=" + weekly_id +

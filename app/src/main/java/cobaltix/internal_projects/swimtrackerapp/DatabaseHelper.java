@@ -151,7 +151,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MIN, dg.getMin());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEIGHT, dg.getWeight());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MILES, dg.getMiles());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LONGEST, dg.getLongest());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HONEST, dg.getHonest());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_NOTES, dg.getNotes());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEEKLY_ID, dg.getWeekly_id());
@@ -202,7 +201,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MIN, newDG.getMin());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEIGHT, newDG.getWeight());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MILES, newDG.getMiles());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LONGEST, newDG.getLongest());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HONEST, newDG.getHonest());
         values.put(DatabaseContract.DailyGoals.COLUMN_NAME_NOTES, newDG.getNotes());
 
@@ -300,12 +298,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
             int min = cursor.getInt(5);
             float weight = cursor.getFloat(6);
             float miles = cursor.getFloat(7);
-            float longest = cursor.getFloat(8);
+
+            //TODO change numbers below
             float honest = cursor.getFloat(9);
             String notes = cursor.getString(10);
             int weekly_id = cursor.getInt(11);
 
-            DailyGoal dg = new DailyGoal(id, date, location, temp, hrs, min, weight, miles, longest, honest, notes, weekly_id, event_id);
+            DailyGoal dg = new DailyGoal(id, date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event_id);
             dailyGoalList.add(dg);
         }
         return dailyGoalList;

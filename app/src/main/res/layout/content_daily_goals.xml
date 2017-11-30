@@ -189,35 +189,12 @@
                 android:layout_alignBottom="@+id/etMiles"
                 android:textSize="18sp"/>
 
-            <TextView
-                android:text="Longest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/labelLongest"
-                android:layout_alignBaseline="@+id/etLongest"
-                android:layout_alignBottom="@+id/etLongest"
-                android:textSize="18sp"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/etLongest"
-                android:inputType="numberDecimal"
-                android:layout_below="@+id/etMiles"
-                android:layout_marginTop="25dp"
-                android:layout_alignEnd="@+id/separator1"
-                android:background="@android:color/transparent"
-                android:layout_toEndOf="@id/labelLongest"
-                android:layout_marginLeft="5dp"
-                android:textAlignment="textEnd"
-                android:hint="Select"
-                android:textColor="@color/colorAccent"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/colorLine"
-                android:layout_below="@+id/etLongest"
+                android:layout_below="@+id/etHonest"
                 android:id="@+id/separator7"/>
 
             <EditText
@@ -225,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/etHonest"
                 android:inputType="numberDecimal"
-                android:layout_below="@+id/etLongest"
+                android:layout_below="@+id/etMiles"
                 android:layout_marginTop="25dp"
                 android:layout_alignEnd="@+id/separator1"
                 android:layout_toEndOf="@+id/labelHonest"
@@ -234,13 +211,6 @@
                 android:textAlignment="textEnd"
                 android:hint="Select"
                 android:textColor="@color/colorAccent"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorLine"
-                android:layout_below="@+id/etHonest"
-                android:id="@+id/separator8"/>
 
             <TextView
                 android:text="Honest"
