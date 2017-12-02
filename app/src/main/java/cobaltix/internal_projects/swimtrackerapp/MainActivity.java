@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity
     private ListView lv;
     private FloatingActionButton fab;
     //HANDLE THE DATA OF THE LISTVIEW
-    ArrayList<Event> eventList;
+    private ArrayList<Event> eventList;
     private static EventListAdapter adapter;
 
     private DatabaseHelper dbHelper;
@@ -50,16 +50,18 @@ public class MainActivity extends AppCompatActivity
         adapter = new EventListAdapter(this, eventList);
         lv = (ListView) findViewById(R.id.eventList);
         lv.setAdapter(adapter);
+        lv.setEmptyView(findViewById(R.id.empty));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                //TODO get to daily goals until all entries for the week are entered
+                                    //TODO get to daily goals until all entries for the week are entered
                 Event e = (Event) lv.getItemAtPosition(position);
                 Intent i = new Intent(getApplicationContext(), OverviewActivity.class);
                 i.putExtra("event", e);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity
                 DailyGoal dgLast = dgList.get(dgList.size() - 1);
                 if (dgLast.getDate().equals(e.getEndDate()))
                 {
+                                                                        //todo If today is past end date
                     e.setTitle(e.getTitle() + " (Done)");
                 }
             }

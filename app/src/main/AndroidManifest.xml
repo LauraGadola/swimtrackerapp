@@ -32,7 +32,7 @@
         <activity
             android:name=".DailyGoalsActivity"
             android:label="@string/title_activity_daily_goals"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".OverviewActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -50,6 +50,7 @@
         <activity
             android:name=".OverviewActivity"
             android:label="@string/title_activity_overview"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

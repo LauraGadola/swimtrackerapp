@@ -16,7 +16,7 @@ public class TabFragment1 extends MyFragment
 {
     private DatabaseHelper dbHelper;
     private ListView lv;
-    private ArrayList dgList;
+    private ArrayList<DailyGoal> dgList;
     private DailyGoalsListAdapter adapter;
 
     @Override
@@ -27,32 +27,25 @@ public class TabFragment1 extends MyFragment
         lv = (ListView) view.findViewById(R.id.dailyGoalList);
 
         dbHelper = new DatabaseHelper(view.getContext());
-        dgList = dbHelper.getDailyGoalList(getEvent().getId());
-//        if(!dgList.isEmpty())
-//        {
-            adapter = new DailyGoalsListAdapter(getActivity(), dgList);
-            lv.setAdapter(adapter);
-            System.out.println("***********we have a list**************");
-//        }
-//        else
-//        {
-//            //show 'list is empty'
-//            Toast.makeText(getContext(), "Empty list", Toast.LENGTH_SHORT).show();
-//        }
 
+        //todo delete
+        System.out.println("Event: "+getEvent());
+
+        dgList = dbHelper.getDailyGoalList(getEvent().getId());
+        adapter = new DailyGoalsListAdapter(getActivity(), dgList);
+        lv.setAdapter(adapter);
+        lv.setEmptyView(view.findViewById(R.id.empty));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                System.out.println(position);
                 Toast.makeText(view.getContext(), "Clicked!", Toast.LENGTH_SHORT).show();
                 DailyGoal dg = (DailyGoal) lv.getItemAtPosition(position);
                 Intent i = new Intent(getContext(), DailyGoalsActivity.class);
                 i.putExtra("event", getEvent());
                 i.putExtra("daily_goal", dg);
                 startActivity(i);
-
             }
         });
 

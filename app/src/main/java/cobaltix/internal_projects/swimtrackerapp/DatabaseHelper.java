@@ -285,7 +285,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db = getReadableDatabase();
         String query = "SELECT * FROM "+ DatabaseContract.DailyGoals.TABLE_NAME
                 +" WHERE "+ DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID +" = "+ event_id
-                +" ORDER BY "+DatabaseContract.DailyGoals.COLUMN_NAME_DATE;
+                +" ORDER BY "+ DatabaseContract.DailyGoals.COLUMN_NAME_DATE;
         Cursor cursor = db.rawQuery(query, null);
         ArrayList<DailyGoal> dailyGoalList = new ArrayList<>();
         while (cursor.moveToNext())

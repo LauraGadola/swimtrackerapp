@@ -2,6 +2,7 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -196,7 +196,7 @@ public class DailyGoalsActivity extends AppCompatActivity
                 }
                 String previousDay = getDay(date, -1);
                 DailyGoal previousDG = getDG(previousDay);
-                moveToDay(previousDG, previousDay);
+                goToDay(previousDG, previousDay);
                 if(dglist.indexOf(previousDG) == 0)
                 {
                     btnPrevious.setVisibility(View.INVISIBLE);
@@ -212,7 +212,10 @@ public class DailyGoalsActivity extends AppCompatActivity
             {
                 String nextDay = getDay(String.valueOf(etDate.getText()), 1);
                 DailyGoal nextDG = getDG(nextDay);
-                moveToDay(nextDG, nextDay);
+                System.out.println("next: "+nextDay);
+                if(nextDG != null)
+                    System.out.println("next from dg: "+nextDG.getDate());
+                goToDay(nextDG, nextDay);
                 btnPrevious.setVisibility(View.VISIBLE);
             }
         });
@@ -230,34 +233,42 @@ public class DailyGoalsActivity extends AppCompatActivity
             }
         });
 
-        //retrieve goal to display or show blank page
-        if(!dglist.isEmpty())
-            lastSavedDG = dglist.get(dglist.size()-1);
-        System.out.println("Last saved: "+lastSavedDG);
-
-        if(lastSavedDG != null)
+        //dg selected to show
+        if(dailyGoal != null)
         {
-            String date = lastSavedDG.getDate();
-            //if we reach today or the the day prior to the event- show last entry
-            if(isUpToDate(date))
-            {
-                moveToDay(lastSavedDG, date);
-            }
-            else //move to next day
-            {
-                String nextDay = getDay(date, 1);
-                DailyGoal nextDG = getDG(nextDay);
-                moveToDay(nextDG, nextDay);
-            }
+            goToDay(dailyGoal, dailyGoal.getDate());
         }
-        else //today is the first entry for this event
+
+        else  //Retrieve goal to display or show blank page
         {
-            moveToDay(null, today);
-            btnPrevious.setVisibility(View.INVISIBLE);
+            if (!dglist.isEmpty())
+                lastSavedDG = dglist.get(dglist.size() - 1);
+            System.out.println("Last saved: " + lastSavedDG);
+
+            if (lastSavedDG != null)
+            {
+                String date = lastSavedDG.getDate();
+                //if we reach today or the the day prior to the event- show last entry
+                if (isUpToDate(date))
+                {
+                    goToDay(lastSavedDG, date);
+                } else //move to next day
+                {
+                    String nextDay = getDay(date, 1);
+                    DailyGoal nextDG = getDG(nextDay);                  //TODO should it be null???
+
+                    goToDay(nextDG, nextDay);
+                }
+            } else //today is the first entry for this event
+            {
+                goToDay(null, today);
+                btnPrevious.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
-    private void moveToDay(DailyGoal dg, String date)
+    //TODO improve - keep only dg
+    private void goToDay(DailyGoal dg, String date)
     {
         if(dg == null)
         {
@@ -435,7 +446,7 @@ public class DailyGoalsActivity extends AppCompatActivity
                 {
                     String nextDay = getDay(date, 1);
                     DailyGoal nextDG = getDG(nextDay);
-                    moveToDay(nextDG, nextDay);
+                    goToDay(nextDG, nextDay);
 //                    moveToNextDay(date);
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
@@ -444,6 +455,14 @@ public class DailyGoalsActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("Event", event);
+        startActivity(intent);
+        finish();
     }
 
     private void clearAll()

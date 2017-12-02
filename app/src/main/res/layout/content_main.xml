@@ -24,14 +24,35 @@
         <!--android:layout_centerHorizontal="true"-->
         <!--android:id="@+id/title"/>-->
 
-    <ListView
+    <ListView android:id="@+id/eventList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/title"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="100dp"
         android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:id="@+id/eventList"/>
+        android:layout_marginRight="25dp"/>
+
+    <LinearLayout android:id="@+id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_no_logs_gray"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Enter your first event!"
+            android:textSize="18dp"
+            android:textStyle="normal|bold"/>
+    </LinearLayout>
 
 </RelativeLayout>
