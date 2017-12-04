@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -22,12 +26,62 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Event> eventList;
     private static EventListAdapter adapter;
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+    private Calendar myCal = Calendar.getInstance();
+    private String today = sdf.format(myCal.getTime());
+
     private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        System.out.println("----------- Main Activity ------------");
         super.onCreate(savedInstanceState);
+
+        dbHelper = new DatabaseHelper(this);
+
+        //Import database if needed - todo to delete eventually
+        if(! dbHelper.isDatabaseExist(this))
+        {
+            Log.e("MainActivity", "db does not exist");
+            dbHelper.importDatabase();
+        }
+        else
+            Log.e("MainActivity", "db exists!");
+
+
+        eventList = dbHelper.getEventList();
+        Log.e("MainActivity","EventList: "+eventList);
+
+        //todo TO TEST!!
+        if(!eventList.isEmpty())
+        {
+            Event recentEvent = eventList.get(0);
+            Log.e("MainActivity", "Event: " + recentEvent);
+
+            ArrayList<DailyGoal> dgList = dbHelper.getDailyGoalList(recentEvent.getId());
+            DailyGoal lastDG = null;
+            String date = "";
+            if (!dgList.isEmpty())
+            {
+                lastDG = dgList.get(dgList.size() - 1);
+                date = lastDG.getDate();
+            }
+
+            //Prompt daily goal activity to enter logs if needed
+            if (dgList.isEmpty() || (!date.equals(today) && !date.equals(recentEvent.getEndDate())))  // No log yet || last log is not today nor event end date
+            {
+                Intent intent = new Intent(this, DailyGoalsActivity.class);
+                intent.putExtra("event", recentEvent);
+                startActivity(intent);
+
+                //todo should it be a dialog?
+                Toast.makeText(this, "You have not entered all your logs!", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+        ////End of prompt
+
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -44,8 +98,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        dbHelper = new DatabaseHelper(this);
-        eventList = dbHelper.getEventList();
+
         markDoneEvents(eventList);
         adapter = new EventListAdapter(this, eventList);
         lv = (ListView) findViewById(R.id.eventList);
@@ -59,9 +112,8 @@ public class MainActivity extends AppCompatActivity
                                     //TODO get to daily goals until all entries for the week are entered
                 Event e = (Event) lv.getItemAtPosition(position);
                 Intent i = new Intent(getApplicationContext(), OverviewActivity.class);
-                i.putExtra("event", e);
+                i.putExtra("Event", e);
                 startActivity(i);
-                finish();
             }
         });
 
@@ -110,6 +162,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_settings)
         {
+            return true;
+        }
+
+        else if(id == R.id.backup)
+        {
+            System.out.println("Backup Clicked--------");
+            dbHelper.exportToCVS();
             return true;
         }
 

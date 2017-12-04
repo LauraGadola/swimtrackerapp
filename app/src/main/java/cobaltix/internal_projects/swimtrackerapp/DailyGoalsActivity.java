@@ -64,6 +64,8 @@ public class DailyGoalsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        System.out.println("----------- Daily Goal Activity ------------");
+
         System.out.println(today);                                                      //TODO delete
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_goals);
@@ -453,6 +455,11 @@ public class DailyGoalsActivity extends AppCompatActivity
                 }
             }
         }
+        else if(id == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -460,8 +467,8 @@ public class DailyGoalsActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
-        intent.putExtra("Event", event);
-        startActivity(intent);
+        intent.putExtra("Event", event);                                        //todo do I need to pass it? looks like onCreate is not called
+        setResult(RESULT_OK, intent);
         finish();
     }
 

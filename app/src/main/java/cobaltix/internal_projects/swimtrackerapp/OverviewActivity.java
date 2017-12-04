@@ -1,6 +1,7 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -29,22 +30,28 @@ public class OverviewActivity extends AppCompatActivity
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        System.out.println("----------- Overview Activity ------------");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
         tabLayout.addTab(tabLayout.newTab().setText("Stats"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        Event event = (Event) getIntent().getSerializableExtra("event");
+        event = (Event) getIntent().getSerializableExtra("Event");
+        System.out.println("Event from intent: "+event);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -86,6 +93,19 @@ public class OverviewActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("OnActivityResult/__________________________");
+        System.out.println("code: "+requestCode);
+        System.out.println("result code: "+resultCode);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                event = (Event) data.getSerializableExtra("Event");
+                System.out.println("Event from result method: "+event);
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -111,4 +131,6 @@ public class OverviewActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void test(){}
 }

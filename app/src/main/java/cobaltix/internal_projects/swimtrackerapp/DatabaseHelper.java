@@ -2,15 +2,23 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
+import com.opencsv.CSVWriter;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,10 +33,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public static final String DATABASE_NAME = "Events.db";
     public static SQLiteDatabase db;
+    private Context context;
 
     public DatabaseHelper(Context context)
     {
         super(context, DATABASE_NAME, null, 1);
+        this.context = context;
     }
 
     @Override
@@ -76,6 +86,84 @@ public class DatabaseHelper extends SQLiteOpenHelper
             Log.getStackTraceString(e);
         }
         return false;
+    }
+
+    //todo delete - To have an initial database
+    public boolean importDatabase()
+    {
+        InputStream myInput = null;
+
+        try {
+            myInput = context.getAssets().open("databases/Events.db");
+            // Set the output file stream up:
+            db = getReadableDatabase();
+            OutputStream myOutput = new FileOutputStream(db.getPath());
+            db.close();
+
+            // Transfer bytes from the input file to the output file
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = myInput.read(buffer))>0)
+            {
+                myOutput.write(buffer, 0, length);
+            }
+            // Close and clear the streams
+
+            myOutput.flush();
+            myOutput.close();
+            myInput.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            Log.e("Restoring Database", "file not found");
+            e.printStackTrace();
+            return false;
+        }
+        catch (IOException e)
+        {
+            Log.e("Restoring Database", "IO exception");
+            e.printStackTrace();
+            return false;
+        }
+        Log.e("Restoring Database", "Restored");
+        return true;
+    }
+
+    public static boolean isDatabaseExist(Context context)
+    {
+        File dbFile = context.getDatabasePath(DATABASE_NAME);
+        return dbFile.exists();
+    }
+
+    //todo export the whole db - only exporting the events table now
+    public void exportToCVS()
+    {
+        File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+        if (sd.canWrite())
+        {
+            File file = new File(sd, "csvname.csv");
+            try
+            {
+                file.createNewFile();
+                CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+                SQLiteDatabase db = getReadableDatabase();
+                Cursor curCSV = db.rawQuery("SELECT * FROM " + DatabaseContract.Events.TABLE_NAME, null);
+                csvWrite.writeNext(curCSV.getColumnNames());
+                while (curCSV.moveToNext())
+                {
+                    //Which column you want to exprort
+                    String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2)};
+                    csvWrite.writeNext(arrStr);
+                }
+                System.out.println("DONE CVS EXPORT!!!!!!");
+                csvWrite.close();
+                curCSV.close();
+            } catch (Exception sqlEx)
+            {
+                Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
+            }
+        }
     }
 
     public Event addEvent(String title, String date)

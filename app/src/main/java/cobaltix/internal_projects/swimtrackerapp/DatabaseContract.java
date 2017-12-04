@@ -66,7 +66,6 @@ public final class DatabaseContract
         public static final String COLUMN_NAME_MIN = "minutes";
         public static final String COLUMN_NAME_WEIGHT = "weight";
         public static final String COLUMN_NAME_MILES = "miles";
-        public static final String COLUMN_NAME_LONGEST = "longest";
         public static final String COLUMN_NAME_HONEST = "honest";
         public static final String COLUMN_NAME_NOTES = "notes";
         public static final String COLUMN_NAME_WEEKLY_ID = "weekly_id";
@@ -82,7 +81,6 @@ public final class DatabaseContract
                         + DailyGoals.COLUMN_NAME_MIN + " INTEGER,"
                         + DailyGoals.COLUMN_NAME_WEIGHT + " FLOAT,"
                         + DailyGoals.COLUMN_NAME_MILES + " FLOAT,"
-                        + DailyGoals.COLUMN_NAME_LONGEST + " FLOAT,"
                         + DailyGoals.COLUMN_NAME_HONEST + " FLOAT,"
                         + DailyGoals.COLUMN_NAME_NOTES + " TEXT,"
                         + DailyGoals.COLUMN_NAME_WEEKLY_ID + " INTEGER,"

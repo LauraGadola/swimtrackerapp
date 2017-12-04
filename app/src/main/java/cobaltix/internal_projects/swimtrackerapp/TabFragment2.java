@@ -42,7 +42,7 @@ public class TabFragment2 extends MyFragment
     private DataPoint[] longestList;
     private DataPoint[] weightList;
 
-    /*@Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
@@ -192,5 +192,5 @@ public class TabFragment2 extends MyFragment
             btnFocus.setTextColor(getContext().getColor(R.color.colorAccent));
             btnFocus = b;
         }
-    }*/
+    }
 }

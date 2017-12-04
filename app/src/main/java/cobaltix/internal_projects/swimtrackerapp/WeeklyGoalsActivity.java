@@ -61,8 +61,8 @@ public class WeeklyGoalsActivity extends AppCompatActivity
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 myCalendar.set(year,monthOfYear,dayOfMonth);
-                int dayOfWeek = myCalendar.get(Calendar.DAY_OF_WEEK);
-                updateLabel(dayOfWeek);
+                //int dayOfWeek = myCalendar.get(Calendar.DAY_OF_WEEK);
+                updateLabel(myCalendar);
                 if(wgExists())
                 {
 //                    clearFields();
@@ -80,7 +80,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
             }
         });
 
-        updateLabel(myCalendar.get(Calendar.DAY_OF_WEEK));
+        updateLabel(myCalendar);
         if(wgExists())
         {
 //      clearFields();
@@ -96,25 +96,12 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         return false;
     }
 
-    private void updateLabel(int dayOfWeek) {
-        if(dayOfWeek != Calendar.SUNDAY)
-        {
-            //Set the date to the Sunday of that week
-            myCalendar.add(Calendar.DATE, -(dayOfWeek-1));
-        }
 
-        String sunFormat = "MMM dd";
-        String satFormat = "MMM dd, yyyy";
-        SimpleDateFormat sdfSun = new SimpleDateFormat(sunFormat);
-        SimpleDateFormat sdfSat = new SimpleDateFormat(satFormat);
+    //todo delete
+    private void updateLabel(Calendar myCalendar) {
 
-        sunday = sdfSun.format(myCalendar.getTime());
+        etWeek.setText(HelperClass.getWeek(myCalendar));
 
-        //Move the calendar to the last day of the week (Sat)
-        myCalendar.add(myCalendar.DATE, 6);
-        String sat = sdfSat.format(myCalendar.getTime());
-
-        etWeek.setText(sunday+" - "+sat);
     }
 
     @Override

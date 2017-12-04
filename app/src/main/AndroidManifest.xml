@@ -36,7 +36,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="cobaltix.internal_projects.swimtrackerapp.MainActivity"/>
+                android:value="cobaltix.internal_projects.swimtrackerapp.OverviewActivity"/>
         </activity>
         <activity
             android:name=".WeeklyGoalsActivity"
@@ -52,6 +52,9 @@
             android:label="@string/title_activity_overview"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cobaltix.internal_projects.swimtrackerapp.MainActivity"/>
         </activity>
     </application>
 
