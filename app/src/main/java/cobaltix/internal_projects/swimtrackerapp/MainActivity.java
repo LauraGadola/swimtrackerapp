@@ -1,8 +1,14 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -32,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private String today = sdf.format(myCal.getTime());
 
     private DatabaseHelper dbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -121,6 +128,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
+        //here for testing purposes (need to export db) - todo move to export cvs
+        PermissionsHandler permissionsHandler = new PermissionsHandler(this);
+        permissionsHandler.requestWriteExtStoragePermissions();
+
     }
 
     private void markDoneEvents(ArrayList<Event> eventList)
@@ -177,5 +189,8 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
 
 }
