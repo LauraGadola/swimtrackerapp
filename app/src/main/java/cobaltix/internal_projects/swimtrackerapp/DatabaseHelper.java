@@ -2,12 +2,12 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.opencsv.CSVWriter;
 
@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     SimpleDateFormat sdfDB = new SimpleDateFormat("yyyy/MM/dd");
 
 
-    public static final String DATABASE_NAME = "Events.db";
+    public static final String DATABASE_NAME = "events.db";
     public static SQLiteDatabase db;
     private Context context;
 
@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         InputStream myInput = null;
 
         try {
-            myInput = context.getAssets().open("databases/Events.db");
+            myInput = context.getAssets().open("databases/events.db");
             // Set the output file stream up:
             db = getReadableDatabase();
             OutputStream myOutput = new FileOutputStream(db.getPath());
@@ -159,6 +159,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 System.out.println("DONE CVS EXPORT!!!!!!");
                 csvWrite.close();
                 curCSV.close();
+                Toast.makeText(context, "CVS file exported into Downloads folder", Toast.LENGTH_SHORT).show();
             } catch (Exception sqlEx)
             {
                 Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
@@ -328,15 +329,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return null;
     }
 
-    public WeeklyGoal weekGoalExist(String weekStart, int event_id)
+    public WeeklyGoal getWeeklyGoal(String week, int event_id)
     {
         db = getReadableDatabase();
 
         //TODO Needed to check both week and event_id?
         String selectQuery = "SELECT * FROM " + DatabaseContract.WeeklyGoals.TABLE_NAME
-                + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK_START + " = '" + weekStart + "'"
+                + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK_START + " = '" + week + "'"
                 + " AND " + DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID + " = " + event_id;
-
+        Log.e("dbHelper",""+selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         while(cursor.moveToNext()) {
             int id = cursor.getInt(0);
@@ -344,7 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             float longest = cursor.getFloat(3);
             float weight = cursor.getFloat(4);
             String description = cursor.getString(5);
-            WeeklyGoal weeklyGoal = new WeeklyGoal(id, weekStart, miles, longest, weight, description, event_id);
+            WeeklyGoal weeklyGoal = new WeeklyGoal(id, week, miles, longest, weight, description, event_id);
             return weeklyGoal;
         }
         return null;
@@ -374,6 +375,31 @@ public class DatabaseHelper extends SQLiteOpenHelper
         String query = "SELECT * FROM "+ DatabaseContract.DailyGoals.TABLE_NAME
                 +" WHERE "+ DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID +" = "+ event_id
                 +" ORDER BY "+ DatabaseContract.DailyGoals.COLUMN_NAME_DATE;
+        Log.e("dbHelper","query: "+query);
+
+        return queryForDGList(query, event_id);
+    }
+
+    public ArrayList<DailyGoal> getDailyGoalList(String week, int event_id)
+    {
+        System.out.println(event_id);
+        Log.e("dbHelper", "Getting dgList for the week of "+week);
+        WeeklyGoal wg = getWeeklyGoal(week, event_id);
+        if(wg != null)
+        {
+            db = getReadableDatabase();
+            String query = "SELECT * FROM " + DatabaseContract.DailyGoals.TABLE_NAME
+                    + " WHERE " + DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID + " = " + event_id
+                    + " AND " + DatabaseContract.DailyGoals.COLUMN_NAME_WEEKLY_ID + " = " + wg.getId()
+                    + " ORDER BY " + DatabaseContract.DailyGoals.COLUMN_NAME_DATE + " DESC";
+            Log.e("dbHelper", "query: " + query);
+            return queryForDGList(query, event_id);
+        }
+        return null;
+    }
+
+    public ArrayList<DailyGoal> queryForDGList(String query, int event_id)
+    {
         Cursor cursor = db.rawQuery(query, null);
         ArrayList<DailyGoal> dailyGoalList = new ArrayList<>();
         while (cursor.moveToNext())

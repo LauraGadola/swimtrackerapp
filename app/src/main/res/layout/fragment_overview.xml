@@ -1,78 +1,20 @@
-<RelativeLayout
+<RelativeLayout android:id="@+id/fragment_overview"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_overview"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="cobaltix.internal_projects.swimtrackerapp.TabFragment2">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp">
-
-            <ImageButton android:id="@+id/btnPrevious"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_navigate_before_black_24px"
-                android:backgroundTint="@color/colorBackground"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <EditText android:id="@+id/etWeek"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textStyle="normal|bold"
-                android:textSize="20sp"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:textColor="@color/colorAccent"
-                android:layout_gravity="center"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <ImageButton android:id="@+id/btnNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_navigate_next_black_24px"
-                android:backgroundTint="@color/colorBackground"
-                android:layout_gravity="left"/>
-        </LinearLayout>
-
-        <ListView
-            android:id="@+id/dailyGoalList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="50dp">
-        </ListView>
-
     <LinearLayout android:id="@+id/empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp">
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="150dp">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -89,6 +31,19 @@
             android:textSize="18dp"
             android:textStyle="normal|bold"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/dailyGoalList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp">
+        </ListView>
+
     </LinearLayout>
 
 

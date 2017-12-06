@@ -16,7 +16,6 @@ public class HelperClass
     private HelperClass(){}
 
     public static String getWeek(Calendar myCal)  {
-        Log.e("HelperClass","date: "+ myCal.getTime().toString());
         int dayOfWeek = myCal.get(Calendar.DAY_OF_WEEK);
         if(dayOfWeek != Calendar.SUNDAY)
         {

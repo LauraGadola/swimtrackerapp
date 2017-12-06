@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -11,14 +12,19 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter
 {
-    int numOfTabs;
-    Event event;
+    private int numOfTabs;
+    private Event event;
+    private String week;
 
-    public SectionsPagerAdapter(FragmentManager fm, int numOfTabs, Event e)
+    private TabFragment1 tab1;
+    private TabFragment2 tab2;
+
+    public SectionsPagerAdapter(FragmentManager fm, int numOfTabs, Event e, String week)
     {
         super(fm);
         this.numOfTabs = numOfTabs;
         this.event = e;
+        this.week = week;
     }
 
     @Override
@@ -26,6 +32,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter
     {
         Bundle bundle = new Bundle();
         bundle.putSerializable("Event", event);
+        bundle.putString("week", week);
         switch (position)
         {
             case 0:
@@ -40,6 +47,36 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter
                 return null;
         }
         // getItem is called to instantiate the fragment for the given page.
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position)
+    {
+        Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+        // save the appropriate reference depending on position
+        switch (position) {
+            case 0:
+                tab1 = (TabFragment1) createdFragment;
+                break;
+            case 1:
+                tab2 = (TabFragment2) createdFragment;
+                break;
+        }
+        return createdFragment;
+    }
+
+    public Fragment getTab(int position)
+    {
+        switch (position)
+        {
+            case 0:
+                return tab1;
+            case 1:
+                return tab2;
+
+            default:
+                return null;
+        }
     }
 
     @Override

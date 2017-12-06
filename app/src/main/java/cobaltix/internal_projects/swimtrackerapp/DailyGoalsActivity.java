@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,7 +67,6 @@ public class DailyGoalsActivity extends AppCompatActivity
     {
         System.out.println("----------- Daily Goal Activity ------------");
 
-        System.out.println(today);                                                      //TODO delete
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_goals);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -272,6 +272,7 @@ public class DailyGoalsActivity extends AppCompatActivity
     //TODO improve - keep only dg
     private void goToDay(DailyGoal dg, String date)
     {
+        Log.e("DGA","Going to day " + date);
         if(dg == null)
         {
             currentDG = null;
@@ -394,71 +395,73 @@ public class DailyGoalsActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
-        if (id == R.id.action_done)
+        switch (id)
         {
-            String date = String.valueOf(etDate.getText());
-            if(date.contains("Today"))
-            {
-                date = date.substring(8);
-            }
+            case R.id.action_done:
 
-            String location = String.valueOf(etLocation.getText());
-            float temp = Float.parseFloat(String.valueOf(etTempF.getText()));
-
-
-            String time = String.valueOf(etTime.getText());
-            int hrs = Integer.parseInt(time.substring(0, time.indexOf(":")));
-            int min = Integer.parseInt(time.substring(time.indexOf(":")+1, time.length()));
-
-            float weight = Float.parseFloat(String.valueOf(etWeight.getText()));
-            float miles = Float.parseFloat(String.valueOf(etMiles.getText()));
-            float honest = Float.parseFloat(String.valueOf(etHonest.getText()));
-            String notes = String.valueOf(etNotes.getText());
-
-            WeeklyGoal wg = dbHelper.getLastWeeklyGoal(event.getId());
-            int weekly_id = wg.getId();
-
-            if(currentDG != null) //update
-            {
-                DailyGoal updatedDG = new DailyGoal(currentDG.getId(), date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event.getId());
-                currentDG = updatedDG;
-                int i = dglist.indexOf(currentDG);
-                dglist.set(i, updatedDG);
-                dbHelper.updateDailyGoal(currentDG, updatedDG);
-                Toast.makeText(this, "Daily goal has been updated", Toast.LENGTH_SHORT).show();
-                scrollView.fullScroll(ScrollView.FOCUS_UP);
-            }
-            else //create new entry
-            {
-                //TODO the last weekly goal should be the only one in place?
-                DailyGoal newDG = new DailyGoal(date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event.getId());
-                int newRowId = dbHelper.addDailyGoal(newDG);
-                newDG.setId(newRowId);
-                currentDG = newDG;
-                dglist = dbHelper.getDailyGoalList(event.getId());
-                Toast.makeText(this, "Daily goal was saved", Toast.LENGTH_SHORT).show();
-
-                //If you entered today or last day prior to event go back to main page
-                if(isUpToDate(date))
+                String date = String.valueOf(etDate.getText());
+                if (date.contains("Today"))
                 {
-                    Toast.makeText(this, "Your log is up-to-date!", Toast.LENGTH_SHORT).show();
-                    this.finish();                                             //TODO return to main page
+                    date = date.substring(8);
                 }
-                else //go to next
+
+                String location = String.valueOf(etLocation.getText());
+                float temp = Float.parseFloat(String.valueOf(etTempF.getText()));
+
+
+                String time = String.valueOf(etTime.getText());
+                int hrs = Integer.parseInt(time.substring(0, time.indexOf(":")));
+                int min = Integer.parseInt(time.substring(time.indexOf(":") + 1, time.length()));
+
+                float weight = Float.parseFloat(String.valueOf(etWeight.getText()));
+                float miles = Float.parseFloat(String.valueOf(etMiles.getText()));
+                float honest = Float.parseFloat(String.valueOf(etHonest.getText()));
+                String notes = String.valueOf(etNotes.getText());
+
+                WeeklyGoal wg = dbHelper.getLastWeeklyGoal(event.getId());
+                int weekly_id = wg.getId();
+
+                if (currentDG != null) //update
                 {
-                    String nextDay = getDay(date, 1);
-                    DailyGoal nextDG = getDG(nextDay);
-                    goToDay(nextDG, nextDay);
-//                    moveToNextDay(date);
+                    DailyGoal updatedDG = new DailyGoal(currentDG.getId(), date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event.getId());
+                    currentDG = updatedDG;
+                    int i = dglist.indexOf(currentDG);
+                    dglist.set(i, updatedDG);
+                    dbHelper.updateDailyGoal(currentDG, updatedDG);
+                    Toast.makeText(this, "Daily goal has been updated", Toast.LENGTH_SHORT).show();
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
+                } else //create new entry
+                {
+                    //TODO the last weekly goal should be the only one in place?
+                    DailyGoal newDG = new DailyGoal(date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event.getId());
+                    int newRowId = dbHelper.addDailyGoal(newDG);
+                    newDG.setId(newRowId);
+                    currentDG = newDG;
+                    dglist = dbHelper.getDailyGoalList(event.getId());
+                    Toast.makeText(this, "Daily goal was saved", Toast.LENGTH_SHORT).show();
 
+                    //If you entered today or last day prior to event go back to main page
+                    if (isUpToDate(date))
+                    {
+                        Toast.makeText(this, "Your log is up-to-date!", Toast.LENGTH_SHORT).show();
+                        finish();                                             //TODO return to main page
+                    } else //go to next
+                    {
+
+                        String nextDay = getDay(date, 1);
+                        DailyGoal nextDG = getDG(nextDay);
+                        Log.e("DGA","DG: "+nextDay);
+                        goToDay(nextDG, nextDay);
+                        //                    moveToNextDay(date);
+                        scrollView.fullScroll(ScrollView.FOCUS_UP);
+                        return true;
+                    }
                 }
-            }
-        }
-        else if(id == android.R.id.home)
-        {
-            onBackPressed();
-            return true;
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
         }
 
         return super.onOptionsItemSelected(item);

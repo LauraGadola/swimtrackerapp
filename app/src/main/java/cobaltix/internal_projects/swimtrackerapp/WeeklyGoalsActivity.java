@@ -12,7 +12,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
@@ -24,9 +23,9 @@ public class WeeklyGoalsActivity extends AppCompatActivity
     private EditText etWeight;
     private EditText etDescription;
 
-    private String sunday;
     private Event event;
     private WeeklyGoal weeklyGoal;
+    private String week;
 
     private Calendar myCalendar;
     private DatePickerDialog.OnDateSetListener date;
@@ -90,7 +89,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
     private boolean wgExists()
     {
-        weeklyGoal = dbHelper.weekGoalExist(sunday, event.getId());
+        weeklyGoal = dbHelper.getWeeklyGoal(week, event.getId());
         if(weeklyGoal != null)
             return true;
         return false;
@@ -99,9 +98,8 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
     //todo delete
     private void updateLabel(Calendar myCalendar) {
-
-        etWeek.setText(HelperClass.getWeek(myCalendar));
-
+        week = HelperClass.getWeek(myCalendar);
+        etWeek.setText(week);
     }
 
     @Override
@@ -116,34 +114,39 @@ public class WeeklyGoalsActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
-        if (id == R.id.action_done)
+        switch (id)
         {
-            float miles = Float.parseFloat(etWeeklyMiles.getText().toString());
-            float longest = Float.parseFloat(etLongest.getText().toString());
-            float weight = Float.parseFloat(etWeight.getText().toString());
-            String description = etDescription.getText().toString();
+            case R.id.action_done:
+                float miles = Float.parseFloat(etWeeklyMiles.getText().toString());
+                float longest = Float.parseFloat(etLongest.getText().toString());
+                float weight = Float.parseFloat(etWeight.getText().toString());
+                String description = etDescription.getText().toString();
 
-            if(!wgExists())
-            {
-                weeklyGoal = dbHelper.addWeeklyGoal(sunday, miles, longest, weight, description, event.getId());
-                Toast.makeText(this, "Your weekly goal was saved", Toast.LENGTH_SHORT).show();
-            }
+                if(!wgExists())
+                {
+                    weeklyGoal = dbHelper.addWeeklyGoal(week, miles, longest, weight, description, event.getId());
+                    Toast.makeText(this, "Your weekly goal was saved", Toast.LENGTH_SHORT).show();
+                }
 
-            //TODO Do I need to get the wg back?
-            else
-            {
-                dbHelper.updateWeeklyGoal(weeklyGoal, miles, longest, weight, description);
-                Toast.makeText(this, "You have updated this weekly goal", Toast.LENGTH_SHORT).show();
-            }
+                //TODO Do I need to get the wg back?
+                else
+                {
+                    dbHelper.updateWeeklyGoal(weeklyGoal, miles, longest, weight, description);
+                    Toast.makeText(this, "You have updated this weekly goal", Toast.LENGTH_SHORT).show();
+                }
+
+                //TODO go to main page? or as long as there's a day to fill in prompt the daily page?
+                Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
+                i.putExtra("event", event);
+                i.putExtra("weekly_goal", weeklyGoal);
+                startActivity(i);
+                //finish();
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
 
-
-        //TODO go to main page? or as long as there's a day to fill in prompt the daily page?
-        Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
-        i.putExtra("event", event);
-        i.putExtra("weekly_goal", weeklyGoal);
-        startActivity(i);
-        finish();
         return super.onOptionsItemSelected(item);
     }
 

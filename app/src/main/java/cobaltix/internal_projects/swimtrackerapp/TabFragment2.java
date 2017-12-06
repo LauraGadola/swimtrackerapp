@@ -37,6 +37,7 @@ public class TabFragment2 extends MyFragment
     private Button btnLongest;
     private Button btnWeight;
     private Button btnFocus;
+    private LinearLayout empty;
 
     private DataPoint[] milesList;
     private DataPoint[] longestList;
@@ -46,6 +47,7 @@ public class TabFragment2 extends MyFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        System.out.println("-------------- Tab 2 ------------------");
         View v = inflater.inflate(R.layout.content_fragment_charts, container, false);
 
         graph = (GraphView) v.findViewById(R.id.graph);
@@ -53,77 +55,95 @@ public class TabFragment2 extends MyFragment
         btnMiles = (Button) v.findViewById(R.id.btnMiles);
         btnLongest = (Button) v.findViewById(R.id.btnLongest);
         btnWeight = (Button) v.findViewById(R.id.btnWeight);
+        empty = (LinearLayout) v.findViewById(R.id.empty);
 
-        event = getEvent();
         dbHelper = new DatabaseHelper(getContext());
 
-        dgList = dbHelper.getDailyGoalList(event.getId());
-        milesList = new DataPoint[dgList.size()];
-//        longestList = new DataPoint[dgList.size()];
-        weightList = new DataPoint[dgList.size()];
-        int i = 0;
-        for(DailyGoal dg : dgList)
+        setElements(getWeek());
+
+        return v;
+    }
+
+    public void setElements(String week)
+    {
+        event = getEvent();
+        dgList = dbHelper.getDailyGoalList(week, event.getId());
+        if(dgList != null)
         {
-            Date date = null;
-            try
-            {
-                date = sdf.parse(dg.getDate());
-            } catch (ParseException e)
-            {
-                e.printStackTrace();
-            }
+            empty.setVisibility(View.INVISIBLE);
+            graph.setVisibility(View.VISIBLE);
+            btnGroup.setVisibility(View.VISIBLE);
 
-            DataPoint milesDP = new DataPoint(date, dg.getMiles());
-            milesList[i] = milesDP;
+            milesList = new DataPoint[dgList.size()];
+//        longestList = new DataPoint[dgList.size()];
+            weightList = new DataPoint[dgList.size()];
+            int i = 0;
+            for (DailyGoal dg : dgList)
+            {
+                Date date = null;
+                try
+                {
+                    date = sdf.parse(dg.getDate());
+                } catch (ParseException e)
+                {
+                    e.printStackTrace();
+                }
 
-            //TODO calculate longest
+                DataPoint milesDP = new DataPoint(date, dg.getMiles());
+                milesList[i] = milesDP;
+
+                //TODO calculate longest
 //            DataPoint longestDP = new DataPoint(date, dg.getLongest());
 //            longestList[i] = longestDP;
 
-            DataPoint weightDP = new DataPoint(date, dg.getWeight());
-            weightList[i] = weightDP;
+                DataPoint weightDP = new DataPoint(date, dg.getWeight());
+                weightList[i] = weightDP;
 
-            i++;
+                i++;
 
+            }
+
+            btnMiles.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    setBtnFocus(btnMiles);
+                    renderGraph("Miles");
+                }
+            });
+
+            btnLongest.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    setBtnFocus(btnLongest);
+                    renderGraph("Longest");
+                }
+            });
+
+            btnWeight.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    setBtnFocus(btnWeight);
+                    renderGraph("Weight");
+                }
+            });
+
+            //TODO change depending on button click
+
+            btnFocus = btnMiles;
+            setBtnFocus(btnMiles);
+            renderGraph("Miles");
         }
-
-        btnMiles.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                setBtnFocus(btnMiles);
-                renderGraph("Miles");
-            }
-        });
-
-        btnLongest.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                setBtnFocus(btnLongest);
-                renderGraph("Longest");
-            }
-        });
-
-        btnWeight.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                setBtnFocus(btnWeight);
-                renderGraph("Weight");
-            }
-        });
-
-        //TODO change depending on button click
-
-        btnFocus = btnMiles;
-        setBtnFocus(btnMiles);
-        renderGraph("Miles");
-
-        return v;
+        else {
+            graph.setVisibility(View.INVISIBLE);
+            btnGroup.setVisibility(View.INVISIBLE);
+            empty.setVisibility(View.VISIBLE);
+        }
     }
 
     public void renderGraph(String title)

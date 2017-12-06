@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity
             Log.e("MainActivity", "Event: " + recentEvent);
 
             ArrayList<DailyGoal> dgList = dbHelper.getDailyGoalList(recentEvent.getId());
-            DailyGoal lastDG = null;
+            DailyGoal lastDG;
             String date = "";
             if (!dgList.isEmpty())
             {
@@ -76,11 +77,14 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
 
                 //todo should it be a dialog?
-                Toast.makeText(this, "You have not entered all your logs!", Toast.LENGTH_SHORT).show();
+                Toast toast= Toast.makeText(this, "You have not entered all your logs!", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
             }
 
         }
         ////End of prompt
+        Log.e("MainActivity", "------------End of prompt----------");
 
         setContentView(R.layout.activity_main);
 
@@ -109,7 +113,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                                    //TODO get to daily goals until all entries for the week are entered
+
                 Event e = (Event) lv.getItemAtPosition(position);
                 Intent i = new Intent(getApplicationContext(), OverviewActivity.class);
                 i.putExtra("Event", e);
@@ -167,13 +171,11 @@ public class MainActivity extends AppCompatActivity
 
         else if(id == R.id.backup)
         {
-            System.out.println("Backup Clicked--------");
             dbHelper.exportToCVS();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 
 }

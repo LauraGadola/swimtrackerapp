@@ -10,9 +10,30 @@
     android:paddingTop="16dp"
     tools:context="cobaltix.internal_projects.swimtrackerapp.TabFragment1">
 
-    <LinearLayout
+    <LinearLayout android:id="@+id/empty"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="150dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icons_statistics_96"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No Statistics Available"
+            android:textSize="18dp"
+            android:textStyle="normal|bold"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/buttonsLine"
         android:layout_width="fill_parent"
-        android:id="@+id/buttonsLine"
         android:layout_height="30dp">
 
         <Button
@@ -42,10 +63,10 @@
     </LinearLayout>
 
 
-    <com.jjoe64.graphview.GraphView
+    <com.jjoe64.graphview.GraphView android:id="@+id/graph"
         android:layout_width="wrap_content"
         android:layout_height="300dp"
-        android:layout_below="@+id/buttonsLine"
-        android:id="@+id/graph"/>
+        android:layout_below="@+id/buttonsLine"/>
+
 
 </RelativeLayout>
