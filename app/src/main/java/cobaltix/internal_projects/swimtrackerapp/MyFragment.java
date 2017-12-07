@@ -7,7 +7,8 @@ import android.util.Log;
 
 public abstract class MyFragment extends Fragment
 {
-    Bundle bundle;
+    private String week;
+    private Bundle bundle;
     public Event getEvent()
     {
         bundle = this.getArguments();
@@ -19,10 +20,19 @@ public abstract class MyFragment extends Fragment
 
     public String getWeek()
     {
-        bundle = this.getArguments();
-        String week = "";
-        if (bundle != null)
-            week = bundle.getString("week");
+        //todo to test
+        if(week == null)
+        {
+            bundle = this.getArguments();
+            if (bundle != null)
+                week = bundle.getString("week");
+        }
+        return week;
+    }
+
+    public String setWeek(String week)
+    {
+        this.week = week;
         return week;
     }
 

@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
@@ -34,14 +36,24 @@ public class TabFragment2 extends MyFragment
     private GraphView graph;
     private LinearLayout btnGroup;
     private Button btnMiles;
-    private Button btnLongest;
     private Button btnWeight;
     private Button btnFocus;
     private LinearLayout empty;
 
     private DataPoint[] milesList;
-    private DataPoint[] longestList;
     private DataPoint[] weightList;
+
+    private ProgressBar progressBarMiles;
+    private ProgressBar progressBarLongest;
+    private ProgressBar progressBarWeight;
+    private TextView txtMilesPercent;
+    private TextView txtLongestPercent;
+    private TextView txtWeightPercent;
+
+    private LinearLayout percentageLayout;
+
+    private float longest;
+    private float totDist;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,29 +65,57 @@ public class TabFragment2 extends MyFragment
         graph = (GraphView) v.findViewById(R.id.graph);
         btnGroup = (LinearLayout) v.findViewById(R.id.buttonsLine);
         btnMiles = (Button) v.findViewById(R.id.btnMiles);
-        btnLongest = (Button) v.findViewById(R.id.btnLongest);
         btnWeight = (Button) v.findViewById(R.id.btnWeight);
         empty = (LinearLayout) v.findViewById(R.id.empty);
+        progressBarMiles = (ProgressBar) v.findViewById(R.id.progressBarMiles);
+        progressBarLongest = (ProgressBar) v.findViewById(R.id.progressBarLongest);
+        progressBarWeight = (ProgressBar) v.findViewById(R.id.progressBarWeight);
+        txtMilesPercent = (TextView) v.findViewById(R.id.txtMilesPercent);
+        txtLongestPercent = (TextView) v.findViewById(R.id.txtLongestPercent);
+        txtWeightPercent = (TextView) v.findViewById(R.id.txtWeightPercent);
+        percentageLayout = (LinearLayout) v.findViewById(R.id.percentageLayout);
 
         dbHelper = new DatabaseHelper(getContext());
 
-        setElements(getWeek());
+        setElements();
 
         return v;
     }
 
-    public void setElements(String week)
+    public void setElements()
     {
         event = getEvent();
-        dgList = dbHelper.getDailyGoalList(week, event.getId());
+        dgList = dbHelper.getDailyGoalList(getWeek(), event.getId());
         if(dgList != null)
         {
             empty.setVisibility(View.INVISIBLE);
+
             graph.setVisibility(View.VISIBLE);
             btnGroup.setVisibility(View.VISIBLE);
+            percentageLayout.setVisibility(View.VISIBLE);
 
+            //SET PERCENTAGES
+            WeeklyGoal weeklyGoal = dbHelper.getWeeklyGoal(getWeek(), event.getId());
+            System.out.println("WG Miles: "+weeklyGoal.getMiles() + " / " + totDist);
+            System.out.println("WG Longest: "+weeklyGoal.getLongest() + " / " + longest);
+            System.out.println("WG Weight: "+weeklyGoal.getWeight() + " / " + dgList.get(0).getWeight());
+
+            int percent;
+            percent = (int) (totDist/weeklyGoal.getMiles()*100);
+            progressBarMiles.setProgress(percent);
+            txtMilesPercent.setText(String.valueOf(percent)+"%");
+
+            percent = (int) (longest/weeklyGoal.getLongest()*100);
+            progressBarLongest.setProgress(percent);
+            txtLongestPercent.setText(String.valueOf(percent)+"%");
+
+            System.out.println("Last DG weight: "+dgList.get(0).getWeight());
+            percent = (int) (dgList.get(0).getWeight() / weeklyGoal.getWeight()*100);
+            progressBarWeight.setProgress(percent);
+            txtWeightPercent.setText(String.valueOf(percent)+"%");
+
+            //SET GRAPH
             milesList = new DataPoint[dgList.size()];
-//        longestList = new DataPoint[dgList.size()];
             weightList = new DataPoint[dgList.size()];
             int i = 0;
             for (DailyGoal dg : dgList)
@@ -92,15 +132,10 @@ public class TabFragment2 extends MyFragment
                 DataPoint milesDP = new DataPoint(date, dg.getMiles());
                 milesList[i] = milesDP;
 
-                //TODO calculate longest
-//            DataPoint longestDP = new DataPoint(date, dg.getLongest());
-//            longestList[i] = longestDP;
-
                 DataPoint weightDP = new DataPoint(date, dg.getWeight());
                 weightList[i] = weightDP;
 
                 i++;
-
             }
 
             btnMiles.setOnClickListener(new View.OnClickListener()
@@ -110,16 +145,6 @@ public class TabFragment2 extends MyFragment
                 {
                     setBtnFocus(btnMiles);
                     renderGraph("Miles");
-                }
-            });
-
-            btnLongest.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    setBtnFocus(btnLongest);
-                    renderGraph("Longest");
                 }
             });
 
@@ -142,6 +167,8 @@ public class TabFragment2 extends MyFragment
         else {
             graph.setVisibility(View.INVISIBLE);
             btnGroup.setVisibility(View.INVISIBLE);
+            percentageLayout.setVisibility(View.INVISIBLE);
+
             empty.setVisibility(View.VISIBLE);
         }
     }
@@ -154,9 +181,6 @@ public class TabFragment2 extends MyFragment
             case "Miles":
                 list = milesList;
                 break;
-            case "Longest":
-                list = longestList;
-                break;
             case "Weight":
                 list = weightList;
                 break;
@@ -167,7 +191,6 @@ public class TabFragment2 extends MyFragment
 
         graph.removeAllSeries();
         graph.addSeries(series);
-        graph.setTitle("Week: ");                       //TODO Create a text field on top of buttons
         series.setColor(Color.rgb(21,157,231));
         series.setDrawBackground(true);
         series.setDrawDataPoints(true);
@@ -212,5 +235,15 @@ public class TabFragment2 extends MyFragment
             btnFocus.setTextColor(getContext().getColor(R.color.colorAccent));
             btnFocus = b;
         }
+    }
+
+    public void setLongest(float longest)
+    {
+        this.longest = longest;
+    }
+
+    public void setTotDist(float totDist)
+    {
+        this.totDist = totDist;
     }
 }

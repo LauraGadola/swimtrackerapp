@@ -1,7 +1,6 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,13 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.support.design.widget.TabLayout;
-import android.view.View;
 import android.widget.DatePicker;
-import android.widget.RelativeLayout;
 
 import java.util.Calendar;
 
-public class OverviewActivity extends AppCompatActivity
+public class OverviewActivity extends AppCompatActivity implements TabFragment1.OnLongestCalculatedListener
 {
 
     /**
@@ -39,7 +36,9 @@ public class OverviewActivity extends AppCompatActivity
     private ViewPager mViewPager;
     private Event event;
     private TabLayout tabLayout;
-    Calendar myCal;
+    private Calendar myCal;
+    private TabFragment1 tabOverview;
+    private TabFragment2 tabStats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -91,24 +90,46 @@ public class OverviewActivity extends AppCompatActivity
 
             }
         });
-
     }
 
-//
-//    //todo check if needed
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        Log.e("Overview","OnActivityResult");
-//        System.out.println("code: "+requestCode);
-//        System.out.println("result code: "+resultCode);
-//        if (requestCode == 1) {
-//            if(resultCode == RESULT_OK) {
-//                event = (Event) data.getSerializableExtra("Event");
-//                System.out.println("Event from result method: "+event);
-//            }
-//        }
-//    }
+    //todo check if needed
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("Overview","OnActivityResult/");
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                DailyGoal dg;
+                dg = (DailyGoal) data.getSerializableExtra("add");
+                if(dg != null)
+                {
+                    getTabOverview().addToListView(dg);
+                    getTabStats().setElements();
+                    Log.e("Overview","add");
+                }
+                else
+                {
+                    dg = (DailyGoal) data.getSerializableExtra("update");
+                    if (dg != null)
+                    {
+                        getTabOverview().updateListView(dg);
+                        getTabStats().setElements();
+                        Log.e("Overview","update");
+                    }
+                    else
+                    {
+                        dg = (DailyGoal) data.getSerializableExtra("remove");
+                        if (dg != null)
+                        {
+                            getTabOverview().removeFromListView(dg);
+                            getTabStats().setElements();
+                            Log.e("Overview","remove");
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -126,7 +147,6 @@ public class OverviewActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch (id)
         {
             case R.id.action_calendar:
@@ -140,12 +160,14 @@ public class OverviewActivity extends AppCompatActivity
                         setTitle(week);
 
                         //Update list in tab
-                        TabFragment1 tabList = (TabFragment1) mSectionsPagerAdapter.getTab(0);
-                        View v = tabList.getView();
-                        tabList.setList(v, week);
+                        getTabOverview();
+                        tabOverview.setWeek(week);
+                        tabOverview.setList();
+                        tabOverview.showResults();
 
-                        TabFragment2 tabStats = (TabFragment2) mSectionsPagerAdapter.getTab(1);
-                        tabStats.setElements(week);
+                        getTabStats();
+                        tabStats.setWeek(week);
+                        tabStats.setElements();
 
                     }
                 };
@@ -159,4 +181,21 @@ public class OverviewActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void sendLongest(float longest, float miles)
+    {
+        TabFragment2 tab2 = (TabFragment2) mSectionsPagerAdapter.getTab(1);
+        tab2.setLongest(longest);
+        tab2.setTotDist(miles);
+    }
+
+    public TabFragment1 getTabOverview()
+    {
+        return tabOverview = (TabFragment1) mSectionsPagerAdapter.getTab(0);
+    }
+
+    public TabFragment2 getTabStats()
+    {
+        return tabStats = (TabFragment2) mSectionsPagerAdapter.getTab(1);
+    }
 }

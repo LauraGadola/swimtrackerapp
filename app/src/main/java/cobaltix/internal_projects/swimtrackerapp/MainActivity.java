@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity
             Event recentEvent = eventList.get(0);
             Log.e("MainActivity", "Event: " + recentEvent);
 
-            ArrayList<DailyGoal> dgList = dbHelper.getDailyGoalList(recentEvent.getId());
+            LinkedList<DailyGoal> dgList = dbHelper.getDailyGoalList(recentEvent.getId());
             DailyGoal lastDG;
             String date = "";
             if (!dgList.isEmpty())
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity
 
         for(Event e : eventList)
         {
-            ArrayList<DailyGoal> dgList = dbHelper.getDailyGoalList(e.getId());
+            LinkedList<DailyGoal> dgList = dbHelper.getDailyGoalList(e.getId());
             if(!dgList.isEmpty())
             {
                 DailyGoal dgLast = dgList.get(dgList.size() - 1);

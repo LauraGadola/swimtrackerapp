@@ -11,14 +11,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class DailyGoalsListAdapter extends ArrayAdapter<DailyGoal>
 {
     private Activity context;
     private DailyGoal dg;
-    private ArrayList<DailyGoal> dgList;
+    private LinkedList<DailyGoal> dgList;
 
-    public DailyGoalsListAdapter(Activity context, ArrayList<DailyGoal> dailyGoals) {
+    public DailyGoalsListAdapter(Activity context, LinkedList<DailyGoal> dailyGoals) {
         super(context, 0, dailyGoals);
         this.context = context;
         this.dgList = dailyGoals;

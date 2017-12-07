@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
@@ -369,7 +370,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return events;
     }
 
-    public ArrayList<DailyGoal> getDailyGoalList(int event_id)
+    public LinkedList<DailyGoal> getDailyGoalList(int event_id)
     {
         db = getReadableDatabase();
         String query = "SELECT * FROM "+ DatabaseContract.DailyGoals.TABLE_NAME
@@ -380,7 +381,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return queryForDGList(query, event_id);
     }
 
-    public ArrayList<DailyGoal> getDailyGoalList(String week, int event_id)
+    public LinkedList<DailyGoal> getDailyGoalList(String week, int event_id)
     {
         System.out.println(event_id);
         Log.e("dbHelper", "Getting dgList for the week of "+week);
@@ -398,10 +399,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return null;
     }
 
-    public ArrayList<DailyGoal> queryForDGList(String query, int event_id)
+    public LinkedList<DailyGoal> queryForDGList(String query, int event_id)
     {
         Cursor cursor = db.rawQuery(query, null);
-        ArrayList<DailyGoal> dailyGoalList = new ArrayList<>();
+        LinkedList<DailyGoal> dailyGoalList = new LinkedList<>();
         while (cursor.moveToNext())
         {
             int id = cursor.getInt(0);
@@ -414,9 +415,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
             float miles = cursor.getFloat(7);
 
             //TODO change numbers below
-            float honest = cursor.getFloat(9);
-            String notes = cursor.getString(10);
-            int weekly_id = cursor.getInt(11);
+            float honest = cursor.getFloat(8);
+            String notes = cursor.getString(9);
+            int weekly_id = cursor.getInt(10);
 
             DailyGoal dg = new DailyGoal(id, date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event_id);
             dailyGoalList.add(dg);

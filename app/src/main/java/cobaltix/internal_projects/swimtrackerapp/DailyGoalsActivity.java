@@ -21,8 +21,10 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DailyGoalsActivity extends AppCompatActivity
@@ -53,7 +55,7 @@ public class DailyGoalsActivity extends AppCompatActivity
     private WeeklyGoal weeklyGoal;
     private DailyGoal dailyGoal;
 
-    private List<DailyGoal> dglist;
+    private LinkedList<DailyGoal> dglist;
     private DailyGoal currentDG;
     private DailyGoal lastSavedDG;
 
@@ -229,9 +231,11 @@ public class DailyGoalsActivity extends AppCompatActivity
             {
                 dbHelper.removeDailyGoal(currentDG);
                 dglist.remove(currentDG);
+                updateTabs("remove");
                 currentDG = null;
                 clearAll();
                 Toast.makeText(DailyGoalsActivity.this, "Daily goal has been deleted", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
 
@@ -428,8 +432,14 @@ public class DailyGoalsActivity extends AppCompatActivity
                     int i = dglist.indexOf(currentDG);
                     dglist.set(i, updatedDG);
                     dbHelper.updateDailyGoal(currentDG, updatedDG);
+                    updateTabs("update");
+
                     Toast.makeText(this, "Daily goal has been updated", Toast.LENGTH_SHORT).show();
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
+
+                    finish();
+                    return true;
+
                 } else //create new entry
                 {
                     //TODO the last weekly goal should be the only one in place?
@@ -438,6 +448,8 @@ public class DailyGoalsActivity extends AppCompatActivity
                     newDG.setId(newRowId);
                     currentDG = newDG;
                     dglist = dbHelper.getDailyGoalList(event.getId());
+                    updateTabs("add");
+
                     Toast.makeText(this, "Daily goal was saved", Toast.LENGTH_SHORT).show();
 
                     //If you entered today or last day prior to event go back to main page
@@ -465,6 +477,13 @@ public class DailyGoalsActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateTabs(String message)
+    {
+        Intent intent = new Intent();
+        intent.putExtra(message, currentDG);
+        setResult(RESULT_OK, intent);
     }
 
     @Override
