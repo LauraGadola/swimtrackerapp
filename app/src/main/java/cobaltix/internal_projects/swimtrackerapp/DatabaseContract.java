@@ -36,7 +36,6 @@ public final class DatabaseContract
         public static final String COLUMN_NAME_LONGEST = "longest";
         public static final String COLUMN_NAME_WEIGHT = "weight";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
-        public static final String COLUMN_NAME_EVENT_ID = "event_id";
 
         public static final String CREATE_TABLE_WEEKLY_GOALS =
                 "CREATE TABLE " + WeeklyGoals.TABLE_NAME + " ("
@@ -45,11 +44,7 @@ public final class DatabaseContract
                         + WeeklyGoals.COLUMN_NAME_MILES + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_LONGEST + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_WEIGHT + " FLOAT,"
-                        + WeeklyGoals.COLUMN_NAME_DESCRIPTION + " TEXT,"
-                        + WeeklyGoals.COLUMN_NAME_EVENT_ID + " INTEGER,"
-
-                        //TODO CHECK IF WORKS
-                        + "FOREIGN KEY(" + COLUMN_NAME_EVENT_ID + ") REFERENCES " + Events.TABLE_NAME + "(" + Events._ID + "));";
+                        + WeeklyGoals.COLUMN_NAME_DESCRIPTION + " TEXT);";
 
         public static final String DELETE_TABLE_WEEKLY_EVENTS =
                 "DROP TABLE IF EXIST " + WeeklyGoals.TABLE_NAME;
@@ -85,6 +80,9 @@ public final class DatabaseContract
                         + DailyGoals.COLUMN_NAME_NOTES + " TEXT,"
                         + DailyGoals.COLUMN_NAME_WEEKLY_ID + " INTEGER,"
                         + DailyGoals.COLUMN_NAME_EVENT_ID + " INTEGER);";
+
+                        //TODO CHECK IF WORKS
+//                        + "FOREIGN KEY(" + COLUMN_NAME_EVENT_ID + ") REFERENCES " + Events.TABLE_NAME + "(" + Events._ID + "));";
 
         public static final String DELETE_TABLE_DAILY_GOALS =
                 "DROP TABLE IF EXISTS " + DailyGoals.TABLE_NAME;

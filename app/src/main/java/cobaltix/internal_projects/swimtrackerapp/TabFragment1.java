@@ -3,7 +3,7 @@ package cobaltix.internal_projects.swimtrackerapp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +13,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class TabFragment1 extends MyFragment
 {
-    private static DatabaseHelper dbHelper;
+    private DatabaseHelper dbHelper;
 
     private View view;
     private ListView lv;
@@ -27,8 +26,8 @@ public class TabFragment1 extends MyFragment
     private LinearLayout totDistLayout;
     private LinearLayout longestLayout;
 
-    private static LinkedList<DailyGoal> dgList;
-    private static DailyGoalsListAdapter adapter;
+    private LinkedList<DailyGoal> dgList;
+    private DailyGoalsListAdapter adapter;
 
     private OnLongestCalculatedListener listener;
 
@@ -46,17 +45,18 @@ public class TabFragment1 extends MyFragment
         totDistLayout = (LinearLayout) view.findViewById(R.id.totalDistLayout);
         longestLayout = (LinearLayout) view.findViewById(R.id.longestLayout);
 
-        setList();
+        populateListView();
 
         showResults();
 
         return view;
     }
 
-    public void setList()
+    public void populateListView()
     {
         dbHelper = new DatabaseHelper(getActivity());
-        dgList = dbHelper.getDailyGoalList(getWeek(), getEvent().getId());
+        dgList = dbHelper.getDailyGoalList(getWeek());
+
         adapter = new DailyGoalsListAdapter(getActivity(), dgList);
         lv.setAdapter(adapter);
         lv.setEmptyView(view.findViewById(R.id.empty));
@@ -82,7 +82,20 @@ public class TabFragment1 extends MyFragment
         {
             totDistLayout.setVisibility(View.VISIBLE);
             longestLayout.setVisibility(View.VISIBLE);
+            checkForButton();
         }
+    }
+
+    private void checkForButton()
+    {
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        System.out.println("list size: "+dgList.size());
+        if(dgList.size() == 7)
+        {
+            fab.setVisibility(View.INVISIBLE);
+        }
+        else
+            fab.setVisibility(View.VISIBLE);
     }
 
     public void showResults()
@@ -122,34 +135,50 @@ public class TabFragment1 extends MyFragment
         }
     }
 
-    public void updateListView(DailyGoal dg)
+//
+//    public void updateListView(DailyGoal dg)
+//    {
+//        if(dg != null)
+//        {
+//            int i = dgList.indexOf(dg);
+//            dgList.set(i, dg);
+//        }
+//        adapter.notifyDataSetChanged();
+//        showResults();
+//    }
+//
+//    public void addToListView(DailyGoal dg)
+//    {
+//        if(dg != null)
+//        {
+//            dgList.addFirst(dg);
+//        }
+//        adapter.notifyDataSetChanged();
+//        showResults();
+//    }
+//
+//    public void removeFromListView(DailyGoal dg)
+//    {
+//        if(dg != null)
+//        {
+//            dgList.remove(dg);
+//        }
+//        adapter.notifyDataSetChanged();
+//        showResults();
+//    }
+
+    public LinkedList<DailyGoal> getList()
     {
-        if(dg != null)
-        {
-            int i = dgList.indexOf(dg);
-            dgList.set(i, dg);
-        }
+        return dgList;
+    }
+
+    public void setList(LinkedList<DailyGoal> list)
+    {
+        System.out.println("tab1: List: "+list);
+        dgList.clear();
+        dgList.addAll(list);
         adapter.notifyDataSetChanged();
         showResults();
     }
 
-    public void addToListView(DailyGoal dg)
-    {
-        if(dg != null)
-        {
-            dgList.addFirst(dg);
-        }
-        adapter.notifyDataSetChanged();
-        showResults();
-    }
-
-    public void removeFromListView(DailyGoal dg)
-    {
-        if(dg != null)
-        {
-            dgList.remove(dg);
-        }
-        adapter.notifyDataSetChanged();
-        showResults();
-    }
 }

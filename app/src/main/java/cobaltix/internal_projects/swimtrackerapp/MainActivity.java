@@ -12,7 +12,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity
@@ -32,11 +35,10 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     //HANDLE THE DATA OF THE LISTVIEW
     private ArrayList<Event> eventList;
-    private static EventListAdapter adapter;
+    private EventListAdapter adapter;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMM dd, yyyy");
     private Calendar myCal = Calendar.getInstance();
-    private String today = sdf.format(myCal.getTime());
+    private Date today = myCal.getTime();
 
     private DatabaseHelper dbHelper;
 
@@ -44,12 +46,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        System.out.println("Class: "+this);
         System.out.println("----------- Main Activity ------------");
         super.onCreate(savedInstanceState);
 
         dbHelper = new DatabaseHelper(this);
 
-        //Import database if needed - todo to delete eventually
+        ////Import database if needed - todo to delete eventually
         if(! dbHelper.isDatabaseExist(this))
         {
             Log.e("MainActivity", "db does not exist");
@@ -60,9 +63,10 @@ public class MainActivity extends AppCompatActivity
 
 
         eventList = dbHelper.getEventList();
+        System.out.println("Main: List: "+eventList);
         Log.e("MainActivity","EventList: "+eventList);
 
-        //todo TO TEST!!
+        ////prompt to enter logs at app start - todo TO TEST!!
         if(!eventList.isEmpty())
         {
             Event recentEvent = eventList.get(0);
@@ -78,7 +82,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             //Prompt daily goal activity to enter logs if needed
-            if (dgList.isEmpty() || (!date.equals(today) && !date.equals(recentEvent.getEndDate())))  // No log yet || last log is not today nor event end date
+            if (dgList.isEmpty() || (!date.equals(DateFormatter.format(today)) && !date.equals(recentEvent.getEndDate())))  // No log yet || last log is not today nor event end date
             {
                 Intent intent = new Intent(this, DailyGoalsActivity.class);
                 intent.putExtra("event", recentEvent);
@@ -92,7 +96,6 @@ public class MainActivity extends AppCompatActivity
 
         }
         ////End of prompt
-        Log.e("MainActivity", "------------End of prompt----------");
 
         setContentView(R.layout.activity_main);
 
@@ -112,6 +115,7 @@ public class MainActivity extends AppCompatActivity
 
 
         markDoneEvents(eventList);
+
         adapter = new EventListAdapter(this, eventList);
         lv = (ListView) findViewById(R.id.eventList);
         lv.setAdapter(adapter);
@@ -124,44 +128,111 @@ public class MainActivity extends AppCompatActivity
 
                 Event e = (Event) lv.getItemAtPosition(position);
                 Intent i = new Intent(getApplicationContext(), OverviewActivity.class);
-                i.putExtra("Event", e);
+                i.putExtra("event", e);
                 startActivity(i);
             }
         });
+//        lv.setOnLongClickListener(new View.OnLongClickListener()
+//        {
+//            @Override
+//            public boolean onLongClick(View v)
+//            {
+//
+//            }
+//        });
+        registerForContextMenu(lv);
 
-
-        //here for testing purposes (need to export db) - todo move to export cvs
+        //here for testing purposes (need to export db) - todo move to export cvs clicked
         PermissionsHandler permissionsHandler = new PermissionsHandler(this);
         permissionsHandler.requestWriteExtStoragePermissions();
 
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.eventList) {
+
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_event_list, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.action_edit:
+                Intent intent = new Intent(this, CreateEventActivity.class);
+                Event e = (Event) lv.getItemAtPosition(info.position);
+                System.out.println("Main: Event: "+e);
+                intent.putExtra("event", e);
+                startActivityForResult(intent, 1);
+                return true;
+            case R.id.action_delete:
+                // edit stuff here
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("Main","OnActivityResult/");
+        if (requestCode == 1)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                ArrayList<Event> list = dbHelper.getEventList();
+                eventList.clear();
+                eventList.addAll(list);
+//                Event event = (Event) data.getSerializableExtra("update");
+//                if (event != null)
+//                {
+//                    int index = eventList.indexOf(event);
+//                    eventList.set(index, event);
+//                }
+            }
+        }
+    }
+
     private void markDoneEvents(ArrayList<Event> eventList)
     {
-
         for(Event e : eventList)
         {
-            LinkedList<DailyGoal> dgList = dbHelper.getDailyGoalList(e.getId());
-            if(!dgList.isEmpty())
+            if (DateFormatter.parse(e.getEndDate()).before(today))
             {
-                DailyGoal dgLast = dgList.get(dgList.size() - 1);
-                if (dgLast.getDate().equals(e.getEndDate()))
-                {
-                                                                        //todo If today is past end date
-                    e.setTitle(e.getTitle() + " (Done)");
-                }
+                e.setTitle(e.getTitle() + " (Done)");
+                e.setDone(true);
             }
+            else
+                e.setDone(false);
         }
 
     }
 
-    public static void updateListView(Event event) {
+    public void updateListView(Event event) {
+        System.out.println("Class: "+this);
+        System.out.println("Main: (add) List: "+eventList);
+        System.out.println("Main: adapter: "+adapter);
         if(event != null)
         {
             adapter.add(event);
             //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
             adapter.notifyDataSetChanged();
         }
+    }
+
+    public void replaceInListView(Event oldEvent, Event updatedEvent)
+    {
+        System.out.println("Main: List: "+ eventList);
+
+        int index = eventList.indexOf(oldEvent);
+        eventList.set(index, updatedEvent);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -190,7 +261,6 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
 

@@ -12,6 +12,7 @@ public class Event implements Serializable
     private int id;
     private String title;
     private String date;
+    private boolean done;
 
     public Event (int id, String t, String d)
     {
@@ -67,6 +68,16 @@ public class Event implements Serializable
         date = d;
     }
 
+    public boolean isDone()
+    {
+        return done;
+    }
+
+    public void setDone(boolean done)
+    {
+        this.done = done;
+    }
+
     @Override
     public String toString()
     {
@@ -75,5 +86,22 @@ public class Event implements Serializable
                 ", title='" + title + '\'' +
                 ", date='" + date + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+            return false;
+
+        Event otherEvent = (Event) obj;
+
+        if (otherEvent.id != this.id)
+        {
+            System.out.println("id false");
+            return false;
+        }
+        System.out.println("id true");
+        return true;
     }
 }

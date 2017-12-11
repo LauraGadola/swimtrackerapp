@@ -25,7 +25,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
     private Event event;
     private WeeklyGoal weeklyGoal;
-    private String week;
+    private String currentWeek;
 
     private Calendar myCalendar;
     private DatePickerDialog.OnDateSetListener date;
@@ -44,6 +44,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
         // Retrieve Event obj sent from Main Activity
         event = (Event) getIntent().getSerializableExtra("event");
+        currentWeek = getIntent().getStringExtra("week");
 
         dbHelper = new DatabaseHelper(this);
 
@@ -60,46 +61,43 @@ public class WeeklyGoalsActivity extends AppCompatActivity
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 myCalendar.set(year,monthOfYear,dayOfMonth);
-                //int dayOfWeek = myCalendar.get(Calendar.DAY_OF_WEEK);
-                updateLabel(myCalendar);
-                if(wgExists())
-                {
-//                    clearFields();
-                    fillFields();
-                }
+                updateWeekLabel();
             }
 
         };
         etWeek.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(v.getContext(), date, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
+
             }
         });
 
-        updateLabel(myCalendar);
+        updateWeekLabel();
         if(wgExists())
         {
-//      clearFields();
             fillFields();
         }
     }
 
     private boolean wgExists()
     {
-        weeklyGoal = dbHelper.getWeeklyGoal(week, event.getId());
+        weeklyGoal = dbHelper.getWeeklyGoal(currentWeek);
         if(weeklyGoal != null)
             return true;
         return false;
     }
 
-
-    //todo delete
-    private void updateLabel(Calendar myCalendar) {
-        week = HelperClass.getWeek(myCalendar);
-        etWeek.setText(week);
+    private void updateWeekLabel() {
+        if(currentWeek == null)
+        {
+            currentWeek = HelperClass.getWeek(myCalendar);
+        }
+        etWeek.setText(currentWeek);
     }
 
     @Override
@@ -122,41 +120,48 @@ public class WeeklyGoalsActivity extends AppCompatActivity
                 float weight = Float.parseFloat(etWeight.getText().toString());
                 String description = etDescription.getText().toString();
 
+                //ADD NEW
                 if(!wgExists())
                 {
-                    weeklyGoal = dbHelper.addWeeklyGoal(week, miles, longest, weight, description, event.getId());
+                    weeklyGoal = dbHelper.addWeeklyGoal(currentWeek, miles, longest, weight, description);
                     Toast.makeText(this, "Your weekly goal was saved", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, DailyGoalsActivity.class);
+                    intent.putExtra("event", event);
+                    intent.putExtra("week", currentWeek);
+                    startActivity(intent);
+                    finish();
                 }
 
-                //TODO Do I need to get the wg back?
+                //UPDATE
                 else
                 {
                     dbHelper.updateWeeklyGoal(weeklyGoal, miles, longest, weight, description);
                     Toast.makeText(this, "You have updated this weekly goal", Toast.LENGTH_SHORT).show();
+
+                    //todo do I edit from the overview page?
+                    onBackPressed();
                 }
 
-                //TODO go to main page? or as long as there's a day to fill in prompt the daily page?
-                Intent i = new Intent(getApplicationContext(), DailyGoalsActivity.class);
-                i.putExtra("event", event);
-                i.putExtra("weekly_goal", weeklyGoal);
-                startActivity(i);
-                //finish();
+                return true;
 
             case android.R.id.home:
                 onBackPressed();
                 return true;
+
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    //TODO Needed?
-    private void clearFields()
+    @Override
+    public void onBackPressed()
     {
-        etWeeklyMiles.setText("");
-        etLongest.setText("");
-        etWeight.setText("");
-        etDescription.setText("");
+        System.out.println("BACK PRESSED!!!");
+        Intent intent = new Intent(this, OverviewActivity.class);
+        intent.putExtra("event", event);
+        intent.putExtra("week", currentWeek);
+        startActivity(intent);
+        finish();
     }
 
     private void fillFields()

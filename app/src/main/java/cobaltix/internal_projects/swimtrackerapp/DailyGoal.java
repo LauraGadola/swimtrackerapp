@@ -196,6 +196,7 @@ public class DailyGoal implements Serializable
             System.out.println("id false");
             return false;
         }
+        System.out.println("id true");
         return true;
     }
 }

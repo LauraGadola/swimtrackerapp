@@ -2,6 +2,7 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -13,9 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.support.design.widget.TabLayout;
+import android.view.View;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 
 public class OverviewActivity extends AppCompatActivity implements TabFragment1.OnLongestCalculatedListener
 {
@@ -34,11 +37,16 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private FloatingActionButton fab;
     private Event event;
     private TabLayout tabLayout;
     private Calendar myCal;
+    private String currentWeek;
+
     private TabFragment1 tabOverview;
     private TabFragment2 tabStats;
+
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,6 +59,11 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        dbHelper = new DatabaseHelper(this);
+
+        event = (Event) getIntent().getSerializableExtra("event");
+        currentWeek = getIntent().getStringExtra("week");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -58,16 +71,21 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
         tabLayout.addTab(tabLayout.newTab().setText("Stats"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        event = (Event) getIntent().getSerializableExtra("Event");
-
+        //SET WEEK IN PAGE TITLE
         myCal = Calendar.getInstance();
-        String week = HelperClass.getWeek(myCal);
-        setTitle(week);
-
+        if(currentWeek == null)
+        {
+            if (event.isDone())
+            {
+                myCal.setTime(DateFormatter.parse(event.getEndDate()));
+            }
+            currentWeek = HelperClass.getWeek(myCal);
+        }
+        setTitle(currentWeek);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), event, week);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), event, currentWeek);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -78,6 +96,7 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
+
             }
 
             @Override
@@ -90,43 +109,64 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
 
             }
         });
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getApplicationContext(), DailyGoalsActivity.class);
+                intent.putExtra("event", event);
+                intent.putExtra("week", currentWeek);
+                startActivityForResult(intent, 1);
+            }
+        });
     }
 
-    //todo check if needed
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("Overview","OnActivityResult/");
         if (requestCode == 1) {
-            if(resultCode == RESULT_OK) {
-                DailyGoal dg;
-                dg = (DailyGoal) data.getSerializableExtra("add");
-                if(dg != null)
+            if(resultCode == RESULT_OK)
+            {
+                LinkedList<DailyGoal> dailyGoals = dbHelper.getDailyGoalList(currentWeek);
+                getTabOverview().setList(dailyGoals);
+                if(dailyGoals.size() == 7)
                 {
-                    getTabOverview().addToListView(dg);
-                    getTabStats().setElements();
-                    Log.e("Overview","add");
+                    fab.setVisibility(View.INVISIBLE);
                 }
                 else
-                {
-                    dg = (DailyGoal) data.getSerializableExtra("update");
-                    if (dg != null)
-                    {
-                        getTabOverview().updateListView(dg);
-                        getTabStats().setElements();
-                        Log.e("Overview","update");
-                    }
-                    else
-                    {
-                        dg = (DailyGoal) data.getSerializableExtra("remove");
-                        if (dg != null)
-                        {
-                            getTabOverview().removeFromListView(dg);
-                            getTabStats().setElements();
-                            Log.e("Overview","remove");
-                        }
-                    }
-                }
+                    fab.setVisibility(View.VISIBLE);
+//                DailyGoal dg;
+//                dg = (DailyGoal) data.getSerializableExtra("add");
+//                if(dg != null)
+//                {
+//                    getTabOverview().addToListView(dg);
+//                    getTabStats().setElements();
+//                    Log.e("Overview","add");
+//                }
+//                else
+//                {
+//                    dg = (DailyGoal) data.getSerializableExtra("update");
+//                    if (dg != null)
+//                    {
+//                        getTabOverview().updateListView(dg);
+//                        getTabStats().setElements();
+//                        Log.e("Overview","update");
+//                    }
+//                    else
+//                    {
+//                        dg = (DailyGoal) data.getSerializableExtra("remove");
+//                        if (dg != null)
+//                        {
+//                            getTabOverview().removeFromListView(dg);
+//                            getTabStats().setElements();
+//                            Log.e("Overview","remove");
+//                        }
+//                    }
+//                }
             }
         }
     }
@@ -142,9 +182,6 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         switch (id)
@@ -156,25 +193,32 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
                     {
                         myCal.set(year, monthOfYear, dayOfMonth);
-                        String week = HelperClass.getWeek(myCal);
-                        setTitle(week);
+                        currentWeek = HelperClass.getWeek(myCal);
+                        setTitle(currentWeek);
 
                         //Update list in tab
                         getTabOverview();
-                        tabOverview.setWeek(week);
-                        tabOverview.setList();
+                        tabOverview.setWeek(currentWeek);
+                        tabOverview.populateListView();
                         tabOverview.showResults();
 
                         getTabStats();
-                        tabStats.setWeek(week);
+                        tabStats.setWeek(currentWeek);
                         tabStats.setElements();
 
                     }
                 };
-                System.out.println(myCal.getTime());
-                new DatePickerDialog(this, date, myCal.get(Calendar.YEAR), myCal.get(Calendar.MONTH),
-                        myCal.get(Calendar.DAY_OF_MONTH)).show();
+                DatePickerDialog pickerDialog = new DatePickerDialog(this, date, myCal.get(Calendar.YEAR), myCal.get(Calendar.MONTH),
+                        myCal.get(Calendar.DAY_OF_MONTH));
+                pickerDialog.getDatePicker().setMaxDate(DateFormatter.parse(event.getEndDate()).getTime());
+                pickerDialog.show();
 
+                return true;
+
+            case android.R.id.home:
+                onBackPressed();
+                LinkedList<DailyGoal> dailyGoals = dbHelper.getDailyGoalList(currentWeek);
+                getTabOverview().setList(dailyGoals);
                 return true;
         }
 

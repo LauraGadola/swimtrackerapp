@@ -17,11 +17,13 @@ import java.util.Calendar;
 
 public class CreateEventActivity extends AppCompatActivity
 {
-    EditText eventDate;
-    EditText eventTitle;
-    Calendar myCalendar;
-    DatePickerDialog.OnDateSetListener date;
-    String dateSelected;
+    private EditText eventDate;
+    private EditText eventTitle;
+    private Calendar myCalendar;
+    private DatePickerDialog.OnDateSetListener date;
+    private String dateSelected;
+    private Event event;
+    private Intent i;
 
     private DatabaseHelper dbHelper;
 
@@ -36,6 +38,8 @@ public class CreateEventActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dbHelper = new DatabaseHelper(this);
+
+        i = new Intent();
 
         eventTitle = (EditText) findViewById(R.id.eventTitle);
 
@@ -62,14 +66,28 @@ public class CreateEventActivity extends AppCompatActivity
                 datePickerDialog.show();
             }
         });
+
+        //FILL FIELDS IF WE HAVE EVENT
+        event = (Event) getIntent().getSerializableExtra("event");
+        if(event != null)
+        {
+            String title = event.getTitle();
+            String date = event.getDate();
+            if(event.isDone())
+            {
+                title = title.substring(0, title.indexOf(" "));
+            }
+            eventTitle.setText(title);
+            eventDate.setText(date);
+            myCalendar.setTime(DateFormatter.parse(date));
+        }
     }
 
     private void updateLabel() {
-        String myFormat = "EEEE, MMM dd, yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
-        dateSelected = sdf.format(myCalendar.getTime());
+        dateSelected = DateFormatter.format(myCalendar.getTime());
         eventDate.setText(dateSelected);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,18 +101,37 @@ public class CreateEventActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
-        if (id == R.id.action_done)
+        switch (id)
         {
-            //Save new event & get to weekly goals page
-            String title = eventTitle.getText().toString();
-            Event event = dbHelper.addEvent(title, dateSelected);
-            MainActivity.updateListView(event);
-            Toast.makeText(this, "A new event was created", Toast.LENGTH_SHORT).show();
+            case R.id.action_done:
+            {
+                String title = eventTitle.getText().toString();
+                //CREATE NEW EVENT
+                if (event == null)
+                {
+                    //Save new event & get to weekly goals page
 
-            Intent i = new Intent(getApplicationContext(), WeeklyGoalsActivity.class);
-            i.putExtra("event", event);
-            startActivity(i);
-            finish();
+                    Event event = dbHelper.addEvent(title, dateSelected);
+                    Toast.makeText(this, "A new event was created", Toast.LENGTH_SHORT).show();
+
+                    Intent i = new Intent(this, WeeklyGoalsActivity.class);
+                    i.putExtra("event", event);
+                    startActivity(i);
+                    finish();
+                }
+                else //UPDATE
+                {
+                    String date = String.valueOf(eventDate.getText());
+                    Event updatedEvent = new Event(event.getId(), title, date);
+                    //update database
+                    dbHelper.updateEvent(updatedEvent);
+                    //Pass details to main
+                    setResult(RESULT_OK, i);
+
+                    finish();
+                }
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);

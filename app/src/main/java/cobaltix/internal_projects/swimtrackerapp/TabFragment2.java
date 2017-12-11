@@ -85,8 +85,9 @@ public class TabFragment2 extends MyFragment
     public void setElements()
     {
         event = getEvent();
-        dgList = dbHelper.getDailyGoalList(getWeek(), event.getId());
-        if(dgList != null)
+        dgList = dbHelper.getDailyGoalList(getWeek());
+        System.out.println("List: "+dgList);
+        if(!dgList.isEmpty())
         {
             empty.setVisibility(View.INVISIBLE);
 
@@ -95,7 +96,7 @@ public class TabFragment2 extends MyFragment
             percentageLayout.setVisibility(View.VISIBLE);
 
             //SET PERCENTAGES
-            WeeklyGoal weeklyGoal = dbHelper.getWeeklyGoal(getWeek(), event.getId());
+            WeeklyGoal weeklyGoal = dbHelper.getWeeklyGoal(getWeek());
             System.out.println("WG Miles: "+weeklyGoal.getMiles() + " / " + totDist);
             System.out.println("WG Longest: "+weeklyGoal.getLongest() + " / " + longest);
             System.out.println("WG Weight: "+weeklyGoal.getWeight() + " / " + dgList.get(0).getWeight());
