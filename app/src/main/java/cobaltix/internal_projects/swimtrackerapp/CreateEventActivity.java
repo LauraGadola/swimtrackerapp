@@ -12,15 +12,17 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class CreateEventActivity extends AppCompatActivity
 {
-    private EditText eventDate;
-    private EditText eventTitle;
+    private EditText etEventDate;
+    private EditText etEventTitle;
+    private EditText etStartDate;
+
     private Calendar myCalendar;
-    private DatePickerDialog.OnDateSetListener date;
+    private DatePickerDialog.OnDateSetListener eventDateListener;
+    private DatePickerDialog.OnDateSetListener startDateListener;
     private String dateSelected;
     private Event event;
     private Intent i;
@@ -39,53 +41,99 @@ public class CreateEventActivity extends AppCompatActivity
 
         dbHelper = new DatabaseHelper(this);
 
+        event = (Event) getIntent().getSerializableExtra("event");
+
         i = new Intent();
 
-        eventTitle = (EditText) findViewById(R.id.eventTitle);
-
         myCalendar = Calendar.getInstance();
-        eventDate = (EditText) findViewById(R.id.eventDate);
-        date = new DatePickerDialog.OnDateSetListener() {
+
+        etEventTitle = (EditText) findViewById(R.id.eventTitle);
+        etStartDate = (EditText) findViewById(R.id.startDate);
+        etEventDate = (EditText) findViewById(R.id.eventDate);
+
+        //FILL FIELDS IF WE HAVE EVENT
+        if(event != null)
+        {
+            String title = event.getTitle();
+            String startDate = event.getStartDate();
+            String eventDate = event.getEventDate();
+            if(event.isDone())
+            {
+                title = title.substring(0, title.indexOf(" "));
+            }
+            etEventTitle.setText(title);
+            etStartDate.setText(startDate);
+            etEventDate.setText(eventDate);
+        }
+        else
+        {
+            etStartDate.setText(DateFormatter.format(myCalendar.getTime()));
+        }
+
+        startDateListener = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 myCalendar.set(year, monthOfYear, dayOfMonth);
-                updateLabel();
+                updateLabel(etStartDate);
             }
 
         };
 
-        eventDate.setOnClickListener(new View.OnClickListener() {
+        eventDateListener = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                myCalendar.set(year, monthOfYear, dayOfMonth);
+                updateLabel(etEventDate);
+            }
+
+        };
+
+        if(event != null)
+        {
+            myCalendar.setTime(DateFormatter.parse(event.getStartDate()));
+            System.out.println("start: "+event.getStartDate());
+        }
+        etStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), date, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), startDateListener, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
+                String date = String.valueOf(etEventDate.getText());
+                if(!date.matches(""))
+                {
+                    datePickerDialog.getDatePicker().setMaxDate(DateFormatter.parse(String.valueOf(etEventDate.getText())).getTime());
+                }
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
 
-        //FILL FIELDS IF WE HAVE EVENT
-        event = (Event) getIntent().getSerializableExtra("event");
         if(event != null)
         {
-            String title = event.getTitle();
-            String date = event.getDate();
-            if(event.isDone())
-            {
-                title = title.substring(0, title.indexOf(" "));
-            }
-            eventTitle.setText(title);
-            eventDate.setText(date);
-            myCalendar.setTime(DateFormatter.parse(date));
+            myCalendar.setTime(DateFormatter.parse(event.getEventDate()));
+            System.out.println("event: "+event.getEventDate());
         }
+        etEventDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), eventDateListener, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(DateFormatter.parse(String.valueOf(etStartDate.getText())).getTime());
+                datePickerDialog.show();
+            }
+        });
+
     }
 
-    private void updateLabel() {
+    private void updateLabel(EditText et) {
         dateSelected = DateFormatter.format(myCalendar.getTime());
-        eventDate.setText(dateSelected);
+        et.setText(dateSelected);
     }
 
 
@@ -105,24 +153,25 @@ public class CreateEventActivity extends AppCompatActivity
         {
             case R.id.action_done:
             {
-                String title = eventTitle.getText().toString();
+                String title = String.valueOf(etEventTitle.getText());
+                String startDate = String.valueOf(etStartDate.getText());
+                String eventDate = String.valueOf(etEventDate.getText());
                 //CREATE NEW EVENT
                 if (event == null)
                 {
                     //Save new event & get to weekly goals page
 
-                    Event event = dbHelper.addEvent(title, dateSelected);
+                    Event event = dbHelper.addEvent(title, startDate, eventDate);
                     Toast.makeText(this, "A new event was created", Toast.LENGTH_SHORT).show();
 
-                    Intent i = new Intent(this, WeeklyGoalsActivity.class);
+                    Intent i = new Intent(this, OverviewActivity.class);
                     i.putExtra("event", event);
                     startActivity(i);
                     finish();
                 }
                 else //UPDATE
                 {
-                    String date = String.valueOf(eventDate.getText());
-                    Event updatedEvent = new Event(event.getId(), title, date);
+                    Event updatedEvent = new Event(event.getId(), title, startDate, eventDate);
                     //update database
                     dbHelper.updateEvent(updatedEvent);
                     //Pass details to main
@@ -132,6 +181,9 @@ public class CreateEventActivity extends AppCompatActivity
                 }
                 return true;
             }
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

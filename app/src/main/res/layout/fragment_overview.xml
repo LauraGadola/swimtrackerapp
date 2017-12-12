@@ -19,16 +19,18 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_no_logs_gray"
+            android:src="@drawable/icons_log_96"
             android:layout_gravity="center"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="You have not entered any logs this week, yet!"
+            android:text="You have not entered any logs for this week, yet!"
             android:textSize="18dp"
-            android:textStyle="normal|bold"/>
+            android:textStyle="normal|bold"
+            android:ems="12"
+            android:textAlignment="center"/>
     </LinearLayout>
     <!--end of empty list elements-->
 

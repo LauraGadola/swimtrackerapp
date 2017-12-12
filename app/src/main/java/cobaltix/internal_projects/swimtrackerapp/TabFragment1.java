@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class TabFragment1 extends MyFragment
@@ -89,8 +91,10 @@ public class TabFragment1 extends MyFragment
     private void checkForButton()
     {
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        System.out.println("list size: "+dgList.size());
-        if(dgList.size() == 7)
+        Date date = DateFormatter.parse(getEvent().getStartDate());
+        Date today = Calendar.getInstance().getTime();
+
+        if(date.after(today) || dgList.size() == 7)
         {
             fab.setVisibility(View.INVISIBLE);
         }

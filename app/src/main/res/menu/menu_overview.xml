@@ -7,4 +7,9 @@
         android:icon="@drawable/ic_icons_calendar"
         android:title="Weekly Goal"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_week_goal"
+        android:title="Week Goal"
+        android:showAsAction="never"/>
 </menu>

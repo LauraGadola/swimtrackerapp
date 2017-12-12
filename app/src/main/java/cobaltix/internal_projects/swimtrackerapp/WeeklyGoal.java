@@ -10,20 +10,22 @@ public class WeeklyGoal implements Serializable
     private float longest;
     private float weight;
     private String description;
+    private int event_id;
 
-    public WeeklyGoal(String weekStart, float miles, float longest, float weight, String description)
+    public WeeklyGoal(String weekStart, float miles, float longest, float weight, String description, int event_id)
     {
         this.weekStart = weekStart;
         this.miles = miles;
         this.longest = longest;
         this.weight = weight;
         this.description = description;
+        this.event_id = event_id;
     }
 
     //TODO needed or can I just set the id?
-    public WeeklyGoal(int id, String weekStart, float miles, float longest, float weight, String description)
+    public WeeklyGoal(int id, String weekStart, float miles, float longest, float weight, String description, int event_id)
     {
-        this(weekStart, miles, longest, weight, description);
+        this(weekStart, miles, longest, weight, description,event_id);
         this.id = id;
     }
 

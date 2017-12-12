@@ -123,7 +123,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
                 //ADD NEW
                 if(!wgExists())
                 {
-                    weeklyGoal = dbHelper.addWeeklyGoal(currentWeek, miles, longest, weight, description);
+                    weeklyGoal = dbHelper.addWeeklyGoal(currentWeek, miles, longest, weight, description, event.getId());
                     Toast.makeText(this, "Your weekly goal was saved", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, DailyGoalsActivity.class);
                     intent.putExtra("event", event);
@@ -156,7 +156,6 @@ public class WeeklyGoalsActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
-        System.out.println("BACK PRESSED!!!");
         Intent intent = new Intent(this, OverviewActivity.class);
         intent.putExtra("event", event);
         intent.putExtra("week", currentWeek);

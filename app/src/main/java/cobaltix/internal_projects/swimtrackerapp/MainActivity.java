@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -42,13 +44,21 @@ public class MainActivity extends AppCompatActivity
 
     private DatabaseHelper dbHelper;
 
+    private Event eventToRemove;
+
+    private boolean prompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        System.out.println("Class: "+this);
-        System.out.println("----------- Main Activity ------------");
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        System.out.println("----------- Main Activity ------------");
 
         dbHelper = new DatabaseHelper(this);
 
@@ -61,13 +71,11 @@ public class MainActivity extends AppCompatActivity
         else
             Log.e("MainActivity", "db exists!");
 
-
         eventList = dbHelper.getEventList();
-        System.out.println("Main: List: "+eventList);
-        Log.e("MainActivity","EventList: "+eventList);
 
-        ////prompt to enter logs at app start - todo TO TEST!!
-        if(!eventList.isEmpty())
+        prompt = getIntent().getBooleanExtra("prompt", true);
+        //prompt to enter logs at app start
+        if(prompt && !eventList.isEmpty())
         {
             Event recentEvent = eventList.get(0);
             Log.e("MainActivity", "Event: " + recentEvent);
@@ -82,7 +90,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             //Prompt daily goal activity to enter logs if needed
-            if (dgList.isEmpty() || (!date.equals(DateFormatter.format(today)) && !date.equals(recentEvent.getEndDate())))  // No log yet || last log is not today nor event end date
+            if (DateFormatter.parse(recentEvent.getStartDate()).before(today) ||dgList.isEmpty() || (!date.equals(DateFormatter.format(today)) && !date.equals(recentEvent.getEndDate())))  // No log yet || last log is not today nor event end date
             {
                 Intent intent = new Intent(this, DailyGoalsActivity.class);
                 intent.putExtra("event", recentEvent);
@@ -97,10 +105,7 @@ public class MainActivity extends AppCompatActivity
         }
         ////End of prompt
 
-        setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        markDoneEvents();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener()
@@ -113,9 +118,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-        markDoneEvents(eventList);
-
         adapter = new EventListAdapter(this, eventList);
         lv = (ListView) findViewById(R.id.eventList);
         lv.setAdapter(adapter);
@@ -125,21 +127,12 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-
                 Event e = (Event) lv.getItemAtPosition(position);
                 Intent i = new Intent(getApplicationContext(), OverviewActivity.class);
                 i.putExtra("event", e);
                 startActivity(i);
             }
         });
-//        lv.setOnLongClickListener(new View.OnLongClickListener()
-//        {
-//            @Override
-//            public boolean onLongClick(View v)
-//            {
-//
-//            }
-//        });
         registerForContextMenu(lv);
 
         //here for testing purposes (need to export db) - todo move to export cvs clicked
@@ -151,8 +144,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.eventList) {
 
+        if (v.getId()==R.id.eventList) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_event_list, menu);
         }
@@ -161,20 +154,48 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Event e = (Event) lv.getItemAtPosition(info.position);
+
         switch(item.getItemId()) {
+
             case R.id.action_edit:
                 Intent intent = new Intent(this, CreateEventActivity.class);
-                Event e = (Event) lv.getItemAtPosition(info.position);
-                System.out.println("Main: Event: "+e);
                 intent.putExtra("event", e);
                 startActivityForResult(intent, 1);
                 return true;
+
             case R.id.action_delete:
-                // edit stuff here
+                eventToRemove = e;
+                createAlertDialog();
                 return true;
+
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void createAlertDialog()
+    {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        dbHelper.removeEvent(eventToRemove);
+                        refreshList();
+                        Toast.makeText(MainActivity.this, "The event has been deleted", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete it?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 
     @Override
@@ -186,20 +207,23 @@ public class MainActivity extends AppCompatActivity
         {
             if (resultCode == RESULT_OK)
             {
-                ArrayList<Event> list = dbHelper.getEventList();
-                eventList.clear();
-                eventList.addAll(list);
-//                Event event = (Event) data.getSerializableExtra("update");
-//                if (event != null)
-//                {
-//                    int index = eventList.indexOf(event);
-//                    eventList.set(index, event);
-//                }
+                refreshList();
             }
         }
     }
 
-    private void markDoneEvents(ArrayList<Event> eventList)
+    private void refreshList()
+    {
+        ArrayList<Event> list = dbHelper.getEventList();
+        //eventList.clear();
+        adapter.clear();
+        eventList.addAll(list);
+        adapter.notifyDataSetChanged();
+
+        markDoneEvents();
+    }
+
+    private void markDoneEvents()
     {
         for(Event e : eventList)
         {
@@ -212,27 +236,6 @@ public class MainActivity extends AppCompatActivity
                 e.setDone(false);
         }
 
-    }
-
-    public void updateListView(Event event) {
-        System.out.println("Class: "+this);
-        System.out.println("Main: (add) List: "+eventList);
-        System.out.println("Main: adapter: "+adapter);
-        if(event != null)
-        {
-            adapter.add(event);
-            //Notifies the attached observers that the underlying data has been changed and any View reflecting the data set should refresh itself.
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    public void replaceInListView(Event oldEvent, Event updatedEvent)
-    {
-        System.out.println("Main: List: "+ eventList);
-
-        int index = eventList.indexOf(oldEvent);
-        eventList.set(index, updatedEvent);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -261,7 +264,5 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
 }

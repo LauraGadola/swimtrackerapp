@@ -13,6 +13,7 @@ public class EventListAdapter extends ArrayAdapter<Event>
 {
     private Activity context;
     private Event event;
+    private int selectedItem;
 
 
     public EventListAdapter(Activity context, ArrayList<Event> events) {
@@ -34,7 +35,7 @@ public class EventListAdapter extends ArrayAdapter<Event>
         TextView tvDate = (TextView) convertView.findViewById(R.id.date);
 
         tvTitle.setText(event.getTitle());
-        tvDate.setText(event.getDate());
+        tvDate.setText(event.getEventDate());
 
         return convertView;
     }

@@ -19,8 +19,6 @@ import android.widget.NumberPicker;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -207,7 +205,7 @@ public class DailyGoalsActivity extends AppCompatActivity
                 {
                     DailyGoal previousDG = getDG(previousDay);
                     goToDay(previousDG, previousDay);
-                    if (dglist.indexOf(previousDG) == 0)
+                    if (previousDay.equals(event.getStartDate()))
                     {
                         btnPrevious.setVisibility(View.INVISIBLE);
                     }
@@ -257,14 +255,19 @@ public class DailyGoalsActivity extends AppCompatActivity
             goToDay(dailyGoal, dailyGoal.getDate());
         }
 
-        //LOOKING AT OLDER WEEK
+        //LOOKING AT SPECIFIC WEEK
         else if(week != null)
         {
             String day = HelperClass.getFirstDay(week);
             hasWeeklyGoal(day);
-            while (getDG(day) != null)
+
+            while (!isNotBeforeStartDate(day) || getDG(day) != null)
             {
                 day = getDay(day, 1);
+            }
+            if(DateFormatter.parse(day).after(DateFormatter.parse(today)))
+            {
+                day = today;
             }
             goToDay(null, day);
         }
@@ -295,16 +298,21 @@ public class DailyGoalsActivity extends AppCompatActivity
 
                 }
             }
-            else //today is the first entry for this event
+            else //no logs for this event yet
             {
-                week = HelperClass.getWeek(myCal);
-                hasWeeklyGoal(today);
+                hasWeeklyGoal(event.getStartDate());
 
-                //todo go to training start date?
-                goToDay(null, today);
+                goToDay(null, event.getStartDate());
                 btnPrevious.setVisibility(View.INVISIBLE);
             }
         }
+    }
+
+    private boolean isNotBeforeStartDate(String day)
+    {
+        boolean isStartDate = day.equals(event.getStartDate());
+        boolean afterStartDate = DateFormatter.parse(day).after(DateFormatter.parse(event.getStartDate()));
+        return  isStartDate || afterStartDate;
     }
 
     private boolean hasWeeklyGoal(String date)
@@ -371,7 +379,7 @@ public class DailyGoalsActivity extends AppCompatActivity
 
     private String calculateWeeksLeft()
     {
-        Date eventDate = DateFormatter.parse(event.getDate());
+        Date eventDate = DateFormatter.parse(event.getEventDate());
 
         System.out.println("Date :" +myCal.getTime());
         int currentWeek = myCal.get(Calendar.WEEK_OF_YEAR);

@@ -2,6 +2,7 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class OverviewActivity extends AppCompatActivity implements TabFragment1.OnLongestCalculatedListener
@@ -56,7 +58,7 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         dbHelper = new DatabaseHelper(this);
@@ -96,7 +98,6 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
-
             }
 
             @Override
@@ -139,34 +140,6 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
                 }
                 else
                     fab.setVisibility(View.VISIBLE);
-//                DailyGoal dg;
-//                dg = (DailyGoal) data.getSerializableExtra("add");
-//                if(dg != null)
-//                {
-//                    getTabOverview().addToListView(dg);
-//                    getTabStats().setElements();
-//                    Log.e("Overview","add");
-//                }
-//                else
-//                {
-//                    dg = (DailyGoal) data.getSerializableExtra("update");
-//                    if (dg != null)
-//                    {
-//                        getTabOverview().updateListView(dg);
-//                        getTabStats().setElements();
-//                        Log.e("Overview","update");
-//                    }
-//                    else
-//                    {
-//                        dg = (DailyGoal) data.getSerializableExtra("remove");
-//                        if (dg != null)
-//                        {
-//                            getTabOverview().removeFromListView(dg);
-//                            getTabStats().setElements();
-//                            Log.e("Overview","remove");
-//                        }
-//                    }
-//                }
             }
         }
     }
@@ -210,19 +183,37 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
                 };
                 DatePickerDialog pickerDialog = new DatePickerDialog(this, date, myCal.get(Calendar.YEAR), myCal.get(Calendar.MONTH),
                         myCal.get(Calendar.DAY_OF_MONTH));
+                pickerDialog.getDatePicker().setMinDate(DateFormatter.parse(event.getStartDate()).getTime());
                 pickerDialog.getDatePicker().setMaxDate(DateFormatter.parse(event.getEndDate()).getTime());
                 pickerDialog.show();
 
                 return true;
 
+            case R.id.action_week_goal:
+                Intent intent = new Intent(this, WeeklyGoalsActivity.class);
+                intent.putExtra("event", event);
+                intent.putExtra("week", currentWeek);
+                startActivity(intent);
+                return true;
+
             case android.R.id.home:
                 onBackPressed();
-                LinkedList<DailyGoal> dailyGoals = dbHelper.getDailyGoalList(currentWeek);
-                getTabOverview().setList(dailyGoals);
+//                LinkedList<DailyGoal> dailyGoals = dbHelper.getDailyGoalList(currentWeek);
+//                getTabOverview().setList(dailyGoals);
                 return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("prompt", false);
+        startActivity(intent);
+        finish();
     }
 
     @Override

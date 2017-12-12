@@ -168,18 +168,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
-    public Event addEvent(String title, String date)
+    public Event addEvent(String title, String startDate, String eventDate)
     {
         db = getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.Events.COLUMN_NAME_TITLE, title);
-        values.put(DatabaseContract.Events.COLUMN_NAME_DATE, formatToDB(date));
+        values.put(DatabaseContract.Events.COLUMN_NAME_START_DATE, formatToDB(startDate));
+        values.put(DatabaseContract.Events.COLUMN_NAME_EVENT_DATE, formatToDB(eventDate));
 
         // Insert the new row, returning the primary key value of the new row
         int newRowId = (int) db.insert(DatabaseContract.Events.TABLE_NAME, null, values);
-        Event event = new Event(newRowId, title, date);
+        Event event = new Event(newRowId, title, startDate, eventDate);
 
         db.close();
         exportDatabase();
@@ -193,19 +194,34 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.Events.COLUMN_NAME_TITLE, event.getTitle());
-        values.put(DatabaseContract.Events.COLUMN_NAME_DATE, formatToDB(event.getDate()));
+        values.put(DatabaseContract.Events.COLUMN_NAME_START_DATE, formatToDB(event.getStartDate()));
+        values.put(DatabaseContract.Events.COLUMN_NAME_EVENT_DATE, formatToDB(event.getEventDate()));
 
         db.update(DatabaseContract.Events.TABLE_NAME, values, DatabaseContract.Events._ID + "=" + event.getId(), null);
         db.close();
         exportDatabase();
     }
 
-    public WeeklyGoal addWeeklyGoal(String weekStart, float miles, float longest, float weight, String description)
+    public void removeEvent(Event e)
+    {
+        db = getWritableDatabase();
+        String query = "DELETE FROM "+DatabaseContract.Events.TABLE_NAME + " WHERE "+DatabaseContract.Events._ID + " = " + e.getId();
+        db.execSQL(query);
+        query = "DELETE FROM "+DatabaseContract.WeeklyGoals.TABLE_NAME + " WHERE "+DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID+ " = " + e.getId();
+        db.execSQL(query);
+        query = "DELETE FROM "+DatabaseContract.DailyGoals.TABLE_NAME + " WHERE "+DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID + " = " + e.getId();
+        db.execSQL(query);
+
+        db.close();
+        exportDatabase();
+    }
+
+    public WeeklyGoal addWeeklyGoal(String weekStart, float miles, float longest, float weight, String description, int event_id)
     {
         db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK_START, weekStart);
+        values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK, weekStart);
         values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_MILES, miles);
         values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_LONGEST, longest);
         values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_WEIGHT, weight);
@@ -216,7 +232,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         int newRowId = (int) db.insert(DatabaseContract.WeeklyGoals.TABLE_NAME, null, values);
 
         //TODO create it first and send it to this method
-        WeeklyGoal wg = new WeeklyGoal(newRowId, weekStart, miles, longest, weight, description);
+        WeeklyGoal wg = new WeeklyGoal(newRowId, weekStart, miles, longest, weight, description, event_id);
 
         db.close();
         exportDatabase();
@@ -326,7 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         //TODO Needed to check both week and event_id?
         String selectQuery = "SELECT * FROM " + DatabaseContract.WeeklyGoals.TABLE_NAME
-                + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK_START + " = '" + week + "'";
+                + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK + " = '" + week + "'";
         Log.e("dbHelper", selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         while(cursor.moveToNext()) {
@@ -335,7 +351,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             float longest = cursor.getFloat(3);
             float weight = cursor.getFloat(4);
             String description = cursor.getString(5);
-            WeeklyGoal weeklyGoal = new WeeklyGoal(id, week, miles, longest, weight, description);
+            int event_id = cursor.getShort(6);
+            WeeklyGoal weeklyGoal = new WeeklyGoal(id, week, miles, longest, weight, description, event_id);
             return weeklyGoal;
         }
         return null;
@@ -345,14 +362,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         db = getReadableDatabase();
         String selectQuery = "SELECT * FROM " + DatabaseContract.Events.TABLE_NAME
-                + " ORDER BY " + DatabaseContract.Events.COLUMN_NAME_DATE + " DESC";
+                + " ORDER BY " + DatabaseContract.Events.COLUMN_NAME_EVENT_DATE + " DESC";
         Cursor cursor = db.rawQuery(selectQuery, null);
         ArrayList<Event> events = new ArrayList<>();
         while(cursor.moveToNext()) {
             int id = cursor.getInt(0);
             String title = cursor.getString(1);
-            String date = formatFromDB(cursor.getString(2));
-            Event event = new Event(id, title, date);
+            String startDate = formatFromDB(cursor.getString(2));
+            String eventDate = formatFromDB(cursor.getString(3));
+            Event event = new Event(id, title, startDate, eventDate);
             System.out.println("dbHelper: Event: "+event);
             events.add(event);
         }

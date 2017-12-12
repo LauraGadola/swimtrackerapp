@@ -15,13 +15,15 @@ public final class DatabaseContract
     {
         public static final String TABLE_NAME = "events";
         public static final String COLUMN_NAME_TITLE = "title";
-        public static final String COLUMN_NAME_DATE = "date";
+        public static final String COLUMN_NAME_START_DATE = "start_date";
+        public static final String COLUMN_NAME_EVENT_DATE = "event_date";
 
         public static final String CREATE_TABLE_EVENTS =
                 "CREATE TABLE " + Events.TABLE_NAME + " ("
                         + Events._ID + " INTEGER PRIMARY KEY,"
                         + Events.COLUMN_NAME_TITLE + " TEXT,"
-                        + Events.COLUMN_NAME_DATE + " TEXT);";
+                        + Events.COLUMN_NAME_START_DATE + " TEXT,"
+                        + Events.COLUMN_NAME_EVENT_DATE + " TEXT);";
 
         public static final String DELETE_TABLE_EVENTS =
                 "DROP TABLE IF EXISTS " + Events.TABLE_NAME;
@@ -31,20 +33,22 @@ public final class DatabaseContract
     public static class WeeklyGoals implements BaseColumns
     {
         public static final String TABLE_NAME = "weekly_goals";
-        public static final String COLUMN_NAME_WEEK_START = "week_start";
+        public static final String COLUMN_NAME_WEEK = "week";
         public static final String COLUMN_NAME_MILES = "miles";
         public static final String COLUMN_NAME_LONGEST = "longest";
         public static final String COLUMN_NAME_WEIGHT = "weight";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_EVENT_ID = "event_id";
 
         public static final String CREATE_TABLE_WEEKLY_GOALS =
                 "CREATE TABLE " + WeeklyGoals.TABLE_NAME + " ("
                         + WeeklyGoals._ID + " INTEGER PRIMARY KEY,"
-                        + WeeklyGoals.COLUMN_NAME_WEEK_START + " TEXT,"
+                        + WeeklyGoals.COLUMN_NAME_WEEK + " TEXT,"
                         + WeeklyGoals.COLUMN_NAME_MILES + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_LONGEST + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_WEIGHT + " FLOAT,"
-                        + WeeklyGoals.COLUMN_NAME_DESCRIPTION + " TEXT);";
+                        + WeeklyGoals.COLUMN_NAME_DESCRIPTION + " TEXT,"
+                        + WeeklyGoals.COLUMN_NAME_EVENT_ID + " INTEGER);";
 
         public static final String DELETE_TABLE_WEEKLY_EVENTS =
                 "DROP TABLE IF EXIST " + WeeklyGoals.TABLE_NAME;
