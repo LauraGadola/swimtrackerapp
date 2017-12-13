@@ -132,6 +132,13 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
         if (requestCode == 1) {
             if(resultCode == RESULT_OK)
             {
+                String week = data.getStringExtra("week");
+                System.out.println("Overview: week received: "+week);
+                if(week != null)
+                {
+                    currentWeek = week;
+                }
+                setTitle(currentWeek);
                 LinkedList<DailyGoal> dailyGoals = dbHelper.getDailyGoalList(currentWeek);
                 getTabOverview().setList(dailyGoals);
                 if(dailyGoals.size() == 7)

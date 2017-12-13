@@ -20,7 +20,8 @@ public class CreateEventActivity extends AppCompatActivity
     private EditText etEventTitle;
     private EditText etStartDate;
 
-    private Calendar myCalendar;
+    private Calendar myCalEnd;
+    private Calendar myCalStart;
     private DatePickerDialog.OnDateSetListener eventDateListener;
     private DatePickerDialog.OnDateSetListener startDateListener;
     private String dateSelected;
@@ -45,7 +46,8 @@ public class CreateEventActivity extends AppCompatActivity
 
         i = new Intent();
 
-        myCalendar = Calendar.getInstance();
+        myCalEnd = Calendar.getInstance();
+        myCalStart = Calendar.getInstance();
 
         etEventTitle = (EditText) findViewById(R.id.eventTitle);
         etStartDate = (EditText) findViewById(R.id.startDate);
@@ -54,6 +56,8 @@ public class CreateEventActivity extends AppCompatActivity
         //FILL FIELDS IF WE HAVE EVENT
         if(event != null)
         {
+            setTitle("Edit Event");
+
             String title = event.getTitle();
             String startDate = event.getStartDate();
             String eventDate = event.getEventDate();
@@ -64,10 +68,17 @@ public class CreateEventActivity extends AppCompatActivity
             etEventTitle.setText(title);
             etStartDate.setText(startDate);
             etEventDate.setText(eventDate);
+
+            //SET CALENDARS
+            myCalStart.setTime(DateFormatter.parse(event.getStartDate()));
+            System.out.println("start: "+event.getStartDate());
+
+            myCalEnd.setTime(DateFormatter.parse(event.getEventDate()));
+            System.out.println("event: "+event.getEventDate());
         }
         else
         {
-            etStartDate.setText(DateFormatter.format(myCalendar.getTime()));
+            etStartDate.setText(DateFormatter.format(myCalEnd.getTime()));
         }
 
         startDateListener = new DatePickerDialog.OnDateSetListener() {
@@ -75,8 +86,9 @@ public class CreateEventActivity extends AppCompatActivity
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                myCalendar.set(year, monthOfYear, dayOfMonth);
-                updateLabel(etStartDate);
+                myCalStart.set(year, monthOfYear, dayOfMonth);
+                dateSelected = DateFormatter.format(myCalStart.getTime());
+                etStartDate.setText(dateSelected);
             }
 
         };
@@ -86,56 +98,40 @@ public class CreateEventActivity extends AppCompatActivity
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                myCalendar.set(year, monthOfYear, dayOfMonth);
-                updateLabel(etEventDate);
+                myCalEnd.set(year, monthOfYear, dayOfMonth);
+                dateSelected = DateFormatter.format(myCalEnd.getTime());
+                etEventDate.setText(dateSelected);
             }
 
         };
 
-        if(event != null)
-        {
-            myCalendar.setTime(DateFormatter.parse(event.getStartDate()));
-            System.out.println("start: "+event.getStartDate());
-        }
         etStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), startDateListener, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), startDateListener, myCalStart
+                        .get(Calendar.YEAR), myCalStart.get(Calendar.MONTH),
+                        myCalStart.get(Calendar.DAY_OF_MONTH));
                 String date = String.valueOf(etEventDate.getText());
                 if(!date.matches(""))
                 {
                     datePickerDialog.getDatePicker().setMaxDate(DateFormatter.parse(String.valueOf(etEventDate.getText())).getTime());
                 }
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
 
-        if(event != null)
-        {
-            myCalendar.setTime(DateFormatter.parse(event.getEventDate()));
-            System.out.println("event: "+event.getEventDate());
-        }
         etEventDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), eventDateListener, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), eventDateListener, myCalEnd
+                        .get(Calendar.YEAR), myCalEnd.get(Calendar.MONTH),
+                        myCalEnd.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.getDatePicker().setMinDate(DateFormatter.parse(String.valueOf(etStartDate.getText())).getTime());
                 datePickerDialog.show();
             }
         });
 
     }
-
-    private void updateLabel(EditText et) {
-        dateSelected = DateFormatter.format(myCalendar.getTime());
-        et.setText(dateSelected);
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

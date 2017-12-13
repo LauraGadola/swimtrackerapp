@@ -358,6 +358,29 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return null;
     }
 
+    public WeeklyGoal getWeeklyGoal(int id)
+    {
+        db = getReadableDatabase();
+
+        //TODO Needed to check both week and event_id?
+        String selectQuery = "SELECT * FROM " + DatabaseContract.WeeklyGoals.TABLE_NAME
+                + " WHERE " + DatabaseContract.WeeklyGoals._ID + " = " + id;
+        Log.e("dbHelper", selectQuery);
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        while(cursor.moveToNext()) {
+            String week = cursor.getString(1);
+            float miles = cursor.getFloat(2);
+            float longest = cursor.getFloat(3);
+            float weight = cursor.getFloat(4);
+            String description = cursor.getString(5);
+            int event_id = cursor.getShort(6);
+            WeeklyGoal weeklyGoal = new WeeklyGoal(id, week, miles, longest, weight, description, event_id);
+            System.out.println("dbHelper: WG: "+weeklyGoal);
+            return weeklyGoal;
+        }
+        return null;
+    }
+
     public ArrayList<Event> getEventList()
     {
         db = getReadableDatabase();

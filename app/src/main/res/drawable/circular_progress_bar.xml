@@ -26,7 +26,7 @@
             android:thicknessRatio="50.0"
             android:type="sweep"
             android:angle="0">
-            <solid android:color="#479DAC"/>
+            <solid android:color="@color/colorAccent"/>
         </shape>
         </rotate>
     </item>

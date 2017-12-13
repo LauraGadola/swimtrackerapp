@@ -57,7 +57,7 @@ public class DailyGoalsActivity extends AppCompatActivity
 
     private Calendar myCal;
     private String today;
-//    private DatePickerDialog.OnDateSetListener onDateSetListener;
+    private String week;
 
     private Intent intent;
 
@@ -80,7 +80,7 @@ public class DailyGoalsActivity extends AppCompatActivity
         // Retrieve obj sent from main Activity
         event = (Event) getIntent().getSerializableExtra("event");
         dailyGoal = (DailyGoal) getIntent().getSerializableExtra("daily_goal");
-        String week = getIntent().getStringExtra("week");
+        week = getIntent().getStringExtra("week");
 
         System.out.println("Week: "+week);
         System.out.println("Event: "+event);                                            //TODO delete
@@ -94,11 +94,11 @@ public class DailyGoalsActivity extends AppCompatActivity
         etLocation = (EditText) findViewById(R.id.etLocation);
         etHonest = (EditText) findViewById(R.id.etHonest);
         etNotes = (EditText) findViewById(R.id.etNotes);
-        etWeight = (EditText) findViewById(R.id.etWeight);
+        etWeight = (EditText) findViewById(R.id.etWeekWeight);
         etTempC = (EditText) findViewById(R.id.etTempC);
         etTempF = (EditText) findViewById(R.id.etTempF);
         etYards = (EditText) findViewById(R.id.etYards);
-        etMiles = (EditText) findViewById(R.id.etMiles);
+        etMiles = (EditText) findViewById(R.id.etWeekLongest);
         etTime = (EditText) findViewById(R.id.etTime);
         etDate = (EditText) findViewById(R.id.etDate);
         etWeeksLeft = (EditText) findViewById(R.id.etWeeksLeft);
@@ -252,6 +252,7 @@ public class DailyGoalsActivity extends AppCompatActivity
         //DAILY GOAL WAS SELECTED
         if(dailyGoal != null)
         {
+            weeklyGoal = dbHelper.getWeeklyGoal(dailyGoal.getWeekly_id());
             goToDay(dailyGoal, dailyGoal.getDate());
         }
 
@@ -366,6 +367,11 @@ public class DailyGoalsActivity extends AppCompatActivity
                 etDate.setText("(Today) " + date);
                 updateCal(date);
             }
+        }
+
+        if(date.equals(event.getStartDate()))
+        {
+            btnPrevious.setVisibility(View.INVISIBLE);
         }
 
         etWeeksLeft.setText(calculateWeeksLeft());
@@ -540,9 +546,11 @@ public class DailyGoalsActivity extends AppCompatActivity
 
     private void updateTabs()
     {
+        intent.putExtra("week", weeklyGoal.getWeekStart());
         setResult(RESULT_OK, intent);
     }
 
+    //todo When starting I should go back to Overview? right now with prompt it goes back to Main
     @Override
     public void onBackPressed() {
         setResult(RESULT_OK, intent);

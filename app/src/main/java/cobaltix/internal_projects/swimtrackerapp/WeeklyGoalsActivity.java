@@ -50,9 +50,9 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
         etWeek = (EditText) findViewById(R.id.etWeek);
         etWeeklyMiles = (EditText) findViewById(R.id.etWeekMiles);
-        etLongest = (EditText) findViewById(R.id.etMiles);
-        etWeight = (EditText) findViewById(R.id.etWeight);
-        etDescription = (EditText) findViewById(R.id.etDescription);
+        etLongest = (EditText) findViewById(R.id.etWeekLongest);
+        etWeight = (EditText) findViewById(R.id.etWeekWeight);
+        etDescription = (EditText) findViewById(R.id.etNotes);
 
         myCalendar = Calendar.getInstance();
         date = new DatePickerDialog.OnDateSetListener() {

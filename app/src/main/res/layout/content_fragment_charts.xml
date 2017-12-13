@@ -144,7 +144,8 @@
     <LinearLayout android:id="@+id/buttonsLine"
         android:layout_width="fill_parent"
         android:layout_height="30dp"
-        android:layout_below="@+id/percentageLayout">
+        android:layout_below="@+id/percentageLayout"
+        android:layout_marginTop="25dp">
 
         <Button
             android:text="Miles"

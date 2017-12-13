@@ -51,7 +51,7 @@ public class CustomTextWatcher implements TextWatcher
                     activity.clearF();
                 break;
 
-            case R.id.etMiles:
+            case R.id.etWeekLongest:
                 if(!str.matches(""))
                 {
                     f = Float.parseFloat(str);

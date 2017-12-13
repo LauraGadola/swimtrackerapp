@@ -55,7 +55,8 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:textColor="@color/colorAccent"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:enabled="false"/>
 
             <View
                 android:layout_width="0dp"
@@ -130,8 +131,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/labelWeight"
                 android:textSize="18sp"
-                android:layout_alignBaseline="@+id/etWeight"
-                android:layout_alignBottom="@+id/etWeight"/>
+                android:layout_alignBaseline="@+id/etWeekWeight"
+                android:layout_alignBottom="@+id/etWeekWeight"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -167,6 +168,7 @@
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"
                 android:hint="Select"
+                android:textColorHint="@drawable/edit_text_selector"
                 android:layout_toEndOf="@+id/labelLocation"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/colorAccent"/>
@@ -182,7 +184,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/colorLine"
-                android:layout_below="@+id/etWeight"
+                android:layout_below="@+id/etWeekWeight"
                 android:id="@+id/separator5"/>
 
             <View
@@ -197,8 +199,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/labelDistance"
-                android:layout_alignBaseline="@+id/etMiles"
-                android:layout_alignBottom="@+id/etMiles"
+                android:layout_alignBaseline="@+id/etWeekLongest"
+                android:layout_alignBottom="@+id/etWeekLongest"
                 android:textSize="18sp"/>
 
 
@@ -214,15 +216,26 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/etHonest"
                 android:inputType="numberDecimal"
-                android:layout_below="@+id/etMiles"
+                android:layout_below="@+id/etWeekLongest"
                 android:layout_marginTop="25dp"
-                android:layout_alignEnd="@+id/separator1"
                 android:layout_toEndOf="@+id/labelHonest"
                 android:layout_marginLeft="5dp"
+                android:layout_toStartOf="@+id/txtHonestMiles"
                 android:background="@android:color/transparent"
                 android:textAlignment="textEnd"
-                android:hint="Select"
+                android:hint="0.0"
+                android:paddingRight="5dp"
+                android:textColorHint="@drawable/edit_text_selector"
                 android:textColor="@color/colorAccent"/>
+
+            <TextView
+                android:id="@+id/txtHonestMiles"
+                android:text="mi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/labelHonest"
+                android:layout_alignParentEnd="true"
+                android:textSize="18dp"/>
 
             <TextView
                 android:text="Honest"
@@ -255,9 +268,10 @@
                 android:background="@drawable/text_input_border"
                 android:inputType="textMultiLine"
                 android:hint="How'd it feel? Swam with? Conditions? Felt Good?"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:textColor="@color/colorAccent"/>
+                android:textColorHint="@drawable/edit_text_selector"
+                android:padding="5dp"
+                android:textColor="@color/colorAccent"
+                android:layout_marginBottom="25dp"/>
 
             <View
                 android:layout_width="match_parent"
@@ -266,8 +280,9 @@
                 android:layout_below="@+id/etYards"
                 android:id="@+id/separator6"/>
 
+
             <TextView
-                android:text="yards"
+                android:text="yd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtMiles"
@@ -289,24 +304,9 @@
                 android:layout_toEndOf="@+id/txtYards"
                 android:background="@android:color/transparent"
                 android:hint="0.0"
+                android:textColorHint="@drawable/edit_text_selector"
                 android:textAlignment="textEnd"
                 android:paddingRight="5dp"
-                android:textColor="@color/colorAccent"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/etMiles"
-                android:inputType="number"
-                android:layout_marginTop="24dp"
-                android:layout_below="@+id/separator5"
-                android:background="@android:color/transparent"
-                android:layout_toStartOf="@+id/txtYards"
-                android:layout_toEndOf="@+id/labelDistance"
-                android:hint="0.0"
-                android:textAlignment="textEnd"
-                android:paddingRight="5dp"
-                android:layout_marginLeft="5dp"
                 android:textColor="@color/colorAccent"/>
 
             <TextView
@@ -323,40 +323,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:id="@+id/etGoalWeight"
-                android:textSize="18sp"
-                android:enabled="false"
-                android:layout_above="@+id/separator5"
-                android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/labelGoal"
-                android:layout_marginLeft="5dp"
-                android:background="@android:color/transparent"
-                android:textColor="@color/colorAccent"
-                android:layout_alignEnd="@+id/separator1"/>
-
-            <TextView
-                android:text="    |    Goal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/labelGoal"
-                android:textSize="18sp"
-                android:layout_alignBaseline="@+id/etGoalWeight"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="40dp"/>
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:id="@+id/etWeight"
+                android:id="@+id/etWeekWeight"
                 android:layout_marginTop="25dp"
                 android:layout_marginLeft="5dp"
                 android:textAlignment="textEnd"
                 android:layout_below="@+id/separator4"
                 android:layout_toStartOf="@+id/txtPounds"
-                android:layout_toEndOf="@+id/labelWeight"
                 android:background="@android:color/transparent"
                 android:hint="0.0"
+                android:textColorHint="@drawable/edit_text_selector"
                 android:paddingRight="5dp"
                 android:textColor="@color/colorAccent"/>
 
@@ -367,7 +342,7 @@
                 android:id="@+id/txtPounds"
                 android:textSize="18sp"
                 android:layout_above="@+id/separator5"
-                android:layout_toStartOf="@id/labelGoal"/>
+                android:layout_alignParentEnd="true"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -381,6 +356,7 @@
                 android:layout_below="@+id/separator3"
                 android:layout_alignParentEnd="true"
                 android:hint="Select"
+                android:textColorHint="@drawable/edit_text_selector"
                 android:textColor="@color/colorAccent"/>
 
             <EditText
@@ -392,10 +368,10 @@
                 android:textAlignment="textEnd"
                 android:background="@android:color/transparent"
                 android:hint="0.0"
+                android:textColorHint="@drawable/edit_text_selector"
                 android:layout_below="@+id/separator2"
                 android:layout_toEndOf="@+id/labelTemp"
-                android:layout_marginLeft="5dp"
-                android:layout_toStartOf="@+id/txtDegreeF"
+                android:layout_marginLeft="60dp"
                 android:textColor="@color/colorAccent"/>
 
             <TextView
@@ -405,8 +381,7 @@
                 android:id="@+id/txtDegreeF"
                 android:textSize="18sp"
                 android:layout_alignBaseline="@+id/etTempF"
-                android:layout_alignBottom="@+id/etTempF"
-                android:layout_alignEnd="@id/txtPounds"/>
+                android:layout_toEndOf="@id/etTempF"/>
 
             <EditText
                 android:layout_width="wrap_content"
@@ -416,6 +391,7 @@
                 android:textAlignment="textEnd"
                 android:background="@android:color/transparent"
                 android:hint="0.0"
+                android:textColorHint="@drawable/edit_text_selector"
                 android:layout_above="@+id/separator3"
                 android:textColor="@color/colorAccent"
                 android:layout_toStartOf="@id/txtDegreeC"
@@ -442,23 +418,44 @@
 
             <Button
                 android:id="@+id/btnDelete"
-                android:backgroundTint="@color/colorAccent"
-                android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/etNotes"
                 android:layout_alignParentEnd="true"
-                android:text="Delete"/>
+                android:drawableLeft="@drawable/ic_icons_trash"
+                android:drawablePadding="5dp"
+                android:text="Delete"
+                android:textColor="@color/colorBackground"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:paddingLeft="25dp"
+                android:paddingRight="30dp"/>
 
             <TextView
-                android:text="miles"
+                android:text="mi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtYards"
                 android:textSize="18sp"
-                android:layout_alignBaseline="@+id/etMiles"
-                android:layout_alignBottom="@+id/etMiles"
-                android:layout_toStartOf="@+id/labelGoal"/>
+                android:layout_above="@+id/etHonest"
+                android:layout_toEndOf="@+id/etTempF"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/etWeekLongest"
+                android:inputType="number"
+                android:layout_marginTop="24dp"
+                android:background="@android:color/transparent"
+                android:hint="0.0"
+                android:textColorHint="@drawable/edit_text_selector"
+                android:textAlignment="textEnd"
+                android:paddingRight="5dp"
+                android:layout_marginLeft="60dp"
+                android:textColor="@color/colorAccent"
+                android:layout_below="@+id/separator5"
+                android:layout_toEndOf="@+id/labelDistance"
+                android:layout_toStartOf="@id/txtYards"/>
+
 
         </RelativeLayout>
     </LinearLayout>

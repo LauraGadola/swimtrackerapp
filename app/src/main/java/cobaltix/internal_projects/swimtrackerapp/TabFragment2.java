@@ -30,8 +30,6 @@ public class TabFragment2 extends MyFragment
     private Event event;
     private DatabaseHelper dbHelper;
     private List<DailyGoal> dgList;
-    private String myFormat = "EEEE, MMM dd, yyyy";
-    private SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 
     private GraphView graph;
     private LinearLayout btnGroup;
@@ -54,6 +52,8 @@ public class TabFragment2 extends MyFragment
 
     private float longest;
     private float totDist;
+
+    private WeeklyGoal weeklyGoal;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,6 +85,10 @@ public class TabFragment2 extends MyFragment
     public void setElements()
     {
         event = getEvent();
+
+        weeklyGoal = dbHelper.getWeeklyGoal(getWeek());
+        System.out.println("tab2: WG: "+weeklyGoal);
+
         dgList = dbHelper.getDailyGoalList(getWeek());
         System.out.println("List: "+dgList);
         if(!dgList.isEmpty())
@@ -121,15 +125,7 @@ public class TabFragment2 extends MyFragment
             int i = 0;
             for (DailyGoal dg : dgList)
             {
-                Date date = null;
-                try
-                {
-                    date = sdf.parse(dg.getDate());
-                } catch (ParseException e)
-                {
-                    e.printStackTrace();
-                }
-
+                Date date = DateFormatter.parse(dg.getDate());
                 DataPoint milesDP = new DataPoint(date, dg.getMiles());
                 milesList[i] = milesDP;
 
@@ -155,7 +151,9 @@ public class TabFragment2 extends MyFragment
                 public void onClick(View v)
                 {
                     setBtnFocus(btnWeight);
-                    renderGraph("Weight");
+                    graph.removeAllSeries();
+
+//                    renderGraph("Weight");
                 }
             });
 
@@ -176,14 +174,17 @@ public class TabFragment2 extends MyFragment
 
     public void renderGraph(String title)
     {
+        float goal = 0;
         DataPoint[] list = null;
         switch(title)
         {
             case "Miles":
                 list = milesList;
+                goal = weeklyGoal.getMiles();
                 break;
             case "Weight":
                 list = weightList;
+                goal = weeklyGoal.getWeight();
                 break;
             default: break;
         }
@@ -198,19 +199,19 @@ public class TabFragment2 extends MyFragment
 
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
-        if(list.length < 10)
-            graph.getGridLabelRenderer().setNumHorizontalLabels(list.length);
-        else
-            graph.getGridLabelRenderer().setNumHorizontalLabels(10);
+//        if(list.length < 10)
+//            graph.getGridLabelRenderer().setNumHorizontalLabels(list.length);
+//        else
+//            graph.getGridLabelRenderer().setNumHorizontalLabels(10);
 
         graph.getGridLabelRenderer().setNumVerticalLabels(10);
-        graph.getGridLabelRenderer().setHorizontalLabelsAngle(135);
+        graph.getGridLabelRenderer().setHorizontalLabelsAngle(45);
         graph.getGridLabelRenderer().setPadding(64);
 
         // set manual x bounds to have nice steps
         graph.getViewport().setMinX(list[0].getX());
         graph.getViewport().setMinY(0);
-//        graph.getViewport().setMaxY();                                           //TODO set to the weekly goal
+        graph.getViewport().setMaxY(goal);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setScalable(true);
