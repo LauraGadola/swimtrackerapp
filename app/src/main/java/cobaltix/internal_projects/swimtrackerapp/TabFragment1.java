@@ -33,6 +33,10 @@ public class TabFragment1 extends MyFragment
 
     private OnLongestCalculatedListener listener;
 
+    //todo - duplicate
+    private Calendar myCal = Calendar.getInstance();
+    private Date today = myCal.getTime();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -67,7 +71,6 @@ public class TabFragment1 extends MyFragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                Toast.makeText(view.getContext(), "Clicked!", Toast.LENGTH_SHORT).show();
                 DailyGoal dg = (DailyGoal) lv.getItemAtPosition(position);
                 Intent i = new Intent(getContext(), DailyGoalsActivity.class);
                 i.putExtra("event", getEvent());
@@ -91,16 +94,60 @@ public class TabFragment1 extends MyFragment
     private void checkForButton()
     {
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        Date date = DateFormatter.parse(getEvent().getStartDate());
+        Date startDate = DateFormatter.parse(getEvent().getStartDate());
         Date today = Calendar.getInstance().getTime();
 
-        if(date.after(today) || dgList.size() == 7)
+        if(startDate.after(today) || dgList.size() == 7)
         {
             fab.setVisibility(View.INVISIBLE);
         }
         else
-            fab.setVisibility(View.VISIBLE);
+        {
+            String day = HelperClass.getFirstDay(getWeek());
+            while (!isStartDateOrAfter(day) || getDG(day) != null)
+            {
+                day = getDay(day, 1);
+            }
+            if (DateFormatter.parse(day).after(today))
+            {
+                fab.setVisibility(View.INVISIBLE);
+            } else
+                fab.setVisibility(View.VISIBLE);
+        }
+
     }
+
+    //todo change - duplicate from DGA
+    private boolean isStartDateOrAfter(String day)
+    {
+        boolean isStartDate = day.equals(getEvent().getStartDate());
+        boolean afterStartDate = DateFormatter.parse(day).after(DateFormatter.parse(getEvent().getStartDate()));
+        return  isStartDate || afterStartDate;
+    }
+
+    //todo change - duplicate from DGA
+    private String getDay(String date, int beforeOrAfter)
+    {
+        Date d = DateFormatter.parse(date);
+        myCal.setTime(d);
+        myCal.add(myCal.DATE, beforeOrAfter);
+        return DateFormatter.format(myCal.getTime());
+    }
+
+    //todo change - duplicate from DGA
+    private DailyGoal getDG(String day)
+    {
+        for (DailyGoal dg : dgList)
+        {
+            if (dg.getDate().equals(day))
+            {
+                return dg;
+            }
+        }
+        return null;
+    }
+
+
 
     public void showResults()
     {

@@ -12,4 +12,5 @@
         android:id="@+id/action_week_goal"
         android:title="Week Goal"
         android:showAsAction="never"/>
+
 </menu>

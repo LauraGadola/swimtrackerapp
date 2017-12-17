@@ -18,7 +18,7 @@ import java.util.Calendar;
 public class WeeklyGoalsActivity extends AppCompatActivity
 {
     private EditText etWeek;
-    private EditText etWeeklyMiles;
+    private EditText etMiles;
     private EditText etLongest;
     private EditText etWeight;
     private EditText etDescription;
@@ -49,7 +49,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         dbHelper = new DatabaseHelper(this);
 
         etWeek = (EditText) findViewById(R.id.etWeek);
-        etWeeklyMiles = (EditText) findViewById(R.id.etWeekMiles);
+        etMiles = (EditText) findViewById(R.id.etWeekMiles);
         etLongest = (EditText) findViewById(R.id.etWeekLongest);
         etWeight = (EditText) findViewById(R.id.etWeekWeight);
         etDescription = (EditText) findViewById(R.id.etNotes);
@@ -115,7 +115,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         switch (id)
         {
             case R.id.action_done:
-                float miles = Float.parseFloat(etWeeklyMiles.getText().toString());
+                float miles = Float.parseFloat(etMiles.getText().toString());
                 float longest = Float.parseFloat(etLongest.getText().toString());
                 float weight = Float.parseFloat(etWeight.getText().toString());
                 String description = etDescription.getText().toString();
@@ -167,7 +167,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
     {
         if(weeklyGoal != null)
         {
-            etWeeklyMiles.setText(String.valueOf(weeklyGoal.getMiles()));
+            etMiles.setText(String.valueOf(weeklyGoal.getMiles()));
             etLongest.setText(String.valueOf(weeklyGoal.getLongest()));
             etWeight.setText(String.valueOf(weeklyGoal.getWeight()));
             etDescription.setText(weeklyGoal.getDescription());

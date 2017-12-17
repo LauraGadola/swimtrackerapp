@@ -140,7 +140,10 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
                 }
                 setTitle(currentWeek);
                 LinkedList<DailyGoal> dailyGoals = dbHelper.getDailyGoalList(currentWeek);
+
                 getTabOverview().setList(dailyGoals);
+                getTabStats().setElements();
+
                 if(dailyGoals.size() == 7)
                 {
                     fab.setVisibility(View.INVISIBLE);

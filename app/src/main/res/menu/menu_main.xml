@@ -8,8 +8,4 @@
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/backup"
-        android:title="Backup"
-        android:showAsAction="never"/>
 </menu>

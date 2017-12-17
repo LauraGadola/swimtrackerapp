@@ -1,14 +1,9 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,12 +14,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,6 +41,8 @@ public class MainActivity extends AppCompatActivity
 
     private boolean prompt;
 
+    private boolean activeEvent = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -63,13 +58,15 @@ public class MainActivity extends AppCompatActivity
         dbHelper = new DatabaseHelper(this);
 
         ////Import database if needed - todo to delete eventually
-        if(! dbHelper.isDatabaseExist(this))
-        {
-            Log.e("MainActivity", "db does not exist");
-            dbHelper.importDatabase();
-        }
-        else
-            Log.e("MainActivity", "db exists!");
+//        if(! dbHelper.isDatabaseExist(this))
+//        {
+//            Log.e("MainActivity", "db does not exist");
+//            dbHelper.importDatabase();
+//        }
+//        else
+//            Log.e("MainActivity", "db exists!");
+        //Finish import
+
 
         eventList = dbHelper.getEventList();
 
@@ -90,7 +87,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             //Prompt daily goal activity to enter logs if needed
-            if (DateFormatter.parse(recentEvent.getStartDate()).before(today) ||dgList.isEmpty() || (!date.equals(DateFormatter.format(today)) && !date.equals(recentEvent.getEndDate())))  // No log yet || last log is not today nor event end date
+            if (DateFormatter.parse(recentEvent.getStartDate()).before(today) && (dgList.isEmpty() || (!date.equals(DateFormatter.format(today)) && !date.equals(recentEvent.getEndDate()))))  // No log yet || last log is not today nor event end date
             {
                 Intent intent = new Intent(this, DailyGoalsActivity.class);
                 intent.putExtra("event", recentEvent);
@@ -105,16 +102,23 @@ public class MainActivity extends AppCompatActivity
         }
         ////End of prompt
 
-        markDoneEvents();
-
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(getApplicationContext(), CreateEventActivity.class);
-                startActivity(intent);
+                if(activeEvent)
+                {
+                    Toast toast = Toast.makeText(MainActivity.this, "You already have an active event.", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                }
+                else
+                {
+                    Intent intent = new Intent(getApplicationContext(), CreateEventActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -138,6 +142,8 @@ public class MainActivity extends AppCompatActivity
         //here for testing purposes (need to export db) - todo move to export cvs clicked
         PermissionsHandler permissionsHandler = new PermissionsHandler(this);
         permissionsHandler.requestWriteExtStoragePermissions();
+
+        markDoneEvents();
 
     }
 
@@ -169,6 +175,15 @@ public class MainActivity extends AppCompatActivity
                 createAlertDialog();
                 return true;
 
+            case R.id.export:
+            {
+                Toast toast = Toast.makeText(this, "Work In Progress!", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+//                dbHelper.exportToCVS();
+                return true;
+            }
+
             default:
                 return super.onContextItemSelected(item);
         }
@@ -184,11 +199,14 @@ public class MainActivity extends AppCompatActivity
                         dbHelper.removeEvent(eventToRemove);
                         refreshList();
                         Toast.makeText(MainActivity.this, "The event has been deleted", Toast.LENGTH_SHORT).show();
+                        if(eventList.isEmpty())
+                            activeEvent = false;
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
                         dialog.dismiss();
                         break;
+
                 }
             }
         };
@@ -233,7 +251,11 @@ public class MainActivity extends AppCompatActivity
                 e.setDone(true);
             }
             else
+            {
                 e.setDone(false);
+                //We have one event open - don't allow creation of new event
+                activeEvent = true;
+            }
         }
 
     }
@@ -253,12 +275,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_settings)
         {
-            return true;
-        }
-
-        else if(id == R.id.backup)
-        {
-            dbHelper.exportToCVS();
+            Toast toast = Toast.makeText(this, "Nothing here yet!", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
             return true;
         }
 

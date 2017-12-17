@@ -249,30 +249,31 @@ public class DailyGoalsActivity extends AppCompatActivity
         //FINISH SETTING BUTTONS
 
         //FIELDS
-        //DAILY GOAL WAS SELECTED
+        //DAILY GOAL WAS SELECTED FROM LISTVIEW
         if(dailyGoal != null)
         {
-            weeklyGoal = dbHelper.getWeeklyGoal(dailyGoal.getWeekly_id());
+            weeklyGoal = dbHelper.getWeeklyGoal(dailyGoal.getWeekly_id());          //todo needed?
             goToDay(dailyGoal, dailyGoal.getDate());
         }
 
-        //LOOKING AT SPECIFIC WEEK
+        //LOOKING AT SPECIFIC WEEK - fab button clicked in overview or Weekly goal created
         else if(week != null)
         {
             String day = HelperClass.getFirstDay(week);
             hasWeeklyGoal(day);
 
-            while (!isNotBeforeStartDate(day) || getDG(day) != null)
+            while (!isStartDateOrAfter(day) || getDG(day) != null)
             {
                 day = getDay(day, 1);
             }
-            if(DateFormatter.parse(day).after(DateFormatter.parse(today)))
-            {
-                day = today;
-            }
+//            if(DateFormatter.parse(day).after(DateFormatter.parse(today)))
+//            {
+//                day = today;
+//                //todo we don't get here
+//            }
             goToDay(null, day);
         }
-        //THIS WEEK
+        //PROMPT REQUESTED
         else
         {
             if (!dglist.isEmpty()) //Retrieve goal to display or show blank page
@@ -281,13 +282,15 @@ public class DailyGoalsActivity extends AppCompatActivity
             }
             System.out.println("Last saved: " + lastSavedDG);
 
-            if (lastSavedDG != null)
+            if (lastSavedDG != null)                    //todo redundant to delete
             {
                 String date = lastSavedDG.getDate();
                 //if we reach today or the the day prior to the event- show last entry
-                if (isUpToDate(date))
+                if (isUpToDate(date))       //todo no need to check cause I won't get here
                 {
                     goToDay(lastSavedDG, date);
+                    //todo if today go to overview of that event
+                    //todo if end date do to main to create new event
                 } else //move to next day
                 {
                     String nextDay = getDay(date, 1);
@@ -309,7 +312,7 @@ public class DailyGoalsActivity extends AppCompatActivity
         }
     }
 
-    private boolean isNotBeforeStartDate(String day)
+    private boolean isStartDateOrAfter(String day)
     {
         boolean isStartDate = day.equals(event.getStartDate());
         boolean afterStartDate = DateFormatter.parse(day).after(DateFormatter.parse(event.getStartDate()));
@@ -520,7 +523,7 @@ public class DailyGoalsActivity extends AppCompatActivity
                     //If you entered today or last day prior to event go back to main page
                     if (isUpToDate(date))
                     {
-                        Toast.makeText(this, "Your are up-to-date!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "You are up-to-date!", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                     else //go to next
@@ -535,7 +538,11 @@ public class DailyGoalsActivity extends AppCompatActivity
                 }
 
             case android.R.id.home:
-                updateTabs();
+                Intent i = new Intent(this, OverviewActivity.class);
+                i.putExtra("event", event);
+                i.putExtra("week", week);
+                startActivity(i);
+//                updateTabs();
                 finish();
                 return true;
 

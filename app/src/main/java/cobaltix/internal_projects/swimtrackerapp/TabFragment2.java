@@ -47,6 +47,7 @@ public class TabFragment2 extends MyFragment
     private TextView txtMilesPercent;
     private TextView txtLongestPercent;
     private TextView txtWeightPercent;
+    private View separator;
 
     private LinearLayout percentageLayout;
 
@@ -74,6 +75,7 @@ public class TabFragment2 extends MyFragment
         txtLongestPercent = (TextView) v.findViewById(R.id.txtLongestPercent);
         txtWeightPercent = (TextView) v.findViewById(R.id.txtWeightPercent);
         percentageLayout = (LinearLayout) v.findViewById(R.id.percentageLayout);
+        separator = (View) v.findViewById(R.id.separator);
 
         dbHelper = new DatabaseHelper(getContext());
 
@@ -167,6 +169,7 @@ public class TabFragment2 extends MyFragment
             graph.setVisibility(View.INVISIBLE);
             btnGroup.setVisibility(View.INVISIBLE);
             percentageLayout.setVisibility(View.INVISIBLE);
+            separator.setVisibility(View.INVISIBLE);
 
             empty.setVisibility(View.VISIBLE);
         }

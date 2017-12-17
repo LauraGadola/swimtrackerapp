@@ -204,13 +204,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public void removeEvent(Event e)
     {
+        //// TODO: 12/13/17 Test!! 
         db = getWritableDatabase();
-        String query = "DELETE FROM "+DatabaseContract.Events.TABLE_NAME + " WHERE "+DatabaseContract.Events._ID + " = " + e.getId();
-        db.execSQL(query);
-        query = "DELETE FROM "+DatabaseContract.WeeklyGoals.TABLE_NAME + " WHERE "+DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID+ " = " + e.getId();
-        db.execSQL(query);
-        query = "DELETE FROM "+DatabaseContract.DailyGoals.TABLE_NAME + " WHERE "+DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID + " = " + e.getId();
-        db.execSQL(query);
+
+        db.delete(DatabaseContract.Events.TABLE_NAME, DatabaseContract.Events._ID + " = " +e.getId(), null);
+        db.delete(DatabaseContract.WeeklyGoals.TABLE_NAME, DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID + " = " +e.getId(), null);
+        db.delete(DatabaseContract.DailyGoals.TABLE_NAME, DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID + " = " +e.getId(), null);
+
+//        String query = "DELETE FROM "+DatabaseContract.Events.TABLE_NAME + " WHERE "+DatabaseContract.Events._ID + " = " + e.getId();
+//        db.execSQL(query);
+//        query = "DELETE FROM "+DatabaseContract.WeeklyGoals.TABLE_NAME + " WHERE "+DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID+ " = " + e.getId();
+//        db.execSQL(query);
+//        query = "DELETE FROM "+DatabaseContract.DailyGoals.TABLE_NAME + " WHERE "+DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID + " = " + e.getId();
+//        db.execSQL(query);
 
         db.close();
         exportDatabase();
