@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     android:paddingBottom="16dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
     android:paddingTop="16dp"
     tools:context="cobaltix.internal_projects.swimtrackerapp.TabFragment1">
 
@@ -37,8 +37,12 @@
     <LinearLayout
         android:id="@+id/percentageLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:layout_marginBottom="20dp">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -139,20 +143,19 @@
                 android:layout_centerHorizontal="true"/>
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorLine"
-        android:layout_below="@+id/percentageLayout"
-        android:id="@+id/separator"/>
 
     <LinearLayout android:id="@+id/buttonsLine"
         android:layout_width="fill_parent"
         android:layout_height="30dp"
-        android:layout_below="@+id/separator"
-        android:layout_marginTop="25dp">
+        android:layout_below="@+id/percentageLayout"
+        android:layout_marginTop="15dp">
 
         <Button
             android:text="Miles"

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by lgadola on 11/5/17.
  */
-public class DailyGoal implements Serializable
+public class DailyLog implements Serializable
 {
     private int id;
     private String date;
@@ -21,8 +21,8 @@ public class DailyGoal implements Serializable
     private int event_id;
 
     //TODO Do I need to save weeks left?
-    public DailyGoal(String date, String location, float temp, int hrs, int min, float weight,
-                     float miles, float honest, String notes, int weekly_id, int event_id)
+    public DailyLog(String date, String location, float temp, int hrs, int min, float weight,
+                    float miles, float honest, String notes, int weekly_id, int event_id)
     {
         this.date = date;
         this.location = location;
@@ -37,8 +37,8 @@ public class DailyGoal implements Serializable
         this.event_id = event_id;
     }
 
-    public DailyGoal(int id, String date, String location, float temp, int hrs, int min, float weight,
-                     float miles, float honest, String notes, int weekly_id, int event_id)
+    public DailyLog(int id, String date, String location, float temp, int hrs, int min, float weight,
+                    float miles, float honest, String notes, int weekly_id, int event_id)
     {
         this(date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event_id);
         this.id = id;
@@ -167,7 +167,7 @@ public class DailyGoal implements Serializable
     @Override
     public String toString()
     {
-        return "DailyGoal{" +
+        return "DailyLog{" +
                 "id=" + id +
                 ", date='" + date + '\'' +
                 ", location='" + location + '\'' +
@@ -189,7 +189,7 @@ public class DailyGoal implements Serializable
         if (obj == null)
             return false;
 
-        DailyGoal otherDG = (DailyGoal) obj;
+        DailyLog otherDG = (DailyLog) obj;
 
         if (otherDG.id != this.id)
         {

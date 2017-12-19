@@ -2,7 +2,6 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,19 +9,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class DailyGoalsListAdapter extends ArrayAdapter<DailyGoal>
+public class DailyLogsListAdapter extends ArrayAdapter<DailyLog>
 {
     private Activity context;
-    private DailyGoal dg;
-    private LinkedList<DailyGoal> dgList;
+    private DailyLog dg;
+    private LinkedList<DailyLog> dgList;
 
-    public DailyGoalsListAdapter(Activity context, LinkedList<DailyGoal> dailyGoals) {
-        super(context, 0, dailyGoals);
+    public DailyLogsListAdapter(Activity context, LinkedList<DailyLog> dailyLogs) {
+        super(context, 0, dailyLogs);
         this.context = context;
-        this.dgList = dailyGoals;
+        this.dgList = dailyLogs;
     }
 
     @Override

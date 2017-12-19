@@ -2,7 +2,6 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 
 public class OverviewActivity extends AppCompatActivity implements TabFragment1.OnLongestCalculatedListener
@@ -65,6 +63,7 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
 
         event = (Event) getIntent().getSerializableExtra("event");
         currentWeek = getIntent().getStringExtra("week");
+        System.out.println("Overview: week retrieved is: "+currentWeek);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -117,7 +116,7 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(getApplicationContext(), DailyGoalsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), DailyLogsActivity.class);
                 intent.putExtra("event", event);
                 intent.putExtra("week", currentWeek);
                 startActivityForResult(intent, 1);
@@ -139,12 +138,12 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
                     currentWeek = week;
                 }
                 setTitle(currentWeek);
-                LinkedList<DailyGoal> dailyGoals = dbHelper.getDailyGoalList(currentWeek);
+                LinkedList<DailyLog> dailyLogs = dbHelper.getDailyLogList(currentWeek);
 
-                getTabOverview().setList(dailyGoals);
+                getTabOverview().setList(dailyLogs);
                 getTabStats().setElements();
 
-                if(dailyGoals.size() == 7)
+                if(dailyLogs.size() == 7)
                 {
                     fab.setVisibility(View.INVISIBLE);
                 }
@@ -208,7 +207,7 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
 
             case android.R.id.home:
                 onBackPressed();
-//                LinkedList<DailyGoal> dailyGoals = dbHelper.getDailyGoalList(currentWeek);
+//                LinkedList<DailyLog> dailyGoals = dbHelper.getDailyLogList(currentWeek);
 //                getTabOverview().setList(dailyGoals);
                 return true;
 

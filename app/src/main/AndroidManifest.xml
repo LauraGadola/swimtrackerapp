@@ -30,7 +30,7 @@
                 android:value="cobaltix.internal_projects.swimtrackerapp.MainActivity"/>
         </activity>
         <activity
-            android:name=".DailyGoalsActivity"
+            android:name=".DailyLogsActivity"
             android:label="@string/title_activity_daily_goals"
             android:parentActivityName=".OverviewActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -41,11 +41,11 @@
         <activity
             android:name=".WeeklyGoalsActivity"
             android:label="@string/title_activity_weekly_goals"
-            android:parentActivityName=".DailyGoalsActivity"
+            android:parentActivityName=".DailyLogsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity"/>
+                android:value="cobaltix.internal_projects.swimtrackerapp.DailyLogsActivity"/>
         </activity>
         <activity
             android:name=".OverviewActivity"

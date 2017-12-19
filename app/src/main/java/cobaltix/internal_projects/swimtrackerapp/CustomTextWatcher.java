@@ -9,10 +9,10 @@ import android.widget.EditText;
  */
 public class CustomTextWatcher implements TextWatcher
 {
-    DailyGoalsActivity activity;
+    DailyLogsActivity activity;
     EditText et;
 
-    public CustomTextWatcher(DailyGoalsActivity activity, EditText et)
+    public CustomTextWatcher(DailyLogsActivity activity, EditText et)
     {
         this.activity = activity;
         this.et = et;

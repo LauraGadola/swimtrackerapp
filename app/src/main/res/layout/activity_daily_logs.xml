@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity">
+    tools:context="cobaltix.internal_projects.swimtrackerapp.DailyLogsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,6 +22,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_daily_goals"/>
+    <include layout="@layout/content_daily_logs"/>
 
 </android.support.design.widget.CoordinatorLayout>

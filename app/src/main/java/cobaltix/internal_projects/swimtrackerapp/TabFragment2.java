@@ -1,18 +1,14 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LegendRenderer;
@@ -20,8 +16,6 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +23,7 @@ public class TabFragment2 extends MyFragment
 {
     private Event event;
     private DatabaseHelper dbHelper;
-    private List<DailyGoal> dgList;
+    private List<DailyLog> dgList;
 
     private GraphView graph;
     private LinearLayout btnGroup;
@@ -47,7 +41,6 @@ public class TabFragment2 extends MyFragment
     private TextView txtMilesPercent;
     private TextView txtLongestPercent;
     private TextView txtWeightPercent;
-    private View separator;
 
     private LinearLayout percentageLayout;
 
@@ -75,7 +68,6 @@ public class TabFragment2 extends MyFragment
         txtLongestPercent = (TextView) v.findViewById(R.id.txtLongestPercent);
         txtWeightPercent = (TextView) v.findViewById(R.id.txtWeightPercent);
         percentageLayout = (LinearLayout) v.findViewById(R.id.percentageLayout);
-        separator = (View) v.findViewById(R.id.separator);
 
         dbHelper = new DatabaseHelper(getContext());
 
@@ -91,7 +83,7 @@ public class TabFragment2 extends MyFragment
         weeklyGoal = dbHelper.getWeeklyGoal(getWeek());
         System.out.println("tab2: WG: "+weeklyGoal);
 
-        dgList = dbHelper.getDailyGoalList(getWeek());
+        dgList = dbHelper.getDailyLogList(getWeek());
         System.out.println("List: "+dgList);
         if(!dgList.isEmpty())
         {
@@ -101,31 +93,13 @@ public class TabFragment2 extends MyFragment
             btnGroup.setVisibility(View.VISIBLE);
             percentageLayout.setVisibility(View.VISIBLE);
 
-            //SET PERCENTAGES
-            WeeklyGoal weeklyGoal = dbHelper.getWeeklyGoal(getWeek());
-            System.out.println("WG Miles: "+weeklyGoal.getMiles() + " / " + totDist);
-            System.out.println("WG Longest: "+weeklyGoal.getLongest() + " / " + longest);
-            System.out.println("WG Weight: "+weeklyGoal.getWeight() + " / " + dgList.get(0).getWeight());
 
-            int percent;
-            percent = (int) (totDist/weeklyGoal.getMiles()*100);
-            progressBarMiles.setProgress(percent);
-            txtMilesPercent.setText(String.valueOf(percent)+"%");
-
-            percent = (int) (longest/weeklyGoal.getLongest()*100);
-            progressBarLongest.setProgress(percent);
-            txtLongestPercent.setText(String.valueOf(percent)+"%");
-
-            System.out.println("Last DG weight: "+dgList.get(0).getWeight());
-            percent = (int) (dgList.get(0).getWeight() / weeklyGoal.getWeight()*100);
-            progressBarWeight.setProgress(percent);
-            txtWeightPercent.setText(String.valueOf(percent)+"%");
 
             //SET GRAPH
             milesList = new DataPoint[dgList.size()];
             weightList = new DataPoint[dgList.size()];
-            int i = 0;
-            for (DailyGoal dg : dgList)
+            int i = dgList.size()-1;
+            for (DailyLog dg : dgList)
             {
                 Date date = DateFormatter.parse(dg.getDate());
                 DataPoint milesDP = new DataPoint(date, dg.getMiles());
@@ -134,7 +108,7 @@ public class TabFragment2 extends MyFragment
                 DataPoint weightDP = new DataPoint(date, dg.getWeight());
                 weightList[i] = weightDP;
 
-                i++;
+                i--;
             }
 
             btnMiles.setOnClickListener(new View.OnClickListener()
@@ -155,21 +129,43 @@ public class TabFragment2 extends MyFragment
                     setBtnFocus(btnWeight);
                     graph.removeAllSeries();
 
-//                    renderGraph("Weight");
+                    renderGraph("Weight");
                 }
             });
 
             //TODO change depending on button click
 
-            btnFocus = btnMiles;
+            //default at page start
+            btnFocus = btnWeight;
             setBtnFocus(btnMiles);
             renderGraph("Miles");
+
+            //SET PERCENTAGES
+            WeeklyGoal weeklyGoal = dbHelper.getWeeklyGoal(getWeek());
+            System.out.println("WG Miles: "+weeklyGoal.getMiles() + " / " + totDist);
+            System.out.println("WG Longest: "+weeklyGoal.getLongest() + " / " + longest);
+            System.out.println("WG Weight: "+weeklyGoal.getWeight() + " / " + dgList.get(0).getWeight());
+
+            int percent;
+            percent = (int) (totDist/weeklyGoal.getMiles()*100);
+            progressBarMiles.setProgress(percent);
+            txtMilesPercent.setText(String.valueOf(percent)+"%");
+
+//            longest = (float) graph.getViewport().getMaxY(true);
+            percent = (int) (longest/weeklyGoal.getLongest()*100);
+            progressBarLongest.setProgress(percent);
+            txtLongestPercent.setText(String.valueOf(percent)+"%");
+
+            System.out.println("Last DG weight: "+dgList.get(0).getWeight());
+            percent = (int) (dgList.get(0).getWeight() / weeklyGoal.getWeight()*100);
+            progressBarWeight.setProgress(percent);
+            txtWeightPercent.setText(String.valueOf(percent)+"%");
+
         }
         else {
             graph.setVisibility(View.INVISIBLE);
             btnGroup.setVisibility(View.INVISIBLE);
             percentageLayout.setVisibility(View.INVISIBLE);
-            separator.setVisibility(View.INVISIBLE);
 
             empty.setVisibility(View.VISIBLE);
         }
@@ -177,17 +173,21 @@ public class TabFragment2 extends MyFragment
 
     public void renderGraph(String title)
     {
+        System.out.println("Rendering graph.........");
         float goal = 0;
         DataPoint[] list = null;
+        int min = 0;
         switch(title)
         {
             case "Miles":
                 list = milesList;
                 goal = weeklyGoal.getMiles();
+                min = 0;
                 break;
             case "Weight":
                 list = weightList;
                 goal = weeklyGoal.getWeight();
+                min = 150;
                 break;
             default: break;
         }
@@ -202,22 +202,24 @@ public class TabFragment2 extends MyFragment
 
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
-//        if(list.length < 10)
-//            graph.getGridLabelRenderer().setNumHorizontalLabels(list.length);
-//        else
-//            graph.getGridLabelRenderer().setNumHorizontalLabels(10);
+        if(list.length < 10)        //todo list should always be max 7
+            graph.getGridLabelRenderer().setNumHorizontalLabels(list.length);
+        else
+            graph.getGridLabelRenderer().setNumHorizontalLabels(10);
 
         graph.getGridLabelRenderer().setNumVerticalLabels(10);
-        graph.getGridLabelRenderer().setHorizontalLabelsAngle(45);
-        graph.getGridLabelRenderer().setPadding(64);
+        graph.getGridLabelRenderer().setHorizontalLabelsAngle(120);
+        graph.getGridLabelRenderer().setPadding(40);
+        graph.getGridLabelRenderer().setLabelsSpace(15);
 
         // set manual x bounds to have nice steps
         graph.getViewport().setMinX(list[0].getX());
-        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxX(list[list.length-1].getX());
+        graph.getViewport().setMinY(min);
         graph.getViewport().setMaxY(goal);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setScalable(true);
+//        graph.getViewport().setScalable(true);
 
         graph.getLegendRenderer().setVisible(true);
         graph.getLegendRenderer().setBackgroundColor(Color.LTGRAY);
@@ -227,7 +229,6 @@ public class TabFragment2 extends MyFragment
         graph.getGridLabelRenderer().setHumanRounding(false);
     }
 
-    //TODO improve
     public  void setBtnFocus(Button b)
     {
         b.setBackground(getContext().getDrawable(R.drawable.button_focus));

@@ -158,7 +158,7 @@ public class CreateEventActivity extends AppCompatActivity
                     //Save new event & get to weekly goals page
 
                     Event event = dbHelper.addEvent(title, startDate, eventDate);
-                    Toast.makeText(this, "A new event was created", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "A new event has been created!", Toast.LENGTH_SHORT).show();
 
                     Intent i = new Intent(this, OverviewActivity.class);
                     i.putExtra("event", event);
@@ -170,6 +170,8 @@ public class CreateEventActivity extends AppCompatActivity
                     Event updatedEvent = new Event(event.getId(), title, startDate, eventDate);
                     //update database
                     dbHelper.updateEvent(updatedEvent);
+                    Toast.makeText(this, "Event has been updated!", Toast.LENGTH_SHORT).show();
+
                     //Pass details to main
                     setResult(RESULT_OK, i);
 

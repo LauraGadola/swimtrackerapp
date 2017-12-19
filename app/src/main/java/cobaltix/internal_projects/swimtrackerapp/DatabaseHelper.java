@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -153,14 +154,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 csvWrite.writeNext(curCSV.getColumnNames());
                 while (curCSV.moveToNext())
                 {
-                    //Which column you want to exprort
+                    //Which column you want to export
                     String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2)};
                     csvWrite.writeNext(arrStr);
                 }
                 System.out.println("DONE CVS EXPORT!!!!!!");
                 csvWrite.close();
                 curCSV.close();
-                Toast.makeText(context, "CVS file exported into Downloads folder", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "CVS file has been exported into Downloads folder", Toast.LENGTH_SHORT).show();
             } catch (Exception sqlEx)
             {
                 Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
@@ -204,7 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public void removeEvent(Event e)
     {
-        //// TODO: 12/13/17 Test!! 
+        //// TODO: 12/13/17 Test!!
         db = getWritableDatabase();
 
         db.delete(DatabaseContract.Events.TABLE_NAME, DatabaseContract.Events._ID + " = " +e.getId(), null);
@@ -263,22 +264,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
         exportDatabase();
     }
 
-    public int addDailyGoal(DailyGoal dg)
+    public int addDailyLog(DailyLog log)
     {
         db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_DATE, formatToDB(dg.getDate()));
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LOCATION, dg.getLocation());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_TEMP, dg.getTemp());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HRS, dg.getHrs());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MIN, dg.getMin());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEIGHT, dg.getWeight());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MILES, dg.getMiles());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HONEST, dg.getHonest());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_NOTES, dg.getNotes());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEEKLY_ID, dg.getWeekly_id());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID, dg.getEvent_id());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_DATE, formatToDB(log.getDate()));
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LOCATION, log.getLocation());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_TEMP, log.getTemp());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HRS, log.getHrs());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MIN, log.getMin());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEIGHT, log.getWeight());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MILES, log.getMiles());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HONEST, log.getHonest());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_NOTES, log.getNotes());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEEKLY_ID, log.getWeekly_id());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID, log.getEvent_id());
 
         int newRowId = (int) db.insert(DatabaseContract.DailyGoals.TABLE_NAME, null, values);
         db.close();
@@ -314,29 +315,29 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return newDate;
     }
 
-    public void updateDailyGoal(DailyGoal oldDG, DailyGoal newDG)
+    public void updateDailyLog(DailyLog oldLog, DailyLog newLog)
     {
         db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LOCATION, newDG.getLocation());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_TEMP, newDG.getTemp());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HRS, newDG.getHrs());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MIN, newDG.getMin());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEIGHT, newDG.getWeight());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MILES, newDG.getMiles());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HONEST, newDG.getHonest());
-        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_NOTES, newDG.getNotes());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_LOCATION, newLog.getLocation());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_TEMP, newLog.getTemp());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HRS, newLog.getHrs());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MIN, newLog.getMin());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_WEIGHT, newLog.getWeight());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_MILES, newLog.getMiles());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_HONEST, newLog.getHonest());
+        values.put(DatabaseContract.DailyGoals.COLUMN_NAME_NOTES, newLog.getNotes());
 
-        db.update(DatabaseContract.DailyGoals.TABLE_NAME, values, DatabaseContract.DailyGoals._ID +"=" + oldDG.getId(), null);
+        db.update(DatabaseContract.DailyGoals.TABLE_NAME, values, DatabaseContract.DailyGoals._ID +"=" + oldLog.getId(), null);
         db.close();
         exportDatabase();
     }
 
-    public void removeDailyGoal(DailyGoal currentDG)
+    public void removeDailyLog(DailyLog currentLog)
     {
         db = getWritableDatabase();
-        String query = "DELETE FROM "+ DatabaseContract.DailyGoals.TABLE_NAME +" WHERE "+ DatabaseContract.DailyGoals._ID +" = "+ currentDG.getId();
+        String query = "DELETE FROM "+ DatabaseContract.DailyGoals.TABLE_NAME +" WHERE "+ DatabaseContract.DailyGoals._ID +" = "+ currentLog.getId();
         db.execSQL(query);
         db.close();
         exportDatabase();
@@ -351,6 +352,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK + " = '" + week + "'";
         Log.e("dbHelper", selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
+
         while(cursor.moveToNext()) {
             int id = cursor.getInt(0);
             float miles = cursor.getFloat(2);
@@ -407,35 +409,35 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return events;
     }
 
-    public LinkedList<DailyGoal> getDailyGoalList(int event_id)
+    public LinkedList<DailyLog> getDailyLogList(int event_id)
     {
         db = getReadableDatabase();
         String query = "SELECT * FROM "+ DatabaseContract.DailyGoals.TABLE_NAME
                 +" WHERE "+ DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID +" = "+ event_id
                 +" ORDER BY "+ DatabaseContract.DailyGoals.COLUMN_NAME_DATE;
 
-        return queryForDGList(query);
+        return queryForDailyLogs(query);
     }
 
-    public LinkedList<DailyGoal> getDailyGoalList(String week)
+    public LinkedList<DailyLog> getDailyLogList(String week)
     {
         WeeklyGoal wg = getWeeklyGoal(week);
-        LinkedList<DailyGoal> dgList = new LinkedList<>();
+        LinkedList<DailyLog> dgList = new LinkedList<>();
         if(wg != null)
         {
             db = getReadableDatabase();
             String query = "SELECT * FROM " + DatabaseContract.DailyGoals.TABLE_NAME
                     + " WHERE " + DatabaseContract.DailyGoals.COLUMN_NAME_WEEKLY_ID + " = " + wg.getId()
                     + " ORDER BY " + DatabaseContract.DailyGoals.COLUMN_NAME_DATE + " DESC";
-            dgList = queryForDGList(query);
+            dgList = queryForDailyLogs(query);
         }
         return dgList;
     }
 
-    private LinkedList<DailyGoal> queryForDGList(String query)
+    private LinkedList<DailyLog> queryForDailyLogs(String query)
     {
         Cursor cursor = db.rawQuery(query, null);
-        LinkedList<DailyGoal> dailyGoalList = new LinkedList<>();
+        LinkedList<DailyLog> dailyLogList = new LinkedList<>();
         while (cursor.moveToNext())
         {
             int id = cursor.getInt(0);
@@ -453,9 +455,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
             int weekly_id = cursor.getInt(10);
             int event_id = cursor.getInt(11);
 
-            DailyGoal dg = new DailyGoal(id, date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event_id);
-            dailyGoalList.add(dg);
+            DailyLog dg = new DailyLog(id, date, location, temp, hrs, min, weight, miles, honest, notes, weekly_id, event_id);
+            dailyLogList.add(dg);
         }
-        return dailyGoalList;
+        return dailyLogList;
     }
 }

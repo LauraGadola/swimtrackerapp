@@ -1,17 +1,16 @@
 package cobaltix.internal_projects.swimtrackerapp;
 
-import android.app.Activity;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
 public class CustomOnFocusChangeListener implements View.OnFocusChangeListener
 {
-    private DailyGoalsActivity activity;
+    private DailyLogsActivity activity;
     private TextWatcher watcher;
     private EditText et;
 
-    public CustomOnFocusChangeListener(DailyGoalsActivity activity)
+    public CustomOnFocusChangeListener(DailyLogsActivity activity)
     {
         this.activity = activity;
     }
@@ -27,6 +26,7 @@ public class CustomOnFocusChangeListener implements View.OnFocusChangeListener
         }
         else
         {
+            //I need to remove it to prevent recursion since I change text in afterTextChanged which causes the method to be called for the other field
             if(watcher != null)
             {
                 et.removeTextChangedListener(watcher);

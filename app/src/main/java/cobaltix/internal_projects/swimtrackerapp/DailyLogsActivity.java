@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 
-public class DailyGoalsActivity extends AppCompatActivity
+public class DailyLogsActivity extends AppCompatActivity
 {
     private ScrollView scrollView;
 
@@ -48,11 +48,11 @@ public class DailyGoalsActivity extends AppCompatActivity
 
     private DatabaseHelper dbHelper;
     private Event event;
-    private DailyGoal dailyGoal;
+    private DailyLog dailyLog;
 
-    private LinkedList<DailyGoal> dglist;
-    private DailyGoal currentDG;
-    private DailyGoal lastSavedDG;
+    private LinkedList<DailyLog> dailyLogs;
+    private DailyLog currentLog;
+    private DailyLog lastSavedLog;
     private WeeklyGoal weeklyGoal;
 
     private Calendar myCal;
@@ -68,10 +68,10 @@ public class DailyGoalsActivity extends AppCompatActivity
         today = DateFormatter.format(myCal.getTime());
         intent = new Intent();
 
-        System.out.println("----------- Daily Goal Activity ------------");
+        System.out.println("----------- Daily Log Activity ------------");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_daily_goals);
+        setContentView(R.layout.activity_daily_logs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -79,16 +79,16 @@ public class DailyGoalsActivity extends AppCompatActivity
 
         // Retrieve obj sent from main Activity
         event = (Event) getIntent().getSerializableExtra("event");
-        dailyGoal = (DailyGoal) getIntent().getSerializableExtra("daily_goal");
+        dailyLog = (DailyLog) getIntent().getSerializableExtra("daily_goal");
         week = getIntent().getStringExtra("week");
 
         System.out.println("Week: "+week);
         System.out.println("Event: "+event);                                            //TODO delete
-        System.out.println("DailyGoal: "+dailyGoal);                                  //TODO delete
+        System.out.println("DailyLog: "+ dailyLog);                                  //TODO delete
 
         dbHelper = new DatabaseHelper(this);
 
-        dglist = dbHelper.getDailyGoalList(event.getId());
+        dailyLogs = dbHelper.getDailyLogList(event.getId());
 
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         etLocation = (EditText) findViewById(R.id.etLocation);
@@ -201,16 +201,14 @@ public class DailyGoalsActivity extends AppCompatActivity
                     date = date.substring(8);
                 }
                 String previousDay = getDay(date, -1);
-                if(hasWeeklyGoal(previousDay))
+                getWeeklyGoal(previousDay);
+                DailyLog previousDG = getLog(previousDay);
+                goToDay(previousDG, previousDay);
+                if (previousDay.equals(event.getStartDate()))
                 {
-                    DailyGoal previousDG = getDG(previousDay);
-                    goToDay(previousDG, previousDay);
-                    if (previousDay.equals(event.getStartDate()))
-                    {
-                        btnPrevious.setVisibility(View.INVISIBLE);
-                    }
-                    btnNext.setVisibility(View.VISIBLE);
+                    btnPrevious.setVisibility(View.INVISIBLE);
                 }
+                btnNext.setVisibility(View.VISIBLE);
             }
         });
 
@@ -220,15 +218,14 @@ public class DailyGoalsActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 String nextDay = getDay(String.valueOf(etDate.getText()), 1);
-                if(hasWeeklyGoal(nextDay))
-                {
-                    DailyGoal nextDG = getDG(nextDay);
-                    System.out.println("next: " + nextDay);
-                    if (nextDG != null)
-                        System.out.println("next from dg: " + nextDG.getDate());
-                    goToDay(nextDG, nextDay);
-                    btnPrevious.setVisibility(View.VISIBLE);
-                }
+                getWeeklyGoal(nextDay);
+
+                DailyLog nextDG = getLog(nextDay);
+                System.out.println("next: " + nextDay);
+                if (nextDG != null)
+                    System.out.println("next from dg: " + nextDG.getDate());
+                goToDay(nextDG, nextDay);
+                btnPrevious.setVisibility(View.VISIBLE);
             }
         });
 
@@ -237,12 +234,12 @@ public class DailyGoalsActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                dbHelper.removeDailyGoal(currentDG);
-                dglist.remove(currentDG);
+                dbHelper.removeDailyLog(currentLog);
+                dailyLogs.remove(currentLog);
                 updateTabs();
-                currentDG = null;
+                currentLog = null;
 //                clearAll();
-                Toast.makeText(DailyGoalsActivity.this, "Daily goal has been deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DailyLogsActivity.this, "Daily log has been deleted", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -250,19 +247,19 @@ public class DailyGoalsActivity extends AppCompatActivity
 
         //FIELDS
         //DAILY GOAL WAS SELECTED FROM LISTVIEW
-        if(dailyGoal != null)
+        if(dailyLog != null)
         {
-            weeklyGoal = dbHelper.getWeeklyGoal(dailyGoal.getWeekly_id());          //todo needed?
-            goToDay(dailyGoal, dailyGoal.getDate());
+            weeklyGoal = dbHelper.getWeeklyGoal(dailyLog.getWeekly_id());          //todo needed?
+            goToDay(dailyLog, dailyLog.getDate());
         }
 
         //LOOKING AT SPECIFIC WEEK - fab button clicked in overview or Weekly goal created
         else if(week != null)
         {
             String day = HelperClass.getFirstDay(week);
-            hasWeeklyGoal(day);
+            getWeeklyGoal(day);
 
-            while (!isStartDateOrAfter(day) || getDG(day) != null)
+            while (!isStartDateOrAfter(day) || getLog(day) != null)
             {
                 day = getDay(day, 1);
             }
@@ -276,35 +273,32 @@ public class DailyGoalsActivity extends AppCompatActivity
         //PROMPT REQUESTED
         else
         {
-            if (!dglist.isEmpty()) //Retrieve goal to display or show blank page
+            if (!dailyLogs.isEmpty()) //Retrieve goal to display or show blank page
             {
-                lastSavedDG = dglist.get(dglist.size() - 1);
+                lastSavedLog = dailyLogs.get(dailyLogs.size() - 1);
             }
-            System.out.println("Last saved: " + lastSavedDG);
+            System.out.println("Last saved: " + lastSavedLog);
 
-            if (lastSavedDG != null)                    //todo redundant to delete
+            if (lastSavedLog != null)                    //todo redundant to delete
             {
-                String date = lastSavedDG.getDate();
+                String date = lastSavedLog.getDate();
                 //if we reach today or the the day prior to the event- show last entry
                 if (isUpToDate(date))       //todo no need to check cause I won't get here
                 {
-                    goToDay(lastSavedDG, date);
+                    goToDay(lastSavedLog, date);
                     //todo if today go to overview of that event
                     //todo if end date do to main to create new event
                 } else //move to next day
                 {
                     String nextDay = getDay(date, 1);
-                    if(hasWeeklyGoal(nextDay))
-                    {
-                        DailyGoal nextDG = getDG(nextDay);
-                        goToDay(nextDG, nextDay);
-                    }
-
+                    getWeeklyGoal(nextDay);
+                    DailyLog nextDG = getLog(nextDay);
+                    goToDay(nextDG, nextDay);
                 }
             }
             else //no logs for this event yet
             {
-                hasWeeklyGoal(event.getStartDate());
+                getWeeklyGoal(event.getStartDate());
 
                 goToDay(null, event.getStartDate());
                 btnPrevious.setVisibility(View.INVISIBLE);
@@ -319,19 +313,18 @@ public class DailyGoalsActivity extends AppCompatActivity
         return  isStartDate || afterStartDate;
     }
 
-    private boolean hasWeeklyGoal(String date)
+    private void getWeeklyGoal(String date)
     {
         updateCal(String.valueOf(date));
-        String week = HelperClass.getWeek(myCal);
+        week = HelperClass.getWeek(myCal);
         weeklyGoal = dbHelper.getWeeklyGoal(week);
         if(weeklyGoal == null)
         {
             createWeeklyGoal(week);
-            return false;
+            System.out.println("DGA: We got back from calling WGA");
         }
         System.out.println("-------WE HAVE A WEEKLY GOAL!!!!!!-------");
         System.out.println(weeklyGoal);
-        return true;
     }
 
     private void createWeeklyGoal(String week)
@@ -344,12 +337,12 @@ public class DailyGoalsActivity extends AppCompatActivity
     }
 
     //TODO improve - keep only dg
-    private void goToDay(DailyGoal dg, String date)
+    private void goToDay(DailyLog dg, String date)
     {
         Log.e("DGA","Going to day " + date);
         if(dg == null)
         {
-            currentDG = null;
+            currentLog = null;
             clearAll();
             etDate.setText(date);
             updateCal(date);
@@ -357,7 +350,7 @@ public class DailyGoalsActivity extends AppCompatActivity
         }
         else
         {
-            currentDG = dg;
+            currentLog = dg;
             fillFields(dg);
             updateCal(dg.getDate());
         }
@@ -411,14 +404,14 @@ public class DailyGoalsActivity extends AppCompatActivity
         return(date.equals(event.getEndDate()) || date.equals(today));
     }
 
-    private DailyGoal getDG(String day)
+    private DailyLog getLog(String day)
     {
-        for (DailyGoal dg : dglist)
+        for (DailyLog log : dailyLogs)
         {
-            if (dg.getDate().equals(day))
+            if (log.getDate().equals(day))
             {
-                System.out.println(dg);                                             //TODO delete
-                return dg;
+                System.out.println(log);                                             //TODO delete
+                return log;
             }
         }
         return null;
@@ -432,29 +425,29 @@ public class DailyGoalsActivity extends AppCompatActivity
         return DateFormatter.format(myCal.getTime());
     }
 
-    private void fillFields(DailyGoal dg)
+    private void fillFields(DailyLog log)
     {
-        System.out.println("filling fields with "+currentDG);
+        System.out.println("filling fields with "+ currentLog);
         btnDelete.setVisibility(View.VISIBLE);
 
-        String date = dg.getDate();
+        String date = log.getDate();
         etDate.setText(date);
 
-        etLocation.setText(dg.getLocation());
+        etLocation.setText(log.getLocation());
 
-        float tempF = dg.getTemp();
+        float tempF = log.getTemp();
         etTempF.setText(String.valueOf(tempF));
         convertFtoC(tempF);
 
-        etTime.setText(String.format("%02d:%02d", dg.getHrs(), dg.getMin()));
-        etWeight.setText(String.valueOf(dg.getWeight()));
+        etTime.setText(String.format("%02d:%02d", log.getHrs(), log.getMin()));
+        etWeight.setText(String.valueOf(log.getWeight()));
 
-        float miles = dg.getMiles();
+        float miles = log.getMiles();
         etMiles.setText(String.valueOf(miles));
         convertMtoY(miles);
 
-        etHonest.setText(String.valueOf(dg.getHonest()));
-        etNotes.setText(dg.getNotes());
+        etHonest.setText(String.valueOf(log.getHonest()));
+        etNotes.setText(log.getNotes());
     }
 
     @Override
@@ -491,17 +484,17 @@ public class DailyGoalsActivity extends AppCompatActivity
                 String notes = String.valueOf(etNotes.getText());
 
                 //UPDATE
-                if (currentDG != null)
+                if (currentLog != null)
                 {
-                    DailyGoal updatedDG = new DailyGoal(currentDG.getId(), date, location, temp, hrs, min, weight, miles, honest, notes, currentDG.getWeekly_id(), event.getId());
-                    currentDG = updatedDG;
-                    System.out.println("DGA: List: "+dglist);
-                    int i = dglist.indexOf(currentDG);
-                    dglist.set(i, updatedDG);
-                    dbHelper.updateDailyGoal(currentDG, updatedDG);
+                    DailyLog updatedLog = new DailyLog(currentLog.getId(), date, location, temp, hrs, min, weight, miles, honest, notes, currentLog.getWeekly_id(), event.getId());
+                    currentLog = updatedLog;
+                    System.out.println("DGA: List: "+ dailyLogs);
+                    int i = dailyLogs.indexOf(currentLog);
+                    dailyLogs.set(i, updatedLog);
+                    dbHelper.updateDailyLog(currentLog, updatedLog);
                     updateTabs();
 
-                    Toast.makeText(this, "Daily goal has been updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Daily log has been updated!", Toast.LENGTH_SHORT).show();
                     scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                     finish();
@@ -511,27 +504,28 @@ public class DailyGoalsActivity extends AppCompatActivity
                 else
                 {
                     //TODO the last weekly goal should be the only one in place?
-                    DailyGoal newDG = new DailyGoal(date, location, temp, hrs, min, weight, miles, honest, notes, weeklyGoal.getId(), event.getId());
-                    int newRowId = dbHelper.addDailyGoal(newDG);
-                    newDG.setId(newRowId);
-                    currentDG = newDG;
-                    dglist = dbHelper.getDailyGoalList(event.getId());
+                    DailyLog newLog = new DailyLog(date, location, temp, hrs, min, weight, miles, honest, notes, weeklyGoal.getId(), event.getId());
+                    int newRowId = dbHelper.addDailyLog(newLog);
+                    newLog.setId(newRowId);
+                    currentLog = newLog;
+                    dailyLogs = dbHelper.getDailyLogList(event.getId());
                     updateTabs();
 
-                    Toast.makeText(this, "Daily goal was saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Your daily log has been saved!", Toast.LENGTH_SHORT).show();
 
                     //If you entered today or last day prior to event go back to main page
                     if (isUpToDate(date))
                     {
-                        Toast.makeText(this, "You are up-to-date!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Your logs are up to date!", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                     else //go to next
                     {
                         String nextDay = getDay(date, 1);
-                        DailyGoal nextDG = getDG(nextDay);
+                        DailyLog nextLog = getLog(nextDay);
                         Log.e("DGA","DG: "+nextDay);
-                        goToDay(nextDG, nextDay);
+                        goToDay(nextLog, nextDay);
+                        btnPrevious.setVisibility(View.VISIBLE);
                         scrollView.fullScroll(ScrollView.FOCUS_UP);
                         return true;
                     }
@@ -634,9 +628,9 @@ public class DailyGoalsActivity extends AppCompatActivity
     public void dgListToString()
     {
         int i = 0;
-        for(DailyGoal dg : dglist)
+        for(DailyLog log : dailyLogs)
         {
-            System.out.println("List "+i+": "+dg);
+            System.out.println("List "+i+": "+log);
             i++;
         }
     }

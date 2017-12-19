@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -28,8 +27,8 @@ public class TabFragment1 extends MyFragment
     private LinearLayout totDistLayout;
     private LinearLayout longestLayout;
 
-    private LinkedList<DailyGoal> dgList;
-    private DailyGoalsListAdapter adapter;
+    private LinkedList<DailyLog> dgList;
+    private DailyLogsListAdapter adapter;
 
     private OnLongestCalculatedListener listener;
 
@@ -45,7 +44,7 @@ public class TabFragment1 extends MyFragment
         System.out.println("----------- Tab 1 ------------");
 
         view = inflater.inflate(R.layout.fragment_overview, container, false);
-        lv = (ListView) view.findViewById(R.id.dailyGoalList);
+        lv = (ListView) view.findViewById(R.id.dailyLogsList);
         totDist = (TextView) view.findViewById(R.id.etTotDist);
         longest = (TextView) view.findViewById(R.id.etLongest);
         totDistLayout = (LinearLayout) view.findViewById(R.id.totalDistLayout);
@@ -61,9 +60,9 @@ public class TabFragment1 extends MyFragment
     public void populateListView()
     {
         dbHelper = new DatabaseHelper(getActivity());
-        dgList = dbHelper.getDailyGoalList(getWeek());
+        dgList = dbHelper.getDailyLogList(getWeek());
 
-        adapter = new DailyGoalsListAdapter(getActivity(), dgList);
+        adapter = new DailyLogsListAdapter(getActivity(), dgList);
         lv.setAdapter(adapter);
         lv.setEmptyView(view.findViewById(R.id.empty));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -71,8 +70,8 @@ public class TabFragment1 extends MyFragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                DailyGoal dg = (DailyGoal) lv.getItemAtPosition(position);
-                Intent i = new Intent(getContext(), DailyGoalsActivity.class);
+                DailyLog dg = (DailyLog) lv.getItemAtPosition(position);
+                Intent i = new Intent(getContext(), DailyLogsActivity.class);
                 i.putExtra("event", getEvent());
                 i.putExtra("daily_goal", dg);
                 getActivity().startActivityForResult(i,1);
@@ -104,11 +103,12 @@ public class TabFragment1 extends MyFragment
         else
         {
             String day = HelperClass.getFirstDay(getWeek());
-            while (!isStartDateOrAfter(day) || getDG(day) != null)
+            while (!isStartDateOrAfter(day) || getLog(day) != null)
             {
                 day = getDay(day, 1);
             }
-            if (DateFormatter.parse(day).after(today))
+            Date d = DateFormatter.parse(day);
+            if (d.after(today) || d.after(DateFormatter.parse(getEvent().getEndDate())))
             {
                 fab.setVisibility(View.INVISIBLE);
             } else
@@ -135,9 +135,9 @@ public class TabFragment1 extends MyFragment
     }
 
     //todo change - duplicate from DGA
-    private DailyGoal getDG(String day)
+    private DailyLog getLog(String day)
     {
-        for (DailyGoal dg : dgList)
+        for (DailyLog dg : dgList)
         {
             if (dg.getDate().equals(day))
             {
@@ -155,7 +155,7 @@ public class TabFragment1 extends MyFragment
         {
             float totMiles = 0;
             float longMile = 0;
-            for (DailyGoal dg : dgList)
+            for (DailyLog dg : dgList)
             {
                 float miles = dg.getMiles();
                 totMiles += miles;
@@ -187,7 +187,7 @@ public class TabFragment1 extends MyFragment
     }
 
 //
-//    public void updateListView(DailyGoal dg)
+//    public void updateListView(DailyLog dg)
 //    {
 //        if(dg != null)
 //        {
@@ -198,7 +198,7 @@ public class TabFragment1 extends MyFragment
 //        showResults();
 //    }
 //
-//    public void addToListView(DailyGoal dg)
+//    public void addToListView(DailyLog dg)
 //    {
 //        if(dg != null)
 //        {
@@ -208,7 +208,7 @@ public class TabFragment1 extends MyFragment
 //        showResults();
 //    }
 //
-//    public void removeFromListView(DailyGoal dg)
+//    public void removeFromListView(DailyLog dg)
 //    {
 //        if(dg != null)
 //        {
@@ -218,12 +218,12 @@ public class TabFragment1 extends MyFragment
 //        showResults();
 //    }
 
-    public LinkedList<DailyGoal> getList()
+    public LinkedList<DailyLog> getList()
     {
         return dgList;
     }
 
-    public void setList(LinkedList<DailyGoal> list)
+    public void setList(LinkedList<DailyLog> list)
     {
         System.out.println("tab1: List: "+list);
         dgList.clear();

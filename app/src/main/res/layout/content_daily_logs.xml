@@ -76,8 +76,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context="cobaltix.internal_projects.swimtrackerapp.DailyGoalsActivity"
-            tools:showIn="@layout/activity_daily_goals"
+            tools:context="cobaltix.internal_projects.swimtrackerapp.DailyLogsActivity"
+            tools:showIn="@layout/activity_daily_logs"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_weight="0.79">

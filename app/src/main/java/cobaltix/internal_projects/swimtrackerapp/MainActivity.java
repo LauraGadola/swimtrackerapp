@@ -70,33 +70,37 @@ public class MainActivity extends AppCompatActivity
 
         eventList = dbHelper.getEventList();
 
+        markDoneEvents();
+
         prompt = getIntent().getBooleanExtra("prompt", true);
-        //prompt to enter logs at app start
+
         if(prompt && !eventList.isEmpty())
         {
             Event recentEvent = eventList.get(0);
             Log.e("MainActivity", "Event: " + recentEvent);
-
-            LinkedList<DailyGoal> dgList = dbHelper.getDailyGoalList(recentEvent.getId());
-            DailyGoal lastDG;
-            String date = "";
-            if (!dgList.isEmpty())
+            if(!recentEvent.isDone())
             {
-                lastDG = dgList.get(dgList.size() - 1);
-                date = lastDG.getDate();
-            }
+                LinkedList<DailyLog> dgList = dbHelper.getDailyLogList(recentEvent.getId());
+                DailyLog lastDG;
+                String date = "";
+                if (!dgList.isEmpty())
+                {
+                    lastDG = dgList.get(dgList.size() - 1);
+                    date = lastDG.getDate();
+                }
 
-            //Prompt daily goal activity to enter logs if needed
-            if (DateFormatter.parse(recentEvent.getStartDate()).before(today) && (dgList.isEmpty() || (!date.equals(DateFormatter.format(today)) && !date.equals(recentEvent.getEndDate()))))  // No log yet || last log is not today nor event end date
-            {
-                Intent intent = new Intent(this, DailyGoalsActivity.class);
-                intent.putExtra("event", recentEvent);
-                startActivity(intent);
+                //Prompt daily log activity to enter logs if needed
+                if (DateFormatter.parse(recentEvent.getStartDate()).before(today)
+                        && (dgList.isEmpty() || (!date.equals(DateFormatter.format(today)) && !date.equals(recentEvent.getEndDate()))))  // No log yet || last log is not today nor event end date
+                {
+                    Intent intent = new Intent(this, DailyLogsActivity.class);
+                    intent.putExtra("event", recentEvent);
+                    startActivity(intent);
 
-                //todo should it be a dialog?
-                Toast toast= Toast.makeText(this, "You have not entered all your logs!", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
-                toast.show();
+                    Toast toast = Toast.makeText(this, "You have not entered all your logs!", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                }
             }
 
         }
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                if(activeEvent)
+                if(activeEvent) //We have one event open - don't allow creation of new event
                 {
                     Toast toast = Toast.makeText(MainActivity.this, "You already have an active event.", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -143,7 +147,6 @@ public class MainActivity extends AppCompatActivity
         PermissionsHandler permissionsHandler = new PermissionsHandler(this);
         permissionsHandler.requestWriteExtStoragePermissions();
 
-        markDoneEvents();
 
     }
 
@@ -175,12 +178,12 @@ public class MainActivity extends AppCompatActivity
                 createAlertDialog();
                 return true;
 
-            case R.id.export:
+            case R.id.action_export:
             {
                 Toast toast = Toast.makeText(this, "Work In Progress!", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
-//                dbHelper.exportToCVS();
+                dbHelper.exportToCVS();
                 return true;
             }
 
@@ -253,8 +256,9 @@ public class MainActivity extends AppCompatActivity
             else
             {
                 e.setDone(false);
-                //We have one event open - don't allow creation of new event
-                activeEvent = true;
+                {
+                    activeEvent = true;
+                }
             }
         }
 
