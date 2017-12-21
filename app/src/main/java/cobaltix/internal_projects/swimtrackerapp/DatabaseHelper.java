@@ -138,13 +138,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     //todo export the whole db - only exporting the events table now
+
     public void exportToCVS()
     {
         File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
         if (sd.canWrite())
         {
-            File file = new File(sd, "csvname.csv");
+            File file = new File(sd, "Events.csv");
             try
             {
                 file.createNewFile();
@@ -155,13 +156,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 while (curCSV.moveToNext())
                 {
                     //Which column you want to export
-                    String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2)};
+                    String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
                     csvWrite.writeNext(arrStr);
                 }
-                System.out.println("DONE CVS EXPORT!!!!!!");
                 csvWrite.close();
                 curCSV.close();
-                Toast.makeText(context, "CVS file has been exported into Downloads folder", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "CSV file has been exported into Downloads folder", Toast.LENGTH_SHORT).show();
             } catch (Exception sqlEx)
             {
                 Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
@@ -205,19 +205,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public void removeEvent(Event e)
     {
-        //// TODO: 12/13/17 Test!!
         db = getWritableDatabase();
 
-        db.delete(DatabaseContract.Events.TABLE_NAME, DatabaseContract.Events._ID + " = " +e.getId(), null);
         db.delete(DatabaseContract.WeeklyGoals.TABLE_NAME, DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID + " = " +e.getId(), null);
         db.delete(DatabaseContract.DailyGoals.TABLE_NAME, DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID + " = " +e.getId(), null);
-
-//        String query = "DELETE FROM "+DatabaseContract.Events.TABLE_NAME + " WHERE "+DatabaseContract.Events._ID + " = " + e.getId();
-//        db.execSQL(query);
-//        query = "DELETE FROM "+DatabaseContract.WeeklyGoals.TABLE_NAME + " WHERE "+DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID+ " = " + e.getId();
-//        db.execSQL(query);
-//        query = "DELETE FROM "+DatabaseContract.DailyGoals.TABLE_NAME + " WHERE "+DatabaseContract.DailyGoals.COLUMN_NAME_EVENT_ID + " = " + e.getId();
-//        db.execSQL(query);
+        db.delete(DatabaseContract.Events.TABLE_NAME, DatabaseContract.Events._ID + " = " +e.getId(), null);
 
         db.close();
         exportDatabase();

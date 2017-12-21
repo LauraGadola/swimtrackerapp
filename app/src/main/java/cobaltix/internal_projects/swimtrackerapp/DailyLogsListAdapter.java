@@ -14,7 +14,7 @@ import java.util.LinkedList;
 public class DailyLogsListAdapter extends ArrayAdapter<DailyLog>
 {
     private Activity context;
-    private DailyLog dg;
+//    private DailyLog dg;
     private LinkedList<DailyLog> dgList;
 
     public DailyLogsListAdapter(Activity context, LinkedList<DailyLog> dailyLogs) {
@@ -26,7 +26,7 @@ public class DailyLogsListAdapter extends ArrayAdapter<DailyLog>
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        dg = getItem(position);
+        DailyLog dg = getItem(position);
 
         if(convertView == null)
         {

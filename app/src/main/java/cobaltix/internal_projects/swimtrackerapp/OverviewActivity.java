@@ -20,7 +20,7 @@ import android.widget.DatePicker;
 import java.util.Calendar;
 import java.util.LinkedList;
 
-public class OverviewActivity extends AppCompatActivity implements TabFragment1.OnLongestCalculatedListener
+public class OverviewActivity extends AppCompatActivity implements OverviewTab.OnLongestCalculatedListener
 {
 
     /**
@@ -43,8 +43,8 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
     private Calendar myCal;
     private String currentWeek;
 
-    private TabFragment1 tabOverview;
-    private TabFragment2 tabStats;
+    private OverviewTab tabOverview;
+    private StatsTab tabStats;
 
     private DatabaseHelper dbHelper;
 
@@ -228,18 +228,18 @@ public class OverviewActivity extends AppCompatActivity implements TabFragment1.
     @Override
     public void sendLongest(float longest, float miles)
     {
-        TabFragment2 tab2 = (TabFragment2) mSectionsPagerAdapter.getTab(1);
+        StatsTab tab2 = (StatsTab) mSectionsPagerAdapter.getTab(1);
         tab2.setLongest(longest);
         tab2.setTotDist(miles);
     }
 
-    public TabFragment1 getTabOverview()
+    public OverviewTab getTabOverview()
     {
-        return tabOverview = (TabFragment1) mSectionsPagerAdapter.getTab(0);
+        return tabOverview = (OverviewTab) mSectionsPagerAdapter.getTab(0);
     }
 
-    public TabFragment2 getTabStats()
+    public StatsTab getTabStats()
     {
-        return tabStats = (TabFragment2) mSectionsPagerAdapter.getTab(1);
+        return tabStats = (StatsTab) mSectionsPagerAdapter.getTab(1);
     }
 }

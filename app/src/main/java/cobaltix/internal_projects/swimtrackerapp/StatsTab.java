@@ -19,7 +19,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.util.Date;
 import java.util.List;
 
-public class TabFragment2 extends MyFragment
+public class StatsTab extends MyFragment
 {
     private Event event;
     private DatabaseHelper dbHelper;
@@ -229,7 +229,7 @@ public class TabFragment2 extends MyFragment
         graph.getGridLabelRenderer().setHumanRounding(false);
     }
 
-    public  void setBtnFocus(Button b)
+    public void setBtnFocus(Button b)
     {
         b.setBackground(getContext().getDrawable(R.drawable.button_focus));
         b.setTextColor(getContext().getColor(R.color.colorBackground));

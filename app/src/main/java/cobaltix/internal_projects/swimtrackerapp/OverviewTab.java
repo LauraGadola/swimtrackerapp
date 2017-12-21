@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 
-public class TabFragment1 extends MyFragment
+public class OverviewTab extends MyFragment
 {
     private DatabaseHelper dbHelper;
 
@@ -146,8 +146,6 @@ public class TabFragment1 extends MyFragment
         }
         return null;
     }
-
-
 
     public void showResults()
     {

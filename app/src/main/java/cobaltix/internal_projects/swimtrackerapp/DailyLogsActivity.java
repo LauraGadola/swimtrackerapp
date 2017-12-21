@@ -246,14 +246,15 @@ public class DailyLogsActivity extends AppCompatActivity
         //FINISH SETTING BUTTONS
 
         //FIELDS
+
         //DAILY GOAL WAS SELECTED FROM LISTVIEW
         if(dailyLog != null)
         {
-            weeklyGoal = dbHelper.getWeeklyGoal(dailyLog.getWeekly_id());          //todo needed?
+            weeklyGoal = dbHelper.getWeeklyGoal(dailyLog.getWeekly_id());
             goToDay(dailyLog, dailyLog.getDate());
         }
 
-        //LOOKING AT SPECIFIC WEEK - fab button clicked in overview or Weekly goal created
+        //FAB BUTTON CLICKED IN OVERVIEW
         else if(week != null)
         {
             String day = HelperClass.getFirstDay(week);
@@ -263,11 +264,6 @@ public class DailyLogsActivity extends AppCompatActivity
             {
                 day = getDay(day, 1);
             }
-//            if(DateFormatter.parse(day).after(DateFormatter.parse(today)))
-//            {
-//                day = today;
-//                //todo we don't get here
-//            }
             goToDay(null, day);
         }
         //PROMPT REQUESTED
@@ -276,25 +272,14 @@ public class DailyLogsActivity extends AppCompatActivity
             if (!dailyLogs.isEmpty()) //Retrieve goal to display or show blank page
             {
                 lastSavedLog = dailyLogs.get(dailyLogs.size() - 1);
-            }
-            System.out.println("Last saved: " + lastSavedLog);
 
-            if (lastSavedLog != null)                    //todo redundant to delete
-            {
+                System.out.println("Last saved: " + lastSavedLog);
+
                 String date = lastSavedLog.getDate();
-                //if we reach today or the the day prior to the event- show last entry
-                if (isUpToDate(date))       //todo no need to check cause I won't get here
-                {
-                    goToDay(lastSavedLog, date);
-                    //todo if today go to overview of that event
-                    //todo if end date do to main to create new event
-                } else //move to next day
-                {
-                    String nextDay = getDay(date, 1);
-                    getWeeklyGoal(nextDay);
-                    DailyLog nextDG = getLog(nextDay);
-                    goToDay(nextDG, nextDay);
-                }
+                String nextDay = getDay(date, 1);
+                getWeeklyGoal(nextDay);
+                DailyLog nextDG = getLog(nextDay);
+                goToDay(nextDG, nextDay);
             }
             else //no logs for this event yet
             {

@@ -8,7 +8,7 @@
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     android:paddingTop="16dp"
-    tools:context="cobaltix.internal_projects.swimtrackerapp.TabFragment1">
+    tools:context="cobaltix.internal_projects.swimtrackerapp.OverviewTab">
 
     <!--For empty view-->
     <LinearLayout android:id="@+id/empty"

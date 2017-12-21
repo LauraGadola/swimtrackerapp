@@ -228,6 +228,7 @@ public class MainActivity extends AppCompatActivity
         {
             if (resultCode == RESULT_OK)
             {
+                activeEvent = false;
                 refreshList();
             }
         }

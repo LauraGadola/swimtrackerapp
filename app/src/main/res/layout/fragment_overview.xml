@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:paddingBottom="55dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="cobaltix.internal_projects.swimtrackerapp.TabFragment2">
+    tools:context="cobaltix.internal_projects.swimtrackerapp.StatsTab">
 
     <!--To show when list is empty-->
     <LinearLayout

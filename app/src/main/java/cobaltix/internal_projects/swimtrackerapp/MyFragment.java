@@ -9,6 +9,7 @@ public abstract class MyFragment extends Fragment
 {
     private String week;
     private Bundle bundle;
+
     public Event getEvent()
     {
         bundle = this.getArguments();

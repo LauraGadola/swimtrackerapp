@@ -16,8 +16,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter
     private Event event;
     private String week;
 
-    private TabFragment1 tab1;
-    private TabFragment2 tab2;
+    private OverviewTab tab1;
+    private StatsTab tab2;
 
     public SectionsPagerAdapter(FragmentManager fm, int numOfTabs, Event e, String week)
     {
@@ -36,11 +36,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter
         switch (position)
         {
             case 0:
-                MyFragment tab1 = new TabFragment1();
+                MyFragment tab1 = new OverviewTab();
                 tab1.setArguments(bundle);
                 return tab1;
             case 1:
-                MyFragment tab2 = new TabFragment2();
+                MyFragment tab2 = new StatsTab();
                 tab2.setArguments(bundle);
                 return tab2;
             default:
@@ -56,10 +56,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter
         // save the appropriate reference depending on position
         switch (position) {
             case 0:
-                tab1 = (TabFragment1) createdFragment;
+                tab1 = (OverviewTab) createdFragment;
                 break;
             case 1:
-                tab2 = (TabFragment2) createdFragment;
+                tab2 = (StatsTab) createdFragment;
                 break;
         }
         return createdFragment;
