@@ -2,6 +2,8 @@ package cobaltix.internal_projects.swimtrackerapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -57,18 +59,38 @@ public class MainActivity extends AppCompatActivity
 
         dbHelper = new DatabaseHelper(this);
 
-        ////Import database if needed - todo to delete eventually
-//        if(! dbHelper.isDatabaseExist(this))
-//        {
-//            Log.e("MainActivity", "db does not exist");
-//            dbHelper.importDatabase();
-//        }
-//        else
-//            Log.e("MainActivity", "db exists!");
+        ////Import database if needed - todo to delete (only for testing)
+        if(! dbHelper.isDatabaseExist(this))
+        {
+            Log.e("MainActivity", "db does not exist");
+            dbHelper.importDatabase();
+        }
+        else
+            Log.e("MainActivity", "db exists!");
         //Finish import
 
 
         eventList = dbHelper.getEventList();
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if(activeEvent) //We have one event open - don't allow creation of new event
+                {
+                    Toast toast = Toast.makeText(MainActivity.this, "You already have an active event.", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                }
+                else
+                {
+                    Intent intent = new Intent(getApplicationContext(), CreateEventActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
         markDoneEvents();
 
@@ -105,26 +127,6 @@ public class MainActivity extends AppCompatActivity
 
         }
         ////End of prompt
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if(activeEvent) //We have one event open - don't allow creation of new event
-                {
-                    Toast toast = Toast.makeText(MainActivity.this, "You already have an active event.", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
-                    toast.show();
-                }
-                else
-                {
-                    Intent intent = new Intent(getApplicationContext(), CreateEventActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
 
         adapter = new EventListAdapter(this, eventList);
         lv = (ListView) findViewById(R.id.eventList);
@@ -180,10 +182,7 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.action_export:
             {
-                Toast toast = Toast.makeText(this, "Work In Progress!", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
-                toast.show();
-                dbHelper.exportToCVS();
+                dbHelper.exportToCSV(e);
                 return true;
             }
 
@@ -203,7 +202,10 @@ public class MainActivity extends AppCompatActivity
                         refreshList();
                         Toast.makeText(MainActivity.this, "The event has been deleted", Toast.LENGTH_SHORT).show();
                         if(eventList.isEmpty())
+                        {
                             activeEvent = false;
+                            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent,null)));
+                        }
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -229,6 +231,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK)
             {
                 activeEvent = false;
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent,null)));
                 refreshList();
             }
         }
@@ -259,6 +262,7 @@ public class MainActivity extends AppCompatActivity
                 e.setDone(false);
                 {
                     activeEvent = true;
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.LTGRAY));
                 }
             }
         }

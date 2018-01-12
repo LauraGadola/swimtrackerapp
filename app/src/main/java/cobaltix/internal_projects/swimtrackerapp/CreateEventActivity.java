@@ -63,7 +63,7 @@ public class CreateEventActivity extends AppCompatActivity
             String eventDate = event.getEventDate();
             if(event.isDone())
             {
-                title = title.substring(0, title.indexOf(" "));
+                title = title.substring(0, title.indexOf("(")-1);
             }
             etEventTitle.setText(title);
             etStartDate.setText(startDate);

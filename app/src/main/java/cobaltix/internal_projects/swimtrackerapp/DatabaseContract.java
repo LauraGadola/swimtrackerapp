@@ -48,16 +48,17 @@ public final class DatabaseContract
                         + WeeklyGoals.COLUMN_NAME_LONGEST + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_WEIGHT + " FLOAT,"
                         + WeeklyGoals.COLUMN_NAME_DESCRIPTION + " TEXT,"
-                        + WeeklyGoals.COLUMN_NAME_EVENT_ID + " INTEGER);";
+                        + WeeklyGoals.COLUMN_NAME_EVENT_ID + " INTEGER,"
+                        + "FOREIGN KEY(" + COLUMN_NAME_EVENT_ID + ") REFERENCES " + Events.TABLE_NAME + "(" + Events._ID + "));";
 
         public static final String DELETE_TABLE_WEEKLY_EVENTS =
                 "DROP TABLE IF EXIST " + WeeklyGoals.TABLE_NAME;
     }
 
     //DAILY GOALS TABLE
-    public static class DailyGoals implements BaseColumns
+    public static class DailyLogs implements BaseColumns
     {
-        public static final String TABLE_NAME = "daily_goals";
+        public static final String TABLE_NAME = "daily_logs";
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_LOCATION = "location";
         public static final String COLUMN_NAME_TEMP = "temperature";
@@ -70,26 +71,25 @@ public final class DatabaseContract
         public static final String COLUMN_NAME_WEEKLY_ID = "weekly_id";
         public static final String COLUMN_NAME_EVENT_ID = "event_id";
 
-        public static final String CREATE_TABLE_DAILY_GOALS =
-                "CREATE TABLE " + DailyGoals.TABLE_NAME + " ("
-                        + DailyGoals._ID + " INTEGER PRIMARY KEY,"
-                        + DailyGoals.COLUMN_NAME_DATE + " TEXT,"
-                        + DailyGoals.COLUMN_NAME_LOCATION + " TEXT,"
-                        + DailyGoals.COLUMN_NAME_TEMP + " FLOAT,"
-                        + DailyGoals.COLUMN_NAME_HRS + " INTEGER,"
-                        + DailyGoals.COLUMN_NAME_MIN + " INTEGER,"
-                        + DailyGoals.COLUMN_NAME_WEIGHT + " FLOAT,"
-                        + DailyGoals.COLUMN_NAME_MILES + " FLOAT,"
-                        + DailyGoals.COLUMN_NAME_HONEST + " FLOAT,"
-                        + DailyGoals.COLUMN_NAME_NOTES + " TEXT,"
-                        + DailyGoals.COLUMN_NAME_WEEKLY_ID + " INTEGER,"
-                        + DailyGoals.COLUMN_NAME_EVENT_ID + " INTEGER);";
-
-                        //TODO CHECK IF WORKS
-//                        + "FOREIGN KEY(" + COLUMN_NAME_EVENT_ID + ") REFERENCES " + Events.TABLE_NAME + "(" + Events._ID + "));";
+        public static final String CREATE_TABLE_DAILY_LOGS =
+                "CREATE TABLE " + DailyLogs.TABLE_NAME + " ("
+                        + DailyLogs._ID + " INTEGER PRIMARY KEY,"
+                        + DailyLogs.COLUMN_NAME_DATE + " TEXT,"
+                        + DailyLogs.COLUMN_NAME_LOCATION + " TEXT,"
+                        + DailyLogs.COLUMN_NAME_TEMP + " FLOAT,"
+                        + DailyLogs.COLUMN_NAME_HRS + " INTEGER,"
+                        + DailyLogs.COLUMN_NAME_MIN + " INTEGER,"
+                        + DailyLogs.COLUMN_NAME_WEIGHT + " FLOAT,"
+                        + DailyLogs.COLUMN_NAME_MILES + " FLOAT,"
+                        + DailyLogs.COLUMN_NAME_HONEST + " FLOAT,"
+                        + DailyLogs.COLUMN_NAME_NOTES + " TEXT,"
+                        + DailyLogs.COLUMN_NAME_WEEKLY_ID + " INTEGER,"
+                        + DailyLogs.COLUMN_NAME_EVENT_ID + " INTEGER,"
+                        + "FOREIGN KEY(" + COLUMN_NAME_EVENT_ID + ") REFERENCES " + Events.TABLE_NAME + "(" + Events._ID + ")"
+                        + "FOREIGN KEY(" + COLUMN_NAME_WEEKLY_ID + ") REFERENCES " + WeeklyGoals.TABLE_NAME + "(" + WeeklyGoals._ID + "));";
 
         public static final String DELETE_TABLE_DAILY_GOALS =
-                "DROP TABLE IF EXISTS " + DailyGoals.TABLE_NAME;
+                "DROP TABLE IF EXISTS " + DailyLogs.TABLE_NAME;
 
     }
 }
