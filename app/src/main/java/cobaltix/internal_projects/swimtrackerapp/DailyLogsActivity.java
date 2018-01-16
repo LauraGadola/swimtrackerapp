@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -401,6 +402,7 @@ public class DailyLogsActivity extends AppCompatActivity
         switch (id)
         {
             case R.id.action_done:
+                boolean blank = false;
 
                 String date = String.valueOf(etDate.getText());
                 if (date.contains("Today"))
@@ -409,59 +411,78 @@ public class DailyLogsActivity extends AppCompatActivity
                 }
 
                 String location = String.valueOf(etLocation.getText());
-                float temp = Float.parseFloat(String.valueOf(etTempF.getText()));
+                String etTemp = String.valueOf(etTempF.getText());
                 String time = String.valueOf(etTime.getText());
-                int hrs = Integer.parseInt(time.substring(0, time.indexOf(":")));
-                int min = Integer.parseInt(time.substring(time.indexOf(":") + 1, time.length()));
-
-                float weight = Float.parseFloat(String.valueOf(etWeight.getText()));
-                float miles = Float.parseFloat(String.valueOf(etMiles.getText()));
-                float honest = Float.parseFloat(String.valueOf(etHonest.getText()));
+                String w = String.valueOf(etWeight.getText());
+                String m = String.valueOf(etMiles.getText());
+                String h = String.valueOf(etHonest.getText());
                 String notes = String.valueOf(etNotes.getText());
 
-                //UPDATE
-                if (currentLog != null)
+                if(location.isEmpty() || etTemp.isEmpty() || time.isEmpty() || w.isEmpty() || m.isEmpty() || h.isEmpty() || notes.isEmpty())
+                    blank = true;
+                if(blank)
                 {
-                    DailyLog updatedLog = new DailyLog(currentLog.getId(), date, location, temp, hrs, min, weight, miles, honest, notes, currentLog.getWeekly_id(), event.getId());
-                    currentLog = updatedLog;
-                    int i = dailyLogs.indexOf(currentLog);
-                    dailyLogs.set(i, updatedLog);
-                    dbHelper.updateDailyLog(currentLog, updatedLog);
-                    updateTabs();
-
-                    Toast.makeText(this, "Daily log has been updated!", Toast.LENGTH_SHORT).show();
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
-
-                    finish();
-                    return true;
+                    Toast toast = Toast.makeText(this, "Please enter all information", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                    return false;
                 }
-                //CREATE NEW
                 else
                 {
-                    //TODO the last weekly goal should be the only one in place?
-                    DailyLog newLog = new DailyLog(date, location, temp, hrs, min, weight, miles, honest, notes, weeklyGoal.getId(), event.getId());
-                    int newRowId = dbHelper.addDailyLog(newLog);
-                    newLog.setId(newRowId);
-                    currentLog = newLog;
-                    dailyLogs = dbHelper.getDailyLogList(event.getId());
-                    updateTabs();
 
-                    Toast.makeText(this, "Your daily log has been saved!", Toast.LENGTH_SHORT).show();
+                    float temp = Float.parseFloat(etTemp);
+                    int hrs = Integer.parseInt(time.substring(0, time.indexOf(":")));
+                    int min = Integer.parseInt(time.substring(time.indexOf(":") + 1, time.length()));
+                    float weight = Float.parseFloat(w);
+                    float miles = Float.parseFloat(m);
+                    float honest = Float.parseFloat(h);
 
-                    //If you entered today or last day prior to event go back to main page
-                    if (isUpToDate(date))
+                    //UPDATE
+                    if (currentLog != null)
                     {
-                        Toast.makeText(this, "Your logs are up to date!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                    else //go to next
-                    {
-                        String nextDay = getDay(date, 1);
-                        DailyLog nextLog = getLog(nextDay);
-                        goToDay(nextLog, nextDay);
-                        btnPrevious.setVisibility(View.VISIBLE);
+                        DailyLog updatedLog = new DailyLog(currentLog.getId(), date, location, temp, hrs, min, weight, miles, honest, notes, currentLog.getWeekly_id(), event.getId());
+                        currentLog = updatedLog;
+                        int i = dailyLogs.indexOf(currentLog);
+                        dailyLogs.set(i, updatedLog);
+                        dbHelper.updateDailyLog(currentLog, updatedLog);
+                        updateTabs();
+
+                        Toast.makeText(this, "Daily log has been updated!", Toast.LENGTH_SHORT).show();
                         scrollView.fullScroll(ScrollView.FOCUS_UP);
+
+                        finish();
                         return true;
+                    } else if (blank)
+                    {
+                        Toast.makeText(this, "Please enter all information", Toast.LENGTH_SHORT).show();
+                    }
+                    //CREATE NEW
+                    else
+                    {
+                        //TODO the last weekly goal should be the only one in place?
+                        DailyLog newLog = new DailyLog(date, location, temp, hrs, min, weight, miles, honest, notes, weeklyGoal.getId(), event.getId());
+                        int newRowId = dbHelper.addDailyLog(newLog);
+                        newLog.setId(newRowId);
+                        currentLog = newLog;
+                        dailyLogs = dbHelper.getDailyLogList(event.getId());
+                        updateTabs();
+
+                        Toast.makeText(this, "Your daily log has been saved!", Toast.LENGTH_SHORT).show();
+
+                        //If you entered today or last day prior to event go back to main page
+                        if (isUpToDate(date))
+                        {
+                            Toast.makeText(this, "Your logs are up to date!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else //go to next
+                        {
+                            String nextDay = getDay(date, 1);
+                            DailyLog nextLog = getLog(nextDay);
+                            goToDay(nextLog, nextDay);
+                            btnPrevious.setVisibility(View.VISIBLE);
+                            scrollView.fullScroll(ScrollView.FOCUS_UP);
+                            return true;
+                        }
                     }
                 }
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -115,30 +116,47 @@ public class WeeklyGoalsActivity extends AppCompatActivity
         switch (id)
         {
             case R.id.action_done:
-                float miles = Float.parseFloat(etMiles.getText().toString());
-                float longest = Float.parseFloat(etLongest.getText().toString());
-                float weight = Float.parseFloat(etWeight.getText().toString());
+                boolean blank = false;
+
+                String m = etMiles.getText().toString();
+                String l = etLongest.getText().toString();
+                String w = etWeight.getText().toString();
                 String description = etDescription.getText().toString();
 
-                //ADD NEW
-                if(!wgExists())
+                if(m.isEmpty() || l.isEmpty() || w.isEmpty() || description.isEmpty())
+                    blank = true;
+                if(blank)
                 {
-                    weeklyGoal = dbHelper.addWeeklyGoal(currentWeek, miles, longest, weight, description, event.getId());
-                    System.out.println("------------ WG: "+weeklyGoal);
-                    Toast.makeText(this, "Your weekly goals have been saved!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Toast toast = Toast.makeText(this, "Please enter all information", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                    return false;
                 }
-
-                //UPDATE
                 else
                 {
-                    dbHelper.updateWeeklyGoal(weeklyGoal, miles, longest, weight, description);
-                    Toast.makeText(this, "Weekly goals have been updated!", Toast.LENGTH_SHORT).show();
+                    float miles = Float.parseFloat(m);
+                    float longest = Float.parseFloat(l);
+                    float weight = Float.parseFloat(w);
 
-                    onBackPressed();
+                    //ADD NEW
+                    if (!wgExists())
+                    {
+                        weeklyGoal = dbHelper.addWeeklyGoal(currentWeek, miles, longest, weight, description, event.getId());
+                        System.out.println("------------ WG: " + weeklyGoal);
+                        Toast.makeText(this, "Your weekly goals have been saved!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    //UPDATE
+                    else
+                    {
+                        dbHelper.updateWeeklyGoal(weeklyGoal, miles, longest, weight, description);
+                        Toast.makeText(this, "Weekly goals have been updated!", Toast.LENGTH_SHORT).show();
+
+                        onBackPressed();
+                    }
+                    return true;
                 }
-
-                return true;
 
             case android.R.id.home:
                 onBackPressed();
