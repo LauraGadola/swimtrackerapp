@@ -126,10 +126,6 @@ public class WeeklyGoalsActivity extends AppCompatActivity
                     weeklyGoal = dbHelper.addWeeklyGoal(currentWeek, miles, longest, weight, description, event.getId());
                     System.out.println("------------ WG: "+weeklyGoal);
                     Toast.makeText(this, "Your weekly goals have been saved!", Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(this, DailyLogsActivity.class);
-//                    intent.putExtra("event", event);
-//                    intent.putExtra("week", currentWeek);
-//                    startActivity(intent);
                     finish();
                 }
 
@@ -139,7 +135,6 @@ public class WeeklyGoalsActivity extends AppCompatActivity
                     dbHelper.updateWeeklyGoal(weeklyGoal, miles, longest, weight, description);
                     Toast.makeText(this, "Weekly goals have been updated!", Toast.LENGTH_SHORT).show();
 
-                    //todo do I edit from the overview page?
                     onBackPressed();
                 }
 

@@ -83,7 +83,6 @@ public class StatsTab extends MyFragment
         weeklyGoal = dbHelper.getWeeklyGoal(getWeek(), event.getId());
 
         dgList = dbHelper.getDailyLogList(getWeek(), event.getId());
-        System.out.println("List: "+dgList);
         if(!dgList.isEmpty())
         {
             empty.setVisibility(View.INVISIBLE);
@@ -92,11 +91,10 @@ public class StatsTab extends MyFragment
             btnGroup.setVisibility(View.VISIBLE);
             percentageLayout.setVisibility(View.VISIBLE);
 
-
-
             //SET GRAPH
             milesList = new DataPoint[dgList.size()];
             weightList = new DataPoint[dgList.size()];
+
             int i = dgList.size()-1;
             for (DailyLog dg : dgList)
             {
@@ -140,7 +138,6 @@ public class StatsTab extends MyFragment
             renderGraph("Miles");
 
             //SET PERCENTAGES
-//            WeeklyGoal weeklyGoal = dbHelper.getWeeklyGoal(getWeek(), event.getId());
             System.out.println("WG Miles: "+weeklyGoal.getMiles() + " / " + totDist);
             System.out.println("WG Longest: "+weeklyGoal.getLongest() + " / " + longest);
             System.out.println("WG Weight: "+weeklyGoal.getWeight() + " / " + dgList.get(0).getWeight());
@@ -150,12 +147,10 @@ public class StatsTab extends MyFragment
             progressBarMiles.setProgress(percent);
             txtMilesPercent.setText(String.valueOf(percent)+"%");
 
-//            longest = (float) graph.getViewport().getMaxY(true);
             percent = (int) (longest/weeklyGoal.getLongest()*100);
             progressBarLongest.setProgress(percent);
             txtLongestPercent.setText(String.valueOf(percent)+"%");
 
-            System.out.println("Last DG weight: "+dgList.get(0).getWeight());
             percent = (int) (dgList.get(0).getWeight() / weeklyGoal.getWeight()*100);
             progressBarWeight.setProgress(percent);
             txtWeightPercent.setText(String.valueOf(percent)+"%");
@@ -172,7 +167,6 @@ public class StatsTab extends MyFragment
 
     public void renderGraph(String title)
     {
-        System.out.println("Rendering graph.........");
         float goal = 0;
         DataPoint[] list = null;
         int min = 0;
@@ -201,11 +195,7 @@ public class StatsTab extends MyFragment
 
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
-        if(list.length < 10)        //todo list should always be max 7
-            graph.getGridLabelRenderer().setNumHorizontalLabels(list.length);
-        else
-            graph.getGridLabelRenderer().setNumHorizontalLabels(10);
-
+        graph.getGridLabelRenderer().setNumHorizontalLabels(list.length);
         graph.getGridLabelRenderer().setNumVerticalLabels(10);
         graph.getGridLabelRenderer().setHorizontalLabelsAngle(120);
         graph.getGridLabelRenderer().setPadding(40);
@@ -218,7 +208,6 @@ public class StatsTab extends MyFragment
         graph.getViewport().setMaxY(goal);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setYAxisBoundsManual(true);
-//        graph.getViewport().setScalable(true);
 
         graph.getLegendRenderer().setVisible(true);
         graph.getLegendRenderer().setBackgroundColor(Color.LTGRAY);

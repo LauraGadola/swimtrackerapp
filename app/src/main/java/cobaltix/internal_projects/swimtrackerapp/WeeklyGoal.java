@@ -22,7 +22,6 @@ public class WeeklyGoal implements Serializable
         this.event_id = event_id;
     }
 
-    //TODO needed or can I just set the id?
     public WeeklyGoal(int id, String weekStart, float miles, float longest, float weight, String description, int event_id)
     {
         this(weekStart, miles, longest, weight, description,event_id);

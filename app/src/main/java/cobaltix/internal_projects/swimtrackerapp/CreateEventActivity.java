@@ -71,10 +71,7 @@ public class CreateEventActivity extends AppCompatActivity
 
             //SET CALENDARS
             myCalStart.setTime(DateFormatter.parse(event.getStartDate()));
-            System.out.println("start: "+event.getStartDate());
-
             myCalEnd.setTime(DateFormatter.parse(event.getEventDate()));
-            System.out.println("event: "+event.getEventDate());
         }
         else
         {
@@ -135,7 +132,7 @@ public class CreateEventActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds items to the action bar.
         getMenuInflater().inflate(R.menu.menu_save, menu);
         return true;
     }

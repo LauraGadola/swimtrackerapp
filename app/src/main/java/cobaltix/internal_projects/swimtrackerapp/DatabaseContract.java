@@ -4,7 +4,6 @@ import android.provider.BaseColumns;
 
 public final class DatabaseContract
 {
-
     // private constructor to prevent someone from accidentally instantiating the contract class
     private DatabaseContract() {}
 

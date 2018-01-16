@@ -23,30 +23,14 @@ import java.util.LinkedList;
 
 public class OverviewActivity extends AppCompatActivity implements OverviewTab.OnLongestCalculatedListener
 {
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+//    The ViewPager that will host the section contents.
     private ViewPager mViewPager;
     private FloatingActionButton fab;
     private Event event;
     private TabLayout tabLayout;
     private Calendar myCal;
     private String currentWeek;
-
-//    private OverviewTab tabOverview;
-//    private StatsTab tabStats;
-
     private DatabaseHelper dbHelper;
 
     @Override
@@ -59,14 +43,12 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dbHelper = new DatabaseHelper(this);
 
         event = (Event) getIntent().getSerializableExtra("event");
         currentWeek = getIntent().getStringExtra("week");
-        System.out.println("Overview: week retrieved is: "+currentWeek);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
@@ -87,7 +69,7 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
         Date d = DateFormatter.parse(WeekManager.getFirstDay(currentWeek));
         myCal.setTime(d);
 
-        // Create the adapter that will return a fragment for each of the three
+        // Create the adapter that will return a fragment for each of the two
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), event, currentWeek);
 
@@ -135,7 +117,6 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
             if(resultCode == RESULT_OK)
             {
                 String week = data.getStringExtra("week");
-                System.out.println("Overview: week received: "+week);
                 if(week != null)
                 {
                     currentWeek = week;
@@ -209,8 +190,6 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
 
             case android.R.id.home:
                 onBackPressed();
-//                LinkedList<DailyLog> dailyGoals = dbHelper.getDailyLogList(currentWeek);
-//                getTabOverview().setList(dailyGoals);
                 return true;
 
             default:
@@ -230,7 +209,7 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
     @Override
     public void sendLongest(float longest, float miles)
     {
-        StatsTab tab2 = (StatsTab) mSectionsPagerAdapter.getTab(1);
+        StatsTab tab2 = getTabStats();
         tab2.setLongest(longest);
         tab2.setTotDist(miles);
     }

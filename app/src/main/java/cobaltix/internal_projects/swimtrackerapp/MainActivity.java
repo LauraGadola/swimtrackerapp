@@ -27,7 +27,6 @@ import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity
 {
-    //Visual objects in the layout file
     private ListView lv;
     private FloatingActionButton fab;
     //HANDLE THE DATA OF THE LISTVIEW
@@ -142,21 +141,14 @@ public class MainActivity extends AppCompatActivity
         });
         registerForContextMenu(lv);
 
-        //here for testing purposes (need to export db) - todo move to export cvs clicked
-        PermissionsHandler permissionsHandler = new PermissionsHandler(this);
-        permissionsHandler.requestWriteExtStoragePermissions();
-
-
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        if (v.getId()==R.id.eventList) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_event_list, menu);
-        }
+        getMenuInflater().inflate(R.menu.menu_event_list, menu);
+
     }
 
     @Override
@@ -178,10 +170,11 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_export:
-            {
+                PermissionsHandler permissionsHandler = new PermissionsHandler(this);
+                permissionsHandler.requestWriteExtStoragePermissions();
+
                 dbHelper.exportToCSV(e);
                 return true;
-            }
 
             default:
                 return super.onContextItemSelected(item);
@@ -237,7 +230,6 @@ public class MainActivity extends AppCompatActivity
     private void refreshList()
     {
         ArrayList<Event> list = dbHelper.getEventList();
-        //eventList.clear();
         adapter.clear();
         eventList.addAll(list);
         adapter.notifyDataSetChanged();

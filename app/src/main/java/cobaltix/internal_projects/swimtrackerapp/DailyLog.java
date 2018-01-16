@@ -193,10 +193,8 @@ public class DailyLog implements Serializable
 
         if (otherDG.id != this.id)
         {
-            System.out.println("id false");
             return false;
         }
-        System.out.println("id true");
         return true;
     }
 }

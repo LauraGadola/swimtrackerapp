@@ -81,10 +81,6 @@ public class DailyLogsActivity extends AppCompatActivity
         event = (Event) getIntent().getSerializableExtra("event");
         dailyLog = (DailyLog) getIntent().getSerializableExtra("daily_goal");
         week = getIntent().getStringExtra("week");
-
-        System.out.println("Week: "+week);
-        System.out.println("Event: "+event);                                            //TODO delete
-        System.out.println("DailyLog: "+ dailyLog);                                  //TODO delete
         dbHelper = new DatabaseHelper(this);
 
         dailyLogs = dbHelper.getDailyLogList(event.getId());
@@ -110,29 +106,6 @@ public class DailyLogsActivity extends AppCompatActivity
         etYards.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
         etMiles.setOnFocusChangeListener(new CustomOnFocusChangeListener(this));
 
-//        onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-//
-//            @Override
-//            public void onDateSet(DatePicker view, int year, int monthOfYear,
-//                                  int dayOfMonth) {
-//                myCal.set(year, monthOfYear, dayOfMonth);
-//                etDate.setText(sdf.formatToDB(myCal.getTime()));
-////                fillFields();
-//            }
-//
-//        };
-//        etDate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), onDateSetListener, myCal
-//                        .get(Calendar.YEAR), myCal.get(Calendar.MONTH),
-//                        myCal.get(Calendar.DAY_OF_MONTH));
-//                System.out.println(myCal.getTime().toString());                       //TODO delete
-//                datePickerDialog.show();
-//            }
-//        });
-
-        //TODO create separate class for onClickListener
         etTime.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -140,10 +113,10 @@ public class DailyLogsActivity extends AppCompatActivity
             {
                 LayoutInflater inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.custom_number_picker, null);
-                AlertDialog.Builder d = new AlertDialog.Builder(v.getContext());
-                d.setTitle("Select time");
-                d.setView(v);
-                d.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+                dialog.setTitle("Select time");
+                dialog.setView(v);
+                dialog.setPositiveButton("OK", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -157,7 +130,7 @@ public class DailyLogsActivity extends AppCompatActivity
                     }
                 });
 
-                d.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -184,7 +157,7 @@ public class DailyLogsActivity extends AppCompatActivity
                     hrsPicker.setValue(hrs);
                     minPicker.setValue(min);
                 }
-                d.show();
+                dialog.show();
             }
         });
 
@@ -218,11 +191,7 @@ public class DailyLogsActivity extends AppCompatActivity
             {
                 String nextDay = getDay(String.valueOf(etDate.getText()), 1);
                 getWeeklyGoal(nextDay);
-
                 DailyLog nextDG = getLog(nextDay);
-                System.out.println("next: " + nextDay);
-                if (nextDG != null)
-                    System.out.println("next from dg: " + nextDG.getDate());
                 goToDay(nextDG, nextDay);
                 btnPrevious.setVisibility(View.VISIBLE);
             }
@@ -237,12 +206,11 @@ public class DailyLogsActivity extends AppCompatActivity
                 dailyLogs.remove(currentLog);
                 updateTabs();
                 currentLog = null;
-//                clearAll();
                 Toast.makeText(DailyLogsActivity.this, "Daily log has been deleted", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
-        //FINISH SETTING BUTTONS
+        //END OF SETTING BUTTONS
 
         //FIELDS
 
@@ -456,7 +424,6 @@ public class DailyLogsActivity extends AppCompatActivity
                 {
                     DailyLog updatedLog = new DailyLog(currentLog.getId(), date, location, temp, hrs, min, weight, miles, honest, notes, currentLog.getWeekly_id(), event.getId());
                     currentLog = updatedLog;
-                    System.out.println("DGA: List: "+ dailyLogs);
                     int i = dailyLogs.indexOf(currentLog);
                     dailyLogs.set(i, updatedLog);
                     dbHelper.updateDailyLog(currentLog, updatedLog);
@@ -491,7 +458,6 @@ public class DailyLogsActivity extends AppCompatActivity
                     {
                         String nextDay = getDay(date, 1);
                         DailyLog nextLog = getLog(nextDay);
-                        Log.e("DGA","DG: "+nextDay);
                         goToDay(nextLog, nextDay);
                         btnPrevious.setVisibility(View.VISIBLE);
                         scrollView.fullScroll(ScrollView.FOCUS_UP);
@@ -504,7 +470,6 @@ public class DailyLogsActivity extends AppCompatActivity
                 i.putExtra("event", event);
                 i.putExtra("week", week);
                 startActivity(i);
-//                updateTabs();
                 finish();
                 return true;
 

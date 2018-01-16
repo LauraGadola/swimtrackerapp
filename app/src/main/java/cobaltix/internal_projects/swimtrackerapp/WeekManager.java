@@ -45,7 +45,6 @@ public class WeekManager
         String day = week.substring(0, week.indexOf("-")-1);
         String year = week.substring(week.indexOf(",", week.indexOf(",")));
         String sunday = "Sunday, "+ day + year;
-        System.out.println("First day of week: "+sunday);
         return sunday;
     }
 }

@@ -14,7 +14,6 @@ import java.util.LinkedList;
 public class DailyLogsListAdapter extends ArrayAdapter<DailyLog>
 {
     private Activity context;
-//    private DailyLog dg;
     private LinkedList<DailyLog> dgList;
 
     public DailyLogsListAdapter(Activity context, LinkedList<DailyLog> dailyLogs) {
