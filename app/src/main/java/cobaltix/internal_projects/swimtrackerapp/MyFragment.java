@@ -21,7 +21,6 @@ public abstract class MyFragment extends Fragment
 
     public String getWeek()
     {
-        //todo to test
         if(week == null)
         {
             bundle = this.getArguments();

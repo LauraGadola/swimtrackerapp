@@ -80,10 +80,9 @@ public class StatsTab extends MyFragment
     {
         event = getEvent();
 
-        weeklyGoal = dbHelper.getWeeklyGoal(getWeek());
-        System.out.println("tab2: WG: "+weeklyGoal);
+        weeklyGoal = dbHelper.getWeeklyGoal(getWeek(), event.getId());
 
-        dgList = dbHelper.getDailyLogList(getWeek());
+        dgList = dbHelper.getDailyLogList(getWeek(), event.getId());
         System.out.println("List: "+dgList);
         if(!dgList.isEmpty())
         {
@@ -141,7 +140,7 @@ public class StatsTab extends MyFragment
             renderGraph("Miles");
 
             //SET PERCENTAGES
-            WeeklyGoal weeklyGoal = dbHelper.getWeeklyGoal(getWeek());
+//            WeeklyGoal weeklyGoal = dbHelper.getWeeklyGoal(getWeek(), event.getId());
             System.out.println("WG Miles: "+weeklyGoal.getMiles() + " / " + totDist);
             System.out.println("WG Longest: "+weeklyGoal.getLongest() + " / " + longest);
             System.out.println("WG Weight: "+weeklyGoal.getWeight() + " / " + dgList.get(0).getWeight());

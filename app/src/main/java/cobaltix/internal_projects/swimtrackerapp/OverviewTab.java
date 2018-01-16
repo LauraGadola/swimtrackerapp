@@ -52,15 +52,14 @@ public class OverviewTab extends MyFragment
 
         populateListView();
 
-        showResults();
-
         return view;
     }
 
     public void populateListView()
     {
+        System.out.println("Populating in overview tab........");
         dbHelper = new DatabaseHelper(getActivity());
-        dgList = dbHelper.getDailyLogList(getWeek());
+        dgList = dbHelper.getDailyLogList(getWeek(), getEvent().getId());
 
         adapter = new DailyLogsListAdapter(getActivity(), dgList);
         lv.setAdapter(adapter);
@@ -77,7 +76,7 @@ public class OverviewTab extends MyFragment
                 getActivity().startActivityForResult(i,1);
             }
         });
-        if(dgList == null)
+        if(dgList.isEmpty())
         {
             totDistLayout.setVisibility(View.INVISIBLE);
             longestLayout.setVisibility(View.INVISIBLE);
@@ -88,6 +87,8 @@ public class OverviewTab extends MyFragment
             longestLayout.setVisibility(View.VISIBLE);
             checkForButton();
         }
+
+        showResults();
     }
 
     private void checkForButton()
@@ -102,7 +103,7 @@ public class OverviewTab extends MyFragment
         }
         else
         {
-            String day = HelperClass.getFirstDay(getWeek());
+            String day = WeekManager.getFirstDay(getWeek());
             while (!isStartDateOrAfter(day) || getLog(day) != null)
             {
                 day = getDay(day, 1);
@@ -111,8 +112,11 @@ public class OverviewTab extends MyFragment
             if (d.after(today) || d.after(DateFormatter.parse(getEvent().getEndDate())))
             {
                 fab.setVisibility(View.INVISIBLE);
-            } else
+            }
+            else
+            {
                 fab.setVisibility(View.VISIBLE);
+            }
         }
 
     }
@@ -228,6 +232,7 @@ public class OverviewTab extends MyFragment
         dgList.addAll(list);
         adapter.notifyDataSetChanged();
         showResults();
+        checkForButton();
     }
 
 }

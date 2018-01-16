@@ -443,7 +443,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/etWeekLongest"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:layout_marginTop="24dp"
                 android:background="@android:color/transparent"
                 android:hint="0.0"

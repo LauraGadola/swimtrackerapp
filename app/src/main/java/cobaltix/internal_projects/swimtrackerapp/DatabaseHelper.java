@@ -267,6 +267,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_LONGEST, longest);
         values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_WEIGHT, weight);
         values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_DESCRIPTION, description);
+        values.put(DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID, event_id);
 
         //TODO delete
         System.out.println("-------- Creating new wg");
@@ -377,13 +378,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
         exportDatabase();
     }
 
-    public WeeklyGoal getWeeklyGoal(String week)
+    public WeeklyGoal getWeeklyGoal(String week, int event_id)
     {
         db = getReadableDatabase();
 
         //TODO Needed to check both week and event_id?
         String selectQuery = "SELECT * FROM " + DatabaseContract.WeeklyGoals.TABLE_NAME
-                + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK + " = '" + week + "'";
+                + " WHERE " + DatabaseContract.WeeklyGoals.COLUMN_NAME_WEEK + " = '" + week + "'"
+                + " AND " + DatabaseContract.WeeklyGoals.COLUMN_NAME_EVENT_ID + " = " + event_id;
         Log.e("dbHelper", selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -393,7 +395,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             float longest = cursor.getFloat(3);
             float weight = cursor.getFloat(4);
             String description = cursor.getString(5);
-            int event_id = cursor.getShort(6);
+//            int event_id = cursor.getShort(6);
             WeeklyGoal weeklyGoal = new WeeklyGoal(id, week, miles, longest, weight, description, event_id);
             return weeklyGoal;
         }
@@ -453,9 +455,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return queryForDailyLogs(query);
     }
 
-    public LinkedList<DailyLog> getDailyLogList(String week)
+    public LinkedList<DailyLog> getDailyLogList(String week, int event_id)
     {
-        WeeklyGoal wg = getWeeklyGoal(week);
+        WeeklyGoal wg = getWeeklyGoal(week, event_id);
         LinkedList<DailyLog> dgList = new LinkedList<>();
         if(wg != null)
         {

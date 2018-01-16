@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class OverviewActivity extends AppCompatActivity implements OverviewTab.OnLongestCalculatedListener
@@ -43,8 +44,8 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
     private Calendar myCal;
     private String currentWeek;
 
-    private OverviewTab tabOverview;
-    private StatsTab tabStats;
+//    private OverviewTab tabOverview;
+//    private StatsTab tabStats;
 
     private DatabaseHelper dbHelper;
 
@@ -80,9 +81,11 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
             {
                 myCal.setTime(DateFormatter.parse(event.getEndDate()));
             }
-            currentWeek = HelperClass.getWeek(myCal);
+            currentWeek = WeekManager.getWeek(myCal);
         }
         setTitle(currentWeek);
+        Date d = DateFormatter.parse(WeekManager.getFirstDay(currentWeek));
+        myCal.setTime(d);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -138,17 +141,19 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
                     currentWeek = week;
                 }
                 setTitle(currentWeek);
-                LinkedList<DailyLog> dailyLogs = dbHelper.getDailyLogList(currentWeek);
+                Date d = DateFormatter.parse(WeekManager.getFirstDay(currentWeek));
+                myCal.setTime(d);
 
+                LinkedList<DailyLog> dailyLogs = dbHelper.getDailyLogList(currentWeek, event.getId());
+
+                //Update tabs
+                getTabOverview().setWeek(currentWeek);
                 getTabOverview().setList(dailyLogs);
-                getTabStats().setElements();
 
-                if(dailyLogs.size() == 7)
-                {
-                    fab.setVisibility(View.INVISIBLE);
-                }
-                else
-                    fab.setVisibility(View.VISIBLE);
+                getTabStats().setWeek(currentWeek);
+                getTabStats().setElements();
+                //End update
+
             }
         }
     }
@@ -175,18 +180,15 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
                     {
                         myCal.set(year, monthOfYear, dayOfMonth);
-                        currentWeek = HelperClass.getWeek(myCal);
+                        currentWeek = WeekManager.getWeek(myCal);
                         setTitle(currentWeek);
 
                         //Update list in tab
-                        getTabOverview();
-                        tabOverview.setWeek(currentWeek);
-                        tabOverview.populateListView();
-                        tabOverview.showResults();
+                        getTabOverview().setWeek(currentWeek);
+                        getTabOverview().populateListView();
 
-                        getTabStats();
-                        tabStats.setWeek(currentWeek);
-                        tabStats.setElements();
+                        getTabStats().setWeek(currentWeek);
+                        getTabStats().setElements();
 
                     }
                 };
@@ -235,11 +237,11 @@ public class OverviewActivity extends AppCompatActivity implements OverviewTab.O
 
     public OverviewTab getTabOverview()
     {
-        return tabOverview = (OverviewTab) mSectionsPagerAdapter.getTab(0);
+        return (OverviewTab) mSectionsPagerAdapter.getTab(0);
     }
 
     public StatsTab getTabStats()
     {
-        return tabStats = (StatsTab) mSectionsPagerAdapter.getTab(1);
+        return (StatsTab) mSectionsPagerAdapter.getTab(1);
     }
 }

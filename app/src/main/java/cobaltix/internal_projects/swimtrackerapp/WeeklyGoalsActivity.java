@@ -86,7 +86,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
 
     private boolean wgExists()
     {
-        weeklyGoal = dbHelper.getWeeklyGoal(currentWeek);
+        weeklyGoal = dbHelper.getWeeklyGoal(currentWeek, event.getId());
         if(weeklyGoal != null)
             return true;
         return false;
@@ -95,7 +95,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
     private void updateWeekLabel() {
         if(currentWeek == null)
         {
-            currentWeek = HelperClass.getWeek(myCalendar);
+            currentWeek = WeekManager.getWeek(myCalendar);
         }
         etWeek.setText(currentWeek);
     }
@@ -124,6 +124,7 @@ public class WeeklyGoalsActivity extends AppCompatActivity
                 if(!wgExists())
                 {
                     weeklyGoal = dbHelper.addWeeklyGoal(currentWeek, miles, longest, weight, description, event.getId());
+                    System.out.println("------------ WG: "+weeklyGoal);
                     Toast.makeText(this, "Your weekly goals have been saved!", Toast.LENGTH_SHORT).show();
 //                    Intent intent = new Intent(this, DailyLogsActivity.class);
 //                    intent.putExtra("event", event);

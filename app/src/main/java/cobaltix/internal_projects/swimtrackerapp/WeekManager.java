@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class HelperClass
+public class WeekManager
 {
     private static String sunFormat = "MMM dd";
     private static String satFormat = "MMM dd, yyyy";
@@ -21,7 +21,7 @@ public class HelperClass
     private static SimpleDateFormat sdfSat = new SimpleDateFormat(satFormat);
 
     //Constructor
-    private HelperClass(){}
+    private WeekManager(){}
 
     public static String getWeek(Calendar myCal)  {
         int dayOfWeek = myCal.get(Calendar.DAY_OF_WEEK);

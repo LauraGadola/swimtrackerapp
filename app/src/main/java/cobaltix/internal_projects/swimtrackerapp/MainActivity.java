@@ -96,11 +96,9 @@ public class MainActivity extends AppCompatActivity
 
         prompt = getIntent().getBooleanExtra("prompt", true);
 
-        if(prompt && !eventList.isEmpty())
+        if(prompt && activeEvent)
         {
             Event recentEvent = eventList.get(0);
-            Log.e("MainActivity", "Event: " + recentEvent);
-            if(!recentEvent.isDone())
             {
                 LinkedList<DailyLog> dgList = dbHelper.getDailyLogList(recentEvent.getId());
                 DailyLog lastDG;
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
                 //Prompt daily log activity to enter logs if needed
                 if (DateFormatter.parse(recentEvent.getStartDate()).before(today)
-                        && (dgList.isEmpty() || (!date.equals(DateFormatter.format(today)) && !date.equals(recentEvent.getEndDate()))))  // No log yet || last log is not today nor event end date
+                        && (dgList.isEmpty() || (!date.equals(DateFormatter.format(today)))))  // No log yet || last log is not today
                 {
                     Intent intent = new Intent(this, DailyLogsActivity.class);
                     intent.putExtra("event", recentEvent);
@@ -124,7 +122,6 @@ public class MainActivity extends AppCompatActivity
                     toast.show();
                 }
             }
-
         }
         ////End of prompt
 
@@ -201,7 +198,7 @@ public class MainActivity extends AppCompatActivity
                         dbHelper.removeEvent(eventToRemove);
                         refreshList();
                         Toast.makeText(MainActivity.this, "The event has been deleted", Toast.LENGTH_SHORT).show();
-                        if(eventList.isEmpty())
+                        if(eventList.isEmpty() || !eventToRemove.isDone())
                         {
                             activeEvent = false;
                             fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent,null)));
